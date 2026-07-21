@@ -152,7 +152,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const errorClass = "text-xs text-(--danger-500)";
 
   return (
-    <div className="w-full max-w-[560px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7">
+    <div className="w-full max-w-[640px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-6 sm:p-8">
       <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">{t("title")}</h1>
       <p className="mt-1.5 text-[13.5px] text-(--ink-soft)">{t("subtitle")}</p>
 
@@ -162,31 +162,33 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
             {t("sectionCompany")}
           </legend>
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="legalName" className={labelClass}>
-              {t("legalNameLabel")}
-            </label>
-            <input id="legalName" type="text" {...register("legalName")} className={inputClass} />
-            {errors.legalName && <span className={errorClass}>{errors.legalName.message}</span>}
-          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="legalName" className={labelClass}>
+                {t("legalNameLabel")}
+              </label>
+              <input id="legalName" type="text" {...register("legalName")} className={inputClass} />
+              {errors.legalName && <span className={errorClass}>{errors.legalName.message}</span>}
+            </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="name" className={labelClass}>
-              {t("nameLabel")}
-            </label>
-            <input
-              id="name"
-              type="text"
-              {...register("name", {
-                onChange: (e) => {
-                  if (!slugEditedManually.current) {
-                    setValue("slug", slugify(e.target.value));
-                  }
-                },
-              })}
-              className={inputClass}
-            />
-            {errors.name && <span className={errorClass}>{errors.name.message}</span>}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="name" className={labelClass}>
+                {t("nameLabel")}
+              </label>
+              <input
+                id="name"
+                type="text"
+                {...register("name", {
+                  onChange: (e) => {
+                    if (!slugEditedManually.current) {
+                      setValue("slug", slugify(e.target.value));
+                    }
+                  },
+                })}
+                className={inputClass}
+              />
+              {errors.name && <span className={errorClass}>{errors.name.message}</span>}
+            </div>
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -208,8 +210,8 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
             {errors.taxId && <span className={errorClass}>{errors.taxId.message}</span>}
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2 flex flex-col gap-1.5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="sm:col-span-2 flex flex-col gap-1.5">
               <label htmlFor="addressStreet" className={labelClass}>
                 {t("addressStreetLabel")}
               </label>
@@ -241,7 +243,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div className="flex flex-col gap-1.5">
               <label htmlFor="addressCity" className={labelClass}>
                 {t("addressCityLabel")}

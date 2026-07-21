@@ -112,4 +112,11 @@ Regra: `--brand-500` é a única cor de marca (botões primários, links, foco);
 - [ ] Idioma correto via chave de tradução (nunca string hardcoded)
 - [ ] Densidade adequada ao contexto
 - [ ] Motion consistente
-- [ ] Responsivo
+- [ ] Responsivo (ver 9a)
+
+## 9a. Responsividade — obrigatório em toda tela, sem exceção
+Todo o site (marketing, auth, onboarding, app autenticado) precisa funcionar bem em telas de celular, não só desktop. Isso não é opcional nem depende do usuário pedir de novo.
+- Nunca usar `grid-cols-N` fixo (N > 1) sem breakpoint — sempre `grid-cols-1 sm:grid-cols-N` (mobile empilha, desktop usa colunas).
+- Containers de formulário/card não devem ter `max-w` fixo pensado só para telas curtas (ex.: login) reaproveitado em telas com mais campos (ex.: onboarding) — cada tela define a própria largura máxima adequada ao conteúdo; wrappers compartilhados (como `AuthShell`) devem aceitar a largura como prop, não vir hardcoded.
+- Testar mentalmente (ou via devtools) em ~375px de largura antes de considerar a tela pronta — nada pode cortar texto, overflow horizontal ou espremer inputs.
+- Espaçamento/padding pode reduzir em telas pequenas (`p-6 sm:p-8` etc.) em vez de manter o mesmo valor de desktop.

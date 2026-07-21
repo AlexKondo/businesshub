@@ -24,7 +24,7 @@ export default async function OnboardingPage({
     process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, "") ?? "businesshub.app.br";
 
   return (
-    <AuthShell>
+    <AuthShell maxWidthClassName="max-w-[640px]">
       <OnboardingForm appRootDomain={appRootDomain} />
     </AuthShell>
   );
