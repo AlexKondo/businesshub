@@ -11,6 +11,8 @@ import { createClient } from "@/lib/supabase/client";
 import { Link } from "@/i18n/navigation";
 import { Check, Loader2 } from "lucide-react";
 
+const DRAFT_STORAGE_KEY = "businesshub:onboarding-draft";
+
 const PROVISIONING_STEP_KEYS = [
   "provisioningStepAccount",
   "provisioningStepCompany",
@@ -26,6 +28,16 @@ function slugify(input: string) {
     .replace(/[̀-ͯ]/g, "") // strip diacritics after NFD split
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+async function checkTaxIdExists(digits: string): Promise<boolean | null> {
+  try {
+    const res = await fetch(`/api/tenants/check-tax-id?taxId=${digits}`);
+    const data = await res.json();
+    return Boolean(data.exists);
+  } catch {
+    return null;
+  }
 }
 
 async function waitForDeployment(deploymentUuid: string, timeoutMs = 5 * 60 * 1000) {
@@ -94,6 +106,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -116,6 +129,35 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const slugEditedManually = useRef(false);
   const consentChecked = watch("consent");
 
+  // Switching language (or theme) re-renders this page under a new locale
+  // segment, which remounts the form and would otherwise wipe everything
+  // the user already typed. Persist a draft to sessionStorage and restore
+  // it on mount so that survives.
+  useEffect(() => {
+    const raw = sessionStorage.getItem(DRAFT_STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const draft = JSON.parse(raw) as Partial<FormValues>;
+      reset({ ...draft, consent: false });
+      if (draft.slug) slugEditedManually.current = true;
+      const digits = (draft.taxId ?? "").replace(/\D/g, "");
+      if (isValidCnpj(digits)) {
+        checkTaxIdExists(digits).then(setCompanyExists);
+      }
+    } catch {
+      sessionStorage.removeItem(DRAFT_STORAGE_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const subscription = watch((values) => {
+      const { consent: _consent, ...draft } = values;
+      sessionStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
   async function submitOrganization(values: FormValues) {
     setServerError(null);
 
@@ -135,6 +177,8 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
       setStage("form");
       return;
     }
+
+    sessionStorage.removeItem(DRAFT_STORAGE_KEY);
 
     if (data.status === "pending") {
       setStage("pending");
@@ -346,13 +390,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
                     setCompanyExists(null);
                     return;
                   }
-                  try {
-                    const res = await fetch(`/api/tenants/check-tax-id?taxId=${digits}`);
-                    const data = await res.json();
-                    setCompanyExists(Boolean(data.exists));
-                  } catch {
-                    setCompanyExists(null);
-                  }
+                  setCompanyExists(await checkTaxIdExists(digits));
                 },
               })}
               className={inputClass}
