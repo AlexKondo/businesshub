@@ -41,6 +41,14 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const [companyExists, setCompanyExists] = useState<boolean | null>(null);
   const [pendingValues, setPendingValues] = useState<FormValues | null>(null);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
+  const [provisioningSeconds, setProvisioningSeconds] = useState(0);
+
+  useEffect(() => {
+    if (stage !== "provisioning") return;
+    setProvisioningSeconds(0);
+    const interval = setInterval(() => setProvisioningSeconds((s) => s + 1), 1000);
+    return () => clearInterval(interval);
+  }, [stage]);
 
   useEffect(() => {
     createClient()
@@ -194,6 +202,8 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   }
 
   if (stage === "provisioning") {
+    const mm = String(Math.floor(provisioningSeconds / 60)).padStart(2, "0");
+    const ss = String(provisioningSeconds % 60).padStart(2, "0");
     return (
       <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
         <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">
@@ -201,6 +211,9 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         </h1>
         <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
           {t("provisioningBody")}
+        </p>
+        <p className="mt-5 font-mono text-[26px] font-bold tabular-nums text-(--brand-500)">
+          {mm}:{ss}
         </p>
       </div>
     );
