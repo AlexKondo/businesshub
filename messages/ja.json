@@ -165,6 +165,7 @@
       "signupLink": "新規登録",
       "forgotPassword": "パスワードをお忘れですか？",
       "errorInvalid": "メールアドレスまたはパスワードが正しくありません。",
+      "errorEmailNotConfirmed": "ログインする前にメールアドレスを確認してください — 受信トレイに送信されたリンクをご確認ください。",
       "errorGeneric": "問題が発生しました。もう一度お試しください。"
     },
     "signup": {

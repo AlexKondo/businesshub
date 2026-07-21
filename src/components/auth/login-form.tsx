@@ -33,9 +33,13 @@ export function LoginForm() {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword(values);
     if (error) {
-      setServerError(
-        error.status === 400 ? t("errorInvalid") : t("errorGeneric")
-      );
+      if (error.code === "email_not_confirmed") {
+        setServerError(t("errorEmailNotConfirmed"));
+      } else if (error.status === 400) {
+        setServerError(t("errorInvalid"));
+      } else {
+        setServerError(t("errorGeneric"));
+      }
       return;
     }
     const { data: membership } = await supabase

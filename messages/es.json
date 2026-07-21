@@ -165,6 +165,7 @@
       "signupLink": "Crear cuenta",
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "errorInvalid": "Correo electrónico o contraseña inválidos.",
+      "errorEmailNotConfirmed": "Confirma tu correo antes de iniciar sesión — revisa el enlace que enviamos a tu bandeja de entrada.",
       "errorGeneric": "Algo salió mal. Intenta de nuevo."
     },
     "signup": {

@@ -165,6 +165,7 @@
       "signupLink": "立即注册",
       "forgotPassword": "忘记密码？",
       "errorInvalid": "邮箱或密码不正确。",
+      "errorEmailNotConfirmed": "请先确认您的邮箱再登录 — 查看我们发送到您邮箱的链接。",
       "errorGeneric": "出现问题，请重试。"
     },
     "signup": {

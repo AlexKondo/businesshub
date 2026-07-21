@@ -165,6 +165,7 @@
       "signupLink": "Sign up",
       "forgotPassword": "Forgot your password?",
       "errorInvalid": "Invalid email or password.",
+      "errorEmailNotConfirmed": "Confirm your email before logging in — check the link we sent to your inbox.",
       "errorGeneric": "Something went wrong. Please try again."
     },
     "signup": {
