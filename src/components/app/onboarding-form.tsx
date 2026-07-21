@@ -90,7 +90,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
       addressComplement: "",
       addressCity: "",
       addressState: "",
-      addressCountry: "Brasil",
+      addressCountry: "BRASIL",
       slug: "",
       phone: "",
       consent: false,
@@ -267,7 +267,16 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               <label htmlFor="legalName" className={labelClass}>
                 {t("legalNameLabel")}
               </label>
-              <input id="legalName" type="text" {...register("legalName")} className={inputClass} />
+              <input
+                id="legalName"
+                type="text"
+                {...register("legalName", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  },
+                })}
+                className={`${inputClass} uppercase`}
+              />
               {errors.legalName && <span className={errorClass}>{errors.legalName.message}</span>}
             </div>
 
@@ -280,12 +289,13 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
                 type="text"
                 {...register("name", {
                   onChange: (e) => {
+                    e.target.value = e.target.value.toUpperCase();
                     if (!slugEditedManually.current) {
                       setValue("slug", slugify(e.target.value));
                     }
                   },
                 })}
-                className={inputClass}
+                className={`${inputClass} uppercase`}
               />
               {errors.name && <span className={errorClass}>{errors.name.message}</span>}
             </div>
@@ -330,7 +340,16 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               <label htmlFor="addressStreet" className={labelClass}>
                 {t("addressStreetLabel")}
               </label>
-              <input id="addressStreet" type="text" {...register("addressStreet")} className={inputClass} />
+              <input
+                id="addressStreet"
+                type="text"
+                {...register("addressStreet", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  },
+                })}
+                className={`${inputClass} uppercase`}
+              />
               {errors.addressStreet && (
                 <span className={errorClass}>{errors.addressStreet.message}</span>
               )}
@@ -339,7 +358,16 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               <label htmlFor="addressNumber" className={labelClass}>
                 {t("addressNumberLabel")}
               </label>
-              <input id="addressNumber" type="text" {...register("addressNumber")} className={inputClass} />
+              <input
+                id="addressNumber"
+                type="text"
+                {...register("addressNumber", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  },
+                })}
+                className={`${inputClass} uppercase`}
+              />
               {errors.addressNumber && (
                 <span className={errorClass}>{errors.addressNumber.message}</span>
               )}
@@ -353,8 +381,12 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
             <input
               id="addressComplement"
               type="text"
-              {...register("addressComplement")}
-              className={inputClass}
+              {...register("addressComplement", {
+                onChange: (e) => {
+                  e.target.value = e.target.value.toUpperCase();
+                },
+              })}
+              className={`${inputClass} uppercase`}
             />
           </div>
 
@@ -363,14 +395,32 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               <label htmlFor="addressCity" className={labelClass}>
                 {t("addressCityLabel")}
               </label>
-              <input id="addressCity" type="text" {...register("addressCity")} className={inputClass} />
+              <input
+                id="addressCity"
+                type="text"
+                {...register("addressCity", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  },
+                })}
+                className={`${inputClass} uppercase`}
+              />
               {errors.addressCity && <span className={errorClass}>{errors.addressCity.message}</span>}
             </div>
             <div className="flex flex-col gap-1.5">
               <label htmlFor="addressState" className={labelClass}>
                 {t("addressStateLabel")}
               </label>
-              <input id="addressState" type="text" {...register("addressState")} className={inputClass} />
+              <input
+                id="addressState"
+                type="text"
+                {...register("addressState", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  },
+                })}
+                className={`${inputClass} uppercase`}
+              />
               {errors.addressState && <span className={errorClass}>{errors.addressState.message}</span>}
             </div>
             <div className="flex flex-col gap-1.5">
@@ -380,8 +430,12 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               <input
                 id="addressCountry"
                 type="text"
-                {...register("addressCountry")}
-                className={inputClass}
+                {...register("addressCountry", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  },
+                })}
+                className={`${inputClass} uppercase`}
               />
               {errors.addressCountry && (
                 <span className={errorClass}>{errors.addressCountry.message}</span>
