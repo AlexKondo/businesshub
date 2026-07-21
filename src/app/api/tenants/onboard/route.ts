@@ -6,6 +6,15 @@ import { isValidCnpj } from "@/lib/cnpj";
 import { sendMail } from "@/lib/mail";
 
 export async function POST(request: Request) {
+  try {
+    return await handleOnboard(request);
+  } catch (err) {
+    console.error("[tenants/onboard] unhandled error:", err);
+    return NextResponse.json({ error: "server_error" }, { status: 500 });
+  }
+}
+
+async function handleOnboard(request: Request) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -70,6 +79,7 @@ export async function POST(request: Request) {
       status: "pending",
     });
     if (membershipError) {
+      console.error("[tenants/onboard] membership_failed (pending):", membershipError);
       return NextResponse.json({ error: "membership_failed" }, { status: 500 });
     }
 
@@ -128,6 +138,7 @@ export async function POST(request: Request) {
     .single();
 
   if (companyError) {
+    console.error("[tenants/onboard] company insert failed:", companyError);
     const code = companyError.code === "23505" ? "slug_or_tax_id_taken" : "company_failed";
     return NextResponse.json({ error: code }, { status: 400 });
   }
@@ -146,6 +157,7 @@ export async function POST(request: Request) {
     status: "active",
   });
   if (membershipError) {
+    console.error("[tenants/onboard] membership_failed (active):", membershipError);
     return NextResponse.json({ error: "membership_failed" }, { status: 500 });
   }
 
