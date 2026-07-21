@@ -37,6 +37,9 @@
   "language": {
     "toggleLabel": "切换语言"
   },
+  "user": {
+    "logout": "退出登录"
+  },
   "auth": {
     "login": {
       "title": "登录 BusinessHub",

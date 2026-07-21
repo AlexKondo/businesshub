@@ -37,6 +37,9 @@
   "language": {
     "toggleLabel": "Change language"
   },
+  "user": {
+    "logout": "Log out"
+  },
   "auth": {
     "login": {
       "title": "Log in to BusinessHub",

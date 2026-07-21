@@ -1,0 +1,56 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { ChevronDown, LogOut } from "lucide-react";
+
+export function UserMenu({ firstName }: { firstName: string }) {
+  const t = useTranslations("user");
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  }
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
+      >
+        {firstName}
+        <ChevronDown size={14} strokeWidth={1.5} />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-40 overflow-hidden rounded-md border border-(--border-default) bg-(--bg-surface-raised) py-1 shadow-lg">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-(--ink) transition-colors hover:bg-(--accent-soft)"
+          >
+            <LogOut size={14} strokeWidth={1.5} />
+            {t("logout")}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "product": "Produto",
+    "modules": "Módulos",
+    "pricing": "Preços",
+    "docs": "Documentação",
+    "contactSales": "Falar com vendas",
+    "login": "Entrar",
+    "signup": "Criar conta"
+  },
+  "hero": {
+    "eyebrow": "Multi-tenant · RLS nativo · pronto para SOC2",
+    "headline": "Uma plataforma. Todos os módulos da sua operação.",
+    "subheadline": "SRM, CRM, CLM, Procurement e Risk Management rodando sobre os mesmos dados, permissões e identidade visual — sem integrações frágeis entre sistemas diferentes.",
+    "ctaPrimary": "Agendar demonstração",
+    "ctaSecondary": "Ver documentação"
+  },
+  "bento": {
+    "modulesTitle": "Módulos conectados",
+    "approvalsTitle": "Aprovações no prazo",
+    "tenantsTitle": "Tenants ativos",
+    "tenantsValue": "128",
+    "uptimeTitle": "Disponibilidade",
+    "uptimeValue": "99.98%",
+    "auditTitle": "Auditoria",
+    "auditBody": "Todo evento sensível é registrado — quem, quando, tenant, ação."
+  },
+  "footer": {
+    "rights": "Todos os direitos reservados."
+  },
+  "theme": {
+    "toggleLabel": "Alternar tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "language": {
+    "toggleLabel": "Alterar idioma"
+  },
+  "user": {
+    "logout": "Sair"
+  },
+  "auth": {
+    "login": {
+      "title": "Entrar no BusinessHub",
+      "subtitle": "Digite suas credenciais para acessar seu workspace.",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Senha",
+      "submit": "Entrar",
+      "submitting": "Entrando…",
+      "noAccount": "Ainda não tem uma conta?",
+      "signupLink": "Criar conta",
+      "forgotPassword": "Esqueceu sua senha?",
+      "errorInvalid": "E-mail ou senha inválidos.",
+      "errorGeneric": "Algo deu errado. Tente novamente."
+    },
+    "signup": {
+      "title": "Crie sua conta",
+      "subtitle": "Configure o acesso ao workspace da sua organização.",
+      "nameLabel": "Nome completo",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Senha",
+      "passwordHint": "Pelo menos 8 caracteres.",
+      "submit": "Criar conta",
+      "submitting": "Criando conta…",
+      "haveAccount": "Já tem uma conta?",
+      "loginLink": "Entrar",
+      "successTitle": "Confira seu e-mail",
+      "successBody": "Enviamos um link de confirmação para {email}. Clique nele para ativar sua conta.",
+      "errorGeneric": "Algo deu errado. Tente novamente."
+    },
+    "validation": {
+      "emailInvalid": "Digite um e-mail válido.",
+      "passwordMin": "A senha deve ter pelo menos 8 caracteres.",
+      "nameRequired": "Digite seu nome completo."
+    }
+  }
+}

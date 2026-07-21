@@ -37,6 +37,9 @@
   "language": {
     "toggleLabel": "言語を切り替える"
   },
+  "user": {
+    "logout": "ログアウト"
+  },
   "auth": {
     "login": {
       "title": "BusinessHub にログイン",

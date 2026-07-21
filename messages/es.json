@@ -37,6 +37,9 @@
   "language": {
     "toggleLabel": "Cambiar idioma"
   },
+  "user": {
+    "logout": "Cerrar sesión"
+  },
   "auth": {
     "login": {
       "title": "Inicia sesión en BusinessHub",

@@ -11,6 +11,7 @@ const LOCALE_LABELS: Record<string, string> = {
   "zh-CN": "简体中文",
   es: "Español",
   ja: "日本語",
+  "pt-BR": "Português (BR)",
 };
 
 export function LanguageToggle() {
