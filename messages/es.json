@@ -26,7 +26,9 @@
     "auditBody": "Todo evento sensible queda registrado — quién, cuándo, tenant, acción."
   },
   "footer": {
-    "rights": "Todos los derechos reservados."
+    "rights": "Todos los derechos reservados.",
+    "terms": "Términos de Uso",
+    "privacy": "Política de Privacidad"
   },
   "theme": {
     "toggleLabel": "Cambiar tema",
@@ -80,6 +82,10 @@
     "personalEmailLabel": "Correo electrónico",
     "phoneLabel": "Celular",
     "phoneTooShort": "Ingresa un número de teléfono válido.",
+    "adminNoticeTitle": "Serás el administrador de esta organización",
+    "adminNoticeBody": "Como creador, podrás aprobar nuevos miembros y asignar sus permisos. Una vez que nombres a otra persona como administradora, ese rol no podrá ser revocado por nadie de tu equipo — solo un administrador de la plataforma BusinessHub podrá hacerlo.",
+    "consentLabel": "He leído y acepto los <terms>Términos de Uso</terms> y la <privacy>Política de Privacidad</privacy> de BusinessHub.",
+    "consentRequired": "Debes aceptar los términos para continuar.",
     "slugLabel": "Dirección del workspace",
     "slugHint": "Esta será la dirección exclusiva de tu equipo en BusinessHub.",
     "nameTooShort": "Ingresa al menos 2 caracteres.",
@@ -147,6 +153,16 @@
       "emailInvalid": "Ingresa un correo electrónico válido.",
       "passwordMin": "La contraseña debe tener al menos 8 caracteres.",
       "nameRequired": "Ingresa tu nombre completo."
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Términos de Uso",
+      "placeholder": "Este contenido se publicará próximamente."
+    },
+    "privacy": {
+      "title": "Política de Privacidad",
+      "placeholder": "Este contenido se publicará próximamente."
     }
   }
 }

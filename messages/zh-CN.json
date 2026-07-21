@@ -26,7 +26,9 @@
     "auditBody": "每一次敏感操作都会被记录——操作人、时间、租户与动作。"
   },
   "footer": {
-    "rights": "版权所有。"
+    "rights": "版权所有。",
+    "terms": "使用条款",
+    "privacy": "隐私政策"
   },
   "theme": {
     "toggleLabel": "切换主题",
@@ -80,6 +82,10 @@
     "personalEmailLabel": "邮箱",
     "phoneLabel": "手机号码",
     "phoneTooShort": "请输入有效的电话号码。",
+    "adminNoticeTitle": "您将成为该组织的管理员",
+    "adminNoticeBody": "作为创建者，您可以批准新成员并分配权限。一旦您将他人设为管理员，团队中任何人都无法撤销该角色——只有 BusinessHub 平台管理员可以。",
+    "consentLabel": "我已阅读并同意 BusinessHub 的<terms>使用条款</terms>和<privacy>隐私政策</privacy>。",
+    "consentRequired": "请先同意条款才能继续。",
     "slugLabel": "工作区地址",
     "slugHint": "这将是您团队在 BusinessHub 上的专属地址。",
     "nameTooShort": "请至少输入 2 个字符。",
@@ -147,6 +153,16 @@
       "emailInvalid": "请输入有效的邮箱地址。",
       "passwordMin": "密码至少需要 8 个字符。",
       "nameRequired": "请输入您的姓名。"
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "使用条款",
+      "placeholder": "该内容即将发布。"
+    },
+    "privacy": {
+      "title": "隐私政策",
+      "placeholder": "该内容即将发布。"
     }
   }
 }

@@ -96,8 +96,18 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-(--border-default) px-6 py-8 text-center text-xs text-(--ink-soft) sm:px-10">
-        © {new Date().getFullYear()} BusinessHub. {t("footer.rights")}
+      <footer className="flex flex-col items-center gap-3 border-t border-(--border-default) px-6 py-8 text-center text-xs text-(--ink-soft) sm:px-10">
+        <p>
+          © {new Date().getFullYear()} BusinessHub. {t("footer.rights")}
+        </p>
+        <div className="flex items-center gap-4">
+          <Link href="/terms" className="hover:text-(--ink)">
+            {t("footer.terms")}
+          </Link>
+          <Link href="/privacy" className="hover:text-(--ink)">
+            {t("footer.privacy")}
+          </Link>
+        </div>
       </footer>
     </div>
   );

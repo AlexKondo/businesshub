@@ -26,7 +26,9 @@
     "auditBody": "Todo evento sensível é registrado — quem, quando, tenant, ação."
   },
   "footer": {
-    "rights": "Todos os direitos reservados."
+    "rights": "Todos os direitos reservados.",
+    "terms": "Termos de Uso",
+    "privacy": "Política de Privacidade"
   },
   "theme": {
     "toggleLabel": "Alternar tema",
@@ -80,6 +82,10 @@
     "personalEmailLabel": "E-mail",
     "phoneLabel": "Celular",
     "phoneTooShort": "Digite um número de telefone válido.",
+    "adminNoticeTitle": "Você será o administrador desta organização",
+    "adminNoticeBody": "Como criador da conta, você poderá aprovar novos membros e definir suas permissões. Depois de nomear outra pessoa como administradora, essa função não poderá ser revogada por ninguém do seu time — apenas por um administrador da plataforma BusinessHub.",
+    "consentLabel": "Li e aceito os <terms>Termos de Uso</terms> e a <privacy>Política de Privacidade</privacy> do BusinessHub.",
+    "consentRequired": "É necessário aceitar os termos para continuar.",
     "slugLabel": "Endereço do workspace",
     "slugHint": "Esse será o endereço exclusivo do seu time no BusinessHub.",
     "nameTooShort": "Digite pelo menos 2 caracteres.",
@@ -147,6 +153,16 @@
       "emailInvalid": "Digite um e-mail válido.",
       "passwordMin": "A senha deve ter pelo menos 8 caracteres.",
       "nameRequired": "Digite seu nome completo."
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Termos de Uso",
+      "placeholder": "Este conteúdo será publicado em breve."
+    },
+    "privacy": {
+      "title": "Política de Privacidade",
+      "placeholder": "Este conteúdo será publicado em breve."
     }
   }
 }

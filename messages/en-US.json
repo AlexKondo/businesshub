@@ -26,7 +26,9 @@
     "auditBody": "Every sensitive event logged — who, when, tenant, action."
   },
   "footer": {
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
   },
   "theme": {
     "toggleLabel": "Toggle theme",
@@ -80,6 +82,10 @@
     "personalEmailLabel": "Email",
     "phoneLabel": "Mobile phone",
     "phoneTooShort": "Enter a valid phone number.",
+    "adminNoticeTitle": "You'll be the administrator of this organization",
+    "adminNoticeBody": "As the creator, you'll be able to approve new members and assign their permissions. Once you promote someone else to admin, that role can't be revoked by anyone on your team — only a BusinessHub platform administrator can.",
+    "consentLabel": "I have read and accept BusinessHub's <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+    "consentRequired": "You must accept the terms to continue.",
     "slugLabel": "Workspace address",
     "slugHint": "This will be your team's own address on BusinessHub.",
     "nameTooShort": "Enter at least 2 characters.",
@@ -147,6 +153,16 @@
       "emailInvalid": "Enter a valid email address.",
       "passwordMin": "Password must be at least 8 characters.",
       "nameRequired": "Enter your full name."
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Terms of Service",
+      "placeholder": "This content will be published soon."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "placeholder": "This content will be published soon."
     }
   }
 }

@@ -26,7 +26,9 @@
     "auditBody": "重要な操作はすべて記録されます — 誰が、いつ、どのテナントで、何をしたか。"
   },
   "footer": {
-    "rights": "無断複写・転載を禁じます。"
+    "rights": "無断複写・転載を禁じます。",
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー"
   },
   "theme": {
     "toggleLabel": "テーマを切り替える",
@@ -80,6 +82,10 @@
     "personalEmailLabel": "メールアドレス",
     "phoneLabel": "携帯電話番号",
     "phoneTooShort": "有効な電話番号を入力してください。",
+    "adminNoticeTitle": "あなたはこの組織の管理者になります",
+    "adminNoticeBody": "作成者として、新しいメンバーを承認し、権限を割り当てることができます。他の人を管理者に任命した後は、チームの誰もその権限を取り消すことはできません — BusinessHubのプラットフォーム管理者のみが可能です。",
+    "consentLabel": "BusinessHubの<terms>利用規約</terms>と<privacy>プライバシーポリシー</privacy>を読み、同意します。",
+    "consentRequired": "続行するには規約に同意してください。",
     "slugLabel": "ワークスペースのアドレス",
     "slugHint": "これがあなたのチーム専用のBusinessHubアドレスになります。",
     "nameTooShort": "2文字以上で入力してください。",
@@ -147,6 +153,16 @@
       "emailInvalid": "有効なメールアドレスを入力してください。",
       "passwordMin": "パスワードは8文字以上で入力してください。",
       "nameRequired": "氏名を入力してください。"
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "利用規約",
+      "placeholder": "このコンテンツは近日公開予定です。"
+    },
+    "privacy": {
+      "title": "プライバシーポリシー",
+      "placeholder": "このコンテンツは近日公開予定です。"
     }
   }
 }

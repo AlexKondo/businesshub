@@ -6,7 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { isValidCnpj, formatCnpj } from "@/lib/cnpj";
+import { isValidPhoneBR, formatPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
+import { Link } from "@/i18n/navigation";
 
 function slugify(input: string) {
   return input
@@ -33,6 +35,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const [stage, setStage] = useState<"form" | "provisioning" | "pending">("form");
   const [account, setAccount] = useState<{ name: string; email: string } | null>(null);
+  const [companyExists, setCompanyExists] = useState<boolean | null>(null);
 
   useEffect(() => {
     createClient()
@@ -61,7 +64,8 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
       .string()
       .min(2, t("slugTooShort"))
       .regex(/^[a-z0-9-]+$/, t("slugInvalid")),
-    phone: z.string().min(8, t("phoneTooShort")),
+    phone: z.string().refine((v) => isValidPhoneBR(v), t("phoneTooShort")),
+    consent: z.boolean().refine((v) => v === true, t("consentRequired")),
   });
   type FormValues = z.infer<typeof schema>;
 
@@ -84,6 +88,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
       addressCountry: "Brasil",
       slug: "",
       phone: "",
+      consent: false,
     },
   });
 
@@ -202,6 +207,21 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               {...register("taxId", {
                 onChange: (e) => {
                   e.target.value = formatCnpj(e.target.value);
+                  setCompanyExists(null);
+                },
+                onBlur: async (e) => {
+                  const digits = e.target.value.replace(/\D/g, "");
+                  if (!isValidCnpj(digits)) {
+                    setCompanyExists(null);
+                    return;
+                  }
+                  try {
+                    const res = await fetch(`/api/tenants/check-tax-id?taxId=${digits}`);
+                    const data = await res.json();
+                    setCompanyExists(Boolean(data.exists));
+                  } catch {
+                    setCompanyExists(null);
+                  }
                 },
               })}
               className={inputClass}
@@ -318,12 +338,48 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               id="phone"
               type="tel"
               placeholder="(11) 91234-5678"
-              {...register("phone")}
+              {...register("phone", {
+                onChange: (e) => {
+                  e.target.value = formatPhoneBR(e.target.value);
+                },
+              })}
               className={inputClass}
             />
             {errors.phone && <span className={errorClass}>{errors.phone.message}</span>}
           </div>
         </fieldset>
+
+        {companyExists === false && (
+          <div className="flex flex-col gap-1.5 rounded-md border border-(--brand-500)/30 bg-(--accent-soft) px-4 py-3">
+            <p className="text-[13px] font-semibold text-(--ink)">{t("adminNoticeTitle")}</p>
+            <p className="text-[12.5px] leading-relaxed text-(--ink-soft)">{t("adminNoticeBody")}</p>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1.5">
+          <label className="flex items-start gap-2.5 text-[13px] leading-relaxed text-(--ink-soft)">
+            <input
+              type="checkbox"
+              {...register("consent")}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-(--brand-500)"
+            />
+            <span>
+              {t.rich("consentLabel", {
+                terms: (chunks) => (
+                  <Link href="/terms" target="_blank" className="font-medium text-(--brand-500)">
+                    {chunks}
+                  </Link>
+                ),
+                privacy: (chunks) => (
+                  <Link href="/privacy" target="_blank" className="font-medium text-(--brand-500)">
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </span>
+          </label>
+          {errors.consent && <span className={errorClass}>{errors.consent.message}</span>}
+        </div>
 
         {serverError && (
           <p className="rounded-md bg-(--danger-500)/10 px-3 py-2 text-xs text-(--danger-500)">
