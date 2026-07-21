@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { isValidCnpj, formatCnpj } from "@/lib/cnpj";
 import { isValidPhoneBR, formatPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 
 function slugify(input: string) {
   return input
@@ -32,7 +32,6 @@ async function waitForDeployment(deploymentUuid: string, timeoutMs = 5 * 60 * 10
 
 export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const t = useTranslations("onboarding");
-  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [stage, setStage] = useState<
     "form" | "confirm" | "provisioning" | "provisioning-error" | "success" | "pending"
@@ -145,9 +144,9 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     setStage("success");
   }
 
-  async function handleSuccessOk() {
-    await createClient().auth.signOut();
-    router.push("/login");
+  function handleGoToWorkspace() {
+    if (!createdSlug) return;
+    window.location.href = `https://${createdSlug}.${appRootDomain}/en-US/dashboard`;
   }
 
   async function onValidated(values: FormValues) {
@@ -230,7 +229,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         </p>
         <button
           type="button"
-          onClick={() => void handleSuccessOk()}
+          onClick={handleGoToWorkspace}
           className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           {t("provisioningErrorRetry")}
@@ -250,7 +249,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         </p>
         <button
           type="button"
-          onClick={() => void handleSuccessOk()}
+          onClick={handleGoToWorkspace}
           className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           {t("successOk")}

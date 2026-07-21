@@ -101,10 +101,10 @@
     "provisioningBody": "Isso leva um ou dois minutos na primeira vez. Você será redirecionado automaticamente.",
     "provisioningErrorTitle": "Está demorando mais que o esperado",
     "provisioningErrorBody": "Não conseguimos confirmar automaticamente se terminou. Tente acessar pelo link abaixo — se ainda não estiver pronto, aguarde mais um instante e tente novamente.",
-    "provisioningErrorRetry": "Fazer login novamente",
+    "provisioningErrorRetry": "Acessar meu workspace",
     "successTitle": "Organização criada com sucesso!",
-    "successBody": "Seu workspace está pronto em {domain}. Faça login novamente para entrar nele.",
-    "successOk": "OK, fazer login",
+    "successBody": "Seu workspace está pronto em {domain}.",
+    "successOk": "Acessar meu workspace",
     "pendingTitle": "Solicitação enviada",
     "pendingBody": "Sua empresa já está no BusinessHub. Avisamos os administradores — você terá acesso assim que alguém aprovar seu pedido."
   },
