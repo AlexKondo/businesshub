@@ -24,7 +24,7 @@ Ver skill completa: `.agent/skills/platform-security-rbac/SKILL.md`
 
 ## Design System
 Ver skill completa: `.agent/skills/platform-design-system/SKILL.md`
-- Tokens de cor/tipografia: **ainda não definidos** — pendente aprovação de um dos 3 conceitos de branding (Fase 1c)
+- **Conceito aprovado: "Structured Neutral"** (2026-07-21) — inspiração Stripe/Linear/Vercel, paleta neutra + azul de marca (`#2547D0` light / `#6C86FF` dark), tipografia Inter única, ícones lucide-react, sem ilustração figurativa, motion 200-250ms sem parallax. Tokens completos já na skill.
 - Theme Toggle (claro/escuro) e Language Toggle (EN-US/ZH-CN/ES/JA) obrigatórios desde a Fase 1, mesmo componente em toda tela
 
 ## Decisões arquiteturais (ADRs resumidos)
@@ -47,11 +47,13 @@ Ver skill completa: `.agent/skills/platform-design-system/SKILL.md`
 - [x] Migrations core aplicadas no Supabase real: `companies`, `profiles`/`identities`, `roles`, `permissions`, `role_permissions`, `memberships`, `audit_logs` — RLS habilitada em todas (fail-closed), helpers `user_has_tenant_access`/`user_has_permission`, seed com 12 permissions e 7 system roles
 - [x] Supabase CLI (`npx supabase`, sem instalação global) + stack local via Docker validados; teste pgTAP `supabase/tests/001_rls_cross_tenant.sql` rodando **6/6 PASS** localmente
 - [x] Migration `20260720190200_grants.sql` (GRANTs de tabela para `authenticated` — necessário além da RLS, pois projetos novos não expõem tabelas automaticamente) aplicada tanto local quanto no projeto real
-- [ ] Autenticação por e-mail (Supabase Auth) com modelo user/identity separado — **próximo passo**
-- [ ] Deploy automático no Coolify (staging) funcionando ponta a ponta
-- [ ] 3 conceitos de branding/UX propostos (Fase 1c) — aguardando aprovação do usuário
-- [ ] Wireframes
-- [ ] Mockups de alta fidelidade
-- [ ] Fase 1b / 1c
+- [x] Autenticação por e-mail (Supabase Auth) com modelo user/identity separado
+- [x] Deploy automático no Coolify funcionando ponta a ponta — `https://gwm.businesshub.app.br`, SSL válido via Let's Encrypt, DNS via Cloudflare
+- [x] 3 conceitos de branding/UX propostos e aprovados: **Conceito 1 "Structured Neutral"**
+- [x] Tokens definitivos aplicados em `platform-design-system/SKILL.md`
+- [x] Landing page real (i18n completo: en-US, zh-CN, es, ja), Theme Toggle e Language Toggle funcionais
+- [x] Telas de login e cadastro reais (`/[locale]/login`, `/[locale]/signup`) com Supabase Auth, React Hook Form + Zod, `/auth/callback` para confirmação de e-mail
+- [ ] Dashboard autenticado (Fase 1b) — próximo passo
+- [ ] Deploy da versão atual (com as páginas novas) no Coolify — só o scaffold padrão do Next.js foi deployado até agora, as telas reais ainda não subiram
 
 Este arquivo deve ser atualizado ao final de cada fase aprovada.

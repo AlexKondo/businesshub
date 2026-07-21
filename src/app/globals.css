@@ -1,26 +1,98 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --bg-canvas: #fafaf9;
+  --bg-surface: #ffffff;
+  --bg-surface-raised: #ffffff;
+  --border-subtle: #eceeef;
+  --border-default: #e4e6ea;
+  --ink: #16181d;
+  --ink-soft: #5b616e;
+  --brand-500: #2547d0;
+  --brand-600: #1c37a8;
+  --accent-soft: #eef0fd;
+  --success-500: #16a34a;
+  --warning-500: #d97706;
+  --danger-500: #dc2626;
+  --info-500: #2547d0;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg-canvas: #0f0f10;
+    --bg-surface: #17181a;
+    --bg-surface-raised: #1e1f22;
+    --border-subtle: #232427;
+    --border-default: #2b2d31;
+    --ink: #ededec;
+    --ink-soft: #9aa0ac;
+    --brand-500: #6c86ff;
+    --brand-600: #8a9fff;
+    --accent-soft: #1b2340;
+    --success-500: #22c55e;
+    --warning-500: #f59e0b;
+    --danger-500: #ef4444;
+    --info-500: #6c86ff;
   }
 }
 
+:root[data-theme="dark"] {
+  --bg-canvas: #0f0f10;
+  --bg-surface: #17181a;
+  --bg-surface-raised: #1e1f22;
+  --border-subtle: #232427;
+  --border-default: #2b2d31;
+  --ink: #ededec;
+  --ink-soft: #9aa0ac;
+  --brand-500: #6c86ff;
+  --brand-600: #8a9fff;
+  --accent-soft: #1b2340;
+  --success-500: #22c55e;
+  --warning-500: #f59e0b;
+  --danger-500: #ef4444;
+  --info-500: #6c86ff;
+}
+
+:root[data-theme="light"] {
+  --bg-canvas: #fafaf9;
+  --bg-surface: #ffffff;
+  --bg-surface-raised: #ffffff;
+  --border-subtle: #eceeef;
+  --border-default: #e4e6ea;
+  --ink: #16181d;
+  --ink-soft: #5b616e;
+  --brand-500: #2547d0;
+  --brand-600: #1c37a8;
+  --accent-soft: #eef0fd;
+  --success-500: #16a34a;
+  --warning-500: #d97706;
+  --danger-500: #dc2626;
+  --info-500: #2547d0;
+}
+
+@theme inline {
+  --color-canvas: var(--bg-canvas);
+  --color-surface: var(--bg-surface);
+  --color-surface-raised: var(--bg-surface-raised);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-accent-soft: var(--accent-soft);
+  --color-success-500: var(--success-500);
+  --color-warning-500: var(--warning-500);
+  --color-danger-500: var(--danger-500);
+  --color-info-500: var(--info-500);
+  --font-sans: var(--font-inter), "Noto Sans SC", "Noto Sans JP", -apple-system, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-canvas);
+  color: var(--ink);
+}
+
+* {
+  border-color: var(--border-default);
 }

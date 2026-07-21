@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "product": "Product",
+    "modules": "Modules",
+    "pricing": "Pricing",
+    "docs": "Docs",
+    "contactSales": "Talk to sales",
+    "login": "Log in",
+    "signup": "Sign up"
+  },
+  "hero": {
+    "eyebrow": "Multi-tenant · native RLS · SOC2-ready",
+    "headline": "One platform. Every module of your operation.",
+    "subheadline": "SRM, CRM, CLM, Procurement and Risk Management running on the same data, permissions and visual identity — no fragile integrations between disconnected systems.",
+    "ctaPrimary": "Book a demo",
+    "ctaSecondary": "Read the docs"
+  },
+  "bento": {
+    "modulesTitle": "Connected modules",
+    "approvalsTitle": "Approvals on time",
+    "tenantsTitle": "Active tenants",
+    "tenantsValue": "128",
+    "uptimeTitle": "Uptime",
+    "uptimeValue": "99.98%",
+    "auditTitle": "Audit trail",
+    "auditBody": "Every sensitive event logged — who, when, tenant, action."
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "theme": {
+    "toggleLabel": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "toggleLabel": "Change language"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in to BusinessHub",
+      "subtitle": "Enter your credentials to access your workspace.",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign up",
+      "forgotPassword": "Forgot your password?",
+      "errorInvalid": "Invalid email or password.",
+      "errorGeneric": "Something went wrong. Please try again."
+    },
+    "signup": {
+      "title": "Create your account",
+      "subtitle": "Set up access to your organization's workspace.",
+      "nameLabel": "Full name",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "passwordHint": "At least 8 characters.",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "successTitle": "Check your inbox",
+      "successBody": "We sent a confirmation link to {email}. Click it to activate your account.",
+      "errorGeneric": "Something went wrong. Please try again."
+    },
+    "validation": {
+      "emailInvalid": "Enter a valid email address.",
+      "passwordMin": "Password must be at least 8 characters.",
+      "nameRequired": "Enter your full name."
+    }
+  }
+}

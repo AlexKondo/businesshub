@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "product": "製品",
+    "modules": "モジュール",
+    "pricing": "料金",
+    "docs": "ドキュメント",
+    "contactSales": "営業に問い合わせる",
+    "login": "ログイン",
+    "signup": "新規登録"
+  },
+  "hero": {
+    "eyebrow": "マルチテナント · ネイティブ RLS · SOC2 対応",
+    "headline": "ひとつのプラットフォームに、業務のすべてのモジュールを。",
+    "subheadline": "SRM、CRM、CLM、調達、リスク管理が同じデータ・権限・デザインシステムの上で動作します。バラバラなシステム間の脆弱な連携は不要です。",
+    "ctaPrimary": "デモを予約する",
+    "ctaSecondary": "ドキュメントを見る"
+  },
+  "bento": {
+    "modulesTitle": "連携モジュール",
+    "approvalsTitle": "期限内の承認",
+    "tenantsTitle": "稼働中のテナント",
+    "tenantsValue": "128",
+    "uptimeTitle": "稼働率",
+    "uptimeValue": "99.98%",
+    "auditTitle": "監査ログ",
+    "auditBody": "重要な操作はすべて記録されます — 誰が、いつ、どのテナントで、何をしたか。"
+  },
+  "footer": {
+    "rights": "無断複写・転載を禁じます。"
+  },
+  "theme": {
+    "toggleLabel": "テーマを切り替える",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム設定"
+  },
+  "language": {
+    "toggleLabel": "言語を切り替える"
+  },
+  "auth": {
+    "login": {
+      "title": "BusinessHub にログイン",
+      "subtitle": "資格情報を入力してワークスペースにアクセスしてください。",
+      "emailLabel": "メールアドレス",
+      "passwordLabel": "パスワード",
+      "submit": "ログイン",
+      "submitting": "ログイン中…",
+      "noAccount": "アカウントをお持ちでないですか？",
+      "signupLink": "新規登録",
+      "forgotPassword": "パスワードをお忘れですか？",
+      "errorInvalid": "メールアドレスまたはパスワードが正しくありません。",
+      "errorGeneric": "問題が発生しました。もう一度お試しください。"
+    },
+    "signup": {
+      "title": "アカウントを作成",
+      "subtitle": "組織のワークスペースへのアクセスを設定します。",
+      "nameLabel": "氏名",
+      "emailLabel": "メールアドレス",
+      "passwordLabel": "パスワード",
+      "passwordHint": "8文字以上で入力してください。",
+      "submit": "アカウントを作成",
+      "submitting": "作成中…",
+      "haveAccount": "すでにアカウントをお持ちですか？",
+      "loginLink": "ログイン",
+      "successTitle": "受信トレイをご確認ください",
+      "successBody": "{email} 宛に確認リンクを送信しました。リンクをクリックしてアカウントを有効化してください。",
+      "errorGeneric": "問題が発生しました。もう一度お試しください。"
+    },
+    "validation": {
+      "emailInvalid": "有効なメールアドレスを入力してください。",
+      "passwordMin": "パスワードは8文字以上で入力してください。",
+      "nameRequired": "氏名を入力してください。"
+    }
+  }
+}

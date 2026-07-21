@@ -5,7 +5,7 @@ description: Diretrizes obrigatórias de identidade visual e Design System para 
 
 # Design System — diretrizes obrigatórias
 
-> Tokens de cor/tipografia definitivos ficam EM ABERTO até a aprovação do conceito de branding (ver seção 8). Atualizar esta skill assim que o usuário escolher um dos 3 conceitos propostos.
+> **Conceito aprovado em 2026-07-21: "Structured Neutral"** (inspiração Stripe/Linear/Vercel). Tokens definitivos na seção 2.
 
 ## 1. Princípios
 - Minimalista e premium (referências: Stripe, Linear, Vercel, Supabase, Notion, Raycast, Clerk).
@@ -15,19 +15,54 @@ description: Diretrizes obrigatórias de identidade visual e Design System para 
 - Densidade adaptável: landing espaçosa, telas de produto densas.
 
 ## 2. Tokens via CSS variables — nunca cor hex direta no componente
-- Escala de neutros
-- `--brand-500/600`
-- `--accent-500`
-- Semânticas: `--success/warning/danger/info-500`
-- Superfícies: `--bg-canvas`, `--bg-surface`, `--bg-surface-raised`, `--border-subtle/default`
-- **(pendente)** preencher com valores definitivos após aprovação do conceito de branding.
+
+Definidos como custom properties em `:root` (light), redefinidos em `@media (prefers-color-scheme: dark)` e novamente em `:root[data-theme="dark"]` / `:root[data-theme="light"]` (o atributo sempre vence a media query, nas duas direções).
+
+**Light (padrão)**
+```css
+--bg-canvas: #fafaf9;
+--bg-surface: #ffffff;
+--bg-surface-raised: #ffffff;
+--border-subtle: #eceeef;
+--border-default: #e4e6ea;
+--ink: #16181d;
+--ink-soft: #5b616e;
+--brand-500: #2547d0;
+--brand-600: #1c37a8;
+--accent-soft: #eef0fd;
+--success-500: #16a34a;
+--warning-500: #d97706;
+--danger-500: #dc2626;
+--info-500: #2547d0;
+```
+
+**Dark**
+```css
+--bg-canvas: #0f0f10;
+--bg-surface: #17181a;
+--bg-surface-raised: #1e1f22;
+--border-subtle: #232427;
+--border-default: #2b2d31;
+--ink: #ededec;
+--ink-soft: #9aa0ac;
+--brand-500: #6c86ff;
+--brand-600: #8a9fff;
+--accent-soft: #1b2340;
+--success-500: #22c55e;
+--warning-500: #f59e0b;
+--danger-500: #ef4444;
+--info-500: #6c86ff;
+```
+
+Regra: `--brand-500` é a única cor de marca (botões primários, links, foco); `--accent-soft` é o fundo de badges/eyebrows/estado ativo, nunca usado como texto. Cores semânticas (success/warning/danger/info) são independentes da marca e nunca usadas como accent decorativo.
 
 ## 3. Tipografia
-- Uma sans-serif neutra para UI (+ opcionalmente serif/display só em headlines de landing).
+- **Inter** para tudo — UI, landing, headlines. Não usar serif/display separado (decisão do Conceito 1: consistência acima de floreio).
+- Fallback stack: `Inter, -apple-system, "Segoe UI", ui-sans-serif, system-ui, sans-serif`.
 - Escala fixa: `xs/sm/base/lg/xl/2xl/3xl/4xl/5xl`.
 - Pesos 400/500/600/700 por contexto.
-- Números tabulares obrigatórios em tabelas com valores monetários.
-- Fonte de UI deve ter fallback que renderize corretamente CJK (chinês simplificado e japonês).
+- Números tabulares obrigatórios em tabelas com valores monetários (`font-variant-numeric: tabular-nums`).
+- Fonte de UI deve ter fallback que renderize corretamente CJK (chinês simplificado e japonês) — usar `Noto Sans SC`/`Noto Sans JP` como fallback explícito para esses locales, já que Inter não cobre CJK.
 
 ## 4. Grid e espaçamento
 - Múltiplos de 4px, nunca valor arbitrário.
@@ -53,9 +88,14 @@ description: Diretrizes obrigatórias de identidade visual e Design System para 
 - Números, moeda e datas formatados via `Intl.NumberFormat`/`Intl.DateTimeFormat` de acordo com o locale ativo.
 
 ## 7. Motion
-- Framer Motion com duração padronizada: 150–250ms em produto, 300–500ms só na landing.
+- Framer Motion com duração padronizada: 200–250ms, inclusive na landing (Conceito 1: sem parallax, sem motion exagerado — precisão, não espetáculo).
+- Fade + slide sutil como padrão de entrada; nada de spring/bounce.
 - Nunca animar entrada de linha em tabelas grandes.
 - Respeitar `prefers-reduced-motion`.
+
+## 7a. Ícones e ilustração
+- **lucide-react** como única biblioteca de ícones, stroke 1.5px, sempre monocromático (herda `currentColor`, nunca cor fixa).
+- Sem ilustração figurativa. Elementos visuais decorativos (landing, empty states) são diagramas técnicos abstratos — nós conectados, barras, grids — nunca blobs orgânicos ou personagens.
 
 ## 8. Processo obrigatório antes de código
 1. 3 conceitos de branding com justificativa
