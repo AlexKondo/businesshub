@@ -235,7 +235,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               <li
                 key={key}
                 style={{ animationDelay: `${i * 120}ms` }}
-                className="flex animate-provisioning-step-in items-center gap-2.5 opacity-0 [animation-fill-mode:forwards]"
+                className="flex animate-provisioning-step-in items-center gap-2.5 opacity-0"
               >
                 <span
                   className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${

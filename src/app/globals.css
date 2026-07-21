@@ -118,7 +118,7 @@ body {
 }
 
 .animate-provisioning-step-in {
-  animation: provisioning-step-in 320ms ease-out;
+  animation: provisioning-step-in 320ms ease-out forwards;
 }
 
 .animate-provisioning-check-pop {
