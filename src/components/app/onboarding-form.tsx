@@ -526,9 +526,9 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
 
         <div
           className={`flex flex-col gap-1.5 rounded-md px-4 py-3.5 ${
-            companyExists === false
-              ? "border border-(--brand-500)/30 bg-(--accent-soft)"
-              : ""
+            companyExists === true
+              ? ""
+              : "border border-(--brand-500)/30 bg-(--accent-soft)"
           }`}
         >
           <label className="flex items-start gap-2.5 text-[13px] leading-relaxed text-(--ink-soft)">
@@ -538,7 +538,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               className="mt-0.5 h-4 w-4 shrink-0 accent-(--brand-500)"
             />
             <span>
-              {t.rich(companyExists === false ? "consentLabelAdmin" : "consentLabel", {
+              {t.rich(companyExists === true ? "consentLabel" : "consentLabelAdmin", {
                 terms: (chunks) => (
                   <Link href="/terms" target="_blank" className="font-medium text-(--brand-500)">
                     {chunks}
