@@ -95,8 +95,13 @@
     "errorGeneric": "出现问题，请重试。",
     "submit": "创建组织",
     "submitting": "正在创建…",
+    "confirmCancel": "返回",
+    "confirmProceed": "确认并创建",
     "provisioningTitle": "正在设置您的工作区",
     "provisioningBody": "首次设置需要一到两分钟，完成后将自动跳转。",
+    "provisioningErrorTitle": "这比预期花费更长时间",
+    "provisioningErrorBody": "我们无法自动确认是否已完成。请尝试下方的链接——如果尚未就绪，请稍等片刻后重试。",
+    "provisioningErrorRetry": "前往我的工作区",
     "pendingTitle": "申请已发送",
     "pendingBody": "您的企业已经在 BusinessHub 上。我们已通知管理员——获得批准后您将拥有访问权限。"
   },

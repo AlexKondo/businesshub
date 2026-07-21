@@ -95,8 +95,13 @@
     "errorGeneric": "Algo deu errado. Tente novamente.",
     "submit": "Criar organização",
     "submitting": "Criando…",
+    "confirmCancel": "Voltar",
+    "confirmProceed": "Confirmar e criar",
     "provisioningTitle": "Preparando seu workspace",
     "provisioningBody": "Isso leva um ou dois minutos na primeira vez. Você será redirecionado automaticamente.",
+    "provisioningErrorTitle": "Está demorando mais que o esperado",
+    "provisioningErrorBody": "Não conseguimos confirmar automaticamente se terminou. Tente acessar pelo link abaixo — se ainda não estiver pronto, aguarde mais um instante e tente novamente.",
+    "provisioningErrorRetry": "Acessar meu workspace",
     "pendingTitle": "Solicitação enviada",
     "pendingBody": "Sua empresa já está no BusinessHub. Avisamos os administradores — você terá acesso assim que alguém aprovar seu pedido."
   },

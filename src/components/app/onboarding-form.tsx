@@ -33,9 +33,12 @@ async function waitForDeployment(deploymentUuid: string, timeoutMs = 5 * 60 * 10
 export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const t = useTranslations("onboarding");
   const [serverError, setServerError] = useState<string | null>(null);
-  const [stage, setStage] = useState<"form" | "provisioning" | "pending">("form");
+  const [stage, setStage] = useState<"form" | "confirm" | "provisioning" | "provisioning-error" | "pending">(
+    "form"
+  );
   const [account, setAccount] = useState<{ name: string; email: string } | null>(null);
   const [companyExists, setCompanyExists] = useState<boolean | null>(null);
+  const [pendingValues, setPendingValues] = useState<FormValues | null>(null);
 
   useEffect(() => {
     createClient()
@@ -94,7 +97,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
 
   const slugEditedManually = useRef(false);
 
-  async function onSubmit(values: FormValues) {
+  async function submitOrganization(values: FormValues) {
     setServerError(null);
 
     const res = await fetch("/api/tenants/onboard", {
@@ -110,6 +113,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         slug_or_tax_id_taken: "slugTaken",
       };
       setServerError(t(key[data.error] ?? "errorGeneric"));
+      setStage("form");
       return;
     }
 
@@ -119,10 +123,24 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     }
 
     setStage("provisioning");
+    const targetUrl = `https://${values.slug}.${appRootDomain}/en-US/dashboard`;
     if (data.deploymentUuid) {
-      await waitForDeployment(data.deploymentUuid);
+      const status = await waitForDeployment(data.deploymentUuid);
+      if (status !== "finished") {
+        setStage("provisioning-error");
+        return;
+      }
     }
-    window.location.href = `https://${values.slug}.${appRootDomain}/en-US/dashboard`;
+    window.location.href = targetUrl;
+  }
+
+  async function onValidated(values: FormValues) {
+    if (companyExists === false) {
+      setPendingValues(values);
+      setStage("confirm");
+      return;
+    }
+    await submitOrganization(values);
   }
 
   if (stage === "pending") {
@@ -134,6 +152,35 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
           {t("pendingBody")}
         </p>
+      </div>
+    );
+  }
+
+  if (stage === "confirm" && pendingValues) {
+    return (
+      <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7">
+        <h1 className="text-[18px] font-bold tracking-tight text-(--ink)">
+          {t("adminNoticeTitle")}
+        </h1>
+        <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
+          {t("adminNoticeBody")}
+        </p>
+        <div className="mt-6 flex gap-3">
+          <button
+            type="button"
+            onClick={() => setStage("form")}
+            className="flex-1 inline-flex h-10 items-center justify-center rounded-md border border-(--border-default) text-sm font-semibold text-(--ink) transition-colors hover:bg-(--bg-canvas)"
+          >
+            {t("confirmCancel")}
+          </button>
+          <button
+            type="button"
+            onClick={() => void submitOrganization(pendingValues)}
+            className="flex-1 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            {t("confirmProceed")}
+          </button>
+        </div>
       </div>
     );
   }
@@ -151,6 +198,26 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     );
   }
 
+  if (stage === "provisioning-error" && pendingValues) {
+    const targetUrl = `https://${pendingValues.slug}.${appRootDomain}/en-US/dashboard`;
+    return (
+      <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
+        <h1 className="text-[18px] font-bold tracking-tight text-(--ink)">
+          {t("provisioningErrorTitle")}
+        </h1>
+        <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
+          {t("provisioningErrorBody")}
+        </p>
+        <a
+          href={targetUrl}
+          className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          {t("provisioningErrorRetry")}
+        </a>
+      </div>
+    );
+  }
+
   const inputClass =
     "h-10 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)";
   const labelClass = "text-[13px] font-medium text-(--ink)";
@@ -161,7 +228,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
       <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">{t("title")}</h1>
       <p className="mt-1.5 text-[13.5px] text-(--ink-soft)">{t("subtitle")}</p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 flex flex-col gap-6">
+      <form onSubmit={handleSubmit(onValidated)} className="mt-6 flex flex-col gap-6">
         <fieldset className="flex flex-col gap-4">
           <legend className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-(--ink-soft)">
             {t("sectionCompany")}

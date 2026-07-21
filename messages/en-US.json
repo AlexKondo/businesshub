@@ -95,8 +95,13 @@
     "errorGeneric": "Something went wrong. Please try again.",
     "submit": "Create organization",
     "submitting": "Creating…",
+    "confirmCancel": "Back",
+    "confirmProceed": "Confirm and create",
     "provisioningTitle": "Setting up your workspace",
     "provisioningBody": "This takes a minute or two the first time. You'll be redirected automatically.",
+    "provisioningErrorTitle": "This is taking longer than expected",
+    "provisioningErrorBody": "We couldn't automatically confirm it finished. Try the link below — if it's not ready yet, wait a bit and try again.",
+    "provisioningErrorRetry": "Go to my workspace",
     "pendingTitle": "Request sent",
     "pendingBody": "Your company is already on BusinessHub. We notified the admins — you'll get access once someone approves your request."
   },

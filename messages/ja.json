@@ -95,8 +95,13 @@
     "errorGeneric": "問題が発生しました。もう一度お試しください。",
     "submit": "組織を作成",
     "submitting": "作成中…",
+    "confirmCancel": "戻る",
+    "confirmProceed": "確認して作成",
     "provisioningTitle": "ワークスペースを準備しています",
     "provisioningBody": "初回は1〜2分ほどかかります。完了すると自動的に移動します。",
+    "provisioningErrorTitle": "予想より時間がかかっています",
+    "provisioningErrorBody": "完了したかどうかを自動的に確認できませんでした。下のリンクをお試しください — まだ準備できていない場合は、少し待ってから再度お試しください。",
+    "provisioningErrorRetry": "ワークスペースへ移動",
     "pendingTitle": "リクエストを送信しました",
     "pendingBody": "あなたの会社は既にBusinessHubに登録されています。管理者に通知しました。承認され次第アクセスできます。"
   },
