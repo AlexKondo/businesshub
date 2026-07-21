@@ -50,11 +50,21 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const [pendingValues, setPendingValues] = useState<FormValues | null>(null);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
   const [provisioningSeconds, setProvisioningSeconds] = useState(0);
+  const [confirmGuardSeconds, setConfirmGuardSeconds] = useState(0);
 
   useEffect(() => {
     if (stage !== "provisioning") return;
     setProvisioningSeconds(0);
     const interval = setInterval(() => setProvisioningSeconds((s) => s + 1), 1000);
+    return () => clearInterval(interval);
+  }, [stage]);
+
+  useEffect(() => {
+    if (stage !== "confirm") return;
+    setConfirmGuardSeconds(3);
+    const interval = setInterval(() => {
+      setConfirmGuardSeconds((s) => (s <= 1 ? 0 : s - 1));
+    }, 1000);
     return () => clearInterval(interval);
   }, [stage]);
 
@@ -199,10 +209,13 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
           </button>
           <button
             type="button"
+            disabled={confirmGuardSeconds > 0}
             onClick={() => void submitOrganization(pendingValues)}
-            className="flex-1 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            className="flex-1 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {t("confirmProceed")}
+            {confirmGuardSeconds > 0
+              ? `${t("confirmProceed")} (${confirmGuardSeconds})`
+              : t("confirmProceed")}
           </button>
         </div>
       </div>
