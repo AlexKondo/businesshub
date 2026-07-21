@@ -126,7 +126,19 @@
     "emailHint": "Fale com um admin para alterar seu e-mail.",
     "save": "Salvar alterações",
     "saving": "Salvando…",
-    "saved": "Salvo."
+    "saved": "Salvo.",
+    "avatarChangePhoto": "Alterar foto",
+    "avatarUploading": "Enviando…",
+    "avatarError": "Não foi possível enviar a imagem. Tente um arquivo menor (até 2MB).",
+    "passwordSectionTitle": "Senha",
+    "changePasswordButton": "Alterar senha",
+    "newPasswordLabel": "Nova senha",
+    "confirmPasswordLabel": "Confirmar nova senha",
+    "passwordMismatch": "As senhas não coincidem.",
+    "changePasswordSubmit": "Salvar nova senha",
+    "changingPassword": "Alterando…",
+    "passwordChanged": "Senha alterada com sucesso.",
+    "cancelButton": "Cancelar"
   },
   "auth": {
     "login": {

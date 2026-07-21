@@ -126,7 +126,19 @@
     "emailHint": "メールアドレスの変更は管理者にお問い合わせください。",
     "save": "変更を保存",
     "saving": "保存中…",
-    "saved": "保存しました。"
+    "saved": "保存しました。",
+    "avatarChangePhoto": "写真を変更",
+    "avatarUploading": "アップロード中…",
+    "avatarError": "画像をアップロードできませんでした。より小さいファイル（2MBまで）をお試しください。",
+    "passwordSectionTitle": "パスワード",
+    "changePasswordButton": "パスワードを変更",
+    "newPasswordLabel": "新しいパスワード",
+    "confirmPasswordLabel": "新しいパスワード（確認）",
+    "passwordMismatch": "パスワードが一致しません。",
+    "changePasswordSubmit": "新しいパスワードを保存",
+    "changingPassword": "変更中…",
+    "passwordChanged": "パスワードが正常に変更されました。",
+    "cancelButton": "キャンセル"
   },
   "auth": {
     "login": {

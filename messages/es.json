@@ -126,7 +126,19 @@
     "emailHint": "Contacta a un administrador para cambiar tu correo.",
     "save": "Guardar cambios",
     "saving": "Guardando…",
-    "saved": "Guardado."
+    "saved": "Guardado.",
+    "avatarChangePhoto": "Cambiar foto",
+    "avatarUploading": "Subiendo…",
+    "avatarError": "No pudimos subir la imagen. Prueba con un archivo más pequeño (hasta 2MB).",
+    "passwordSectionTitle": "Contraseña",
+    "changePasswordButton": "Cambiar contraseña",
+    "newPasswordLabel": "Nueva contraseña",
+    "confirmPasswordLabel": "Confirmar nueva contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "changePasswordSubmit": "Guardar nueva contraseña",
+    "changingPassword": "Cambiando…",
+    "passwordChanged": "Contraseña cambiada con éxito.",
+    "cancelButton": "Cancelar"
   },
   "auth": {
     "login": {

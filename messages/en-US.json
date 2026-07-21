@@ -126,7 +126,19 @@
     "emailHint": "Contact an admin to change your email.",
     "save": "Save changes",
     "saving": "Saving…",
-    "saved": "Saved."
+    "saved": "Saved.",
+    "avatarChangePhoto": "Change photo",
+    "avatarUploading": "Uploading…",
+    "avatarError": "Couldn't upload the image. Try a smaller file (up to 2MB).",
+    "passwordSectionTitle": "Password",
+    "changePasswordButton": "Change password",
+    "newPasswordLabel": "New password",
+    "confirmPasswordLabel": "Confirm new password",
+    "passwordMismatch": "Passwords don't match.",
+    "changePasswordSubmit": "Save new password",
+    "changingPassword": "Changing…",
+    "passwordChanged": "Password changed successfully.",
+    "cancelButton": "Cancel"
   },
   "auth": {
     "login": {

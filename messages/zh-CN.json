@@ -126,7 +126,19 @@
     "emailHint": "如需更改邮箱，请联系管理员。",
     "save": "保存更改",
     "saving": "正在保存…",
-    "saved": "已保存。"
+    "saved": "已保存。",
+    "avatarChangePhoto": "更换照片",
+    "avatarUploading": "正在上传…",
+    "avatarError": "无法上传图片。请尝试更小的文件（最大2MB）。",
+    "passwordSectionTitle": "密码",
+    "changePasswordButton": "修改密码",
+    "newPasswordLabel": "新密码",
+    "confirmPasswordLabel": "确认新密码",
+    "passwordMismatch": "两次输入的密码不一致。",
+    "changePasswordSubmit": "保存新密码",
+    "changingPassword": "正在修改…",
+    "passwordChanged": "密码修改成功。",
+    "cancelButton": "取消"
   },
   "auth": {
     "login": {
