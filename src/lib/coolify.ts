@@ -32,3 +32,40 @@ export async function registerTenantDomain(slug: string): Promise<{ deploymentUu
   const deploy = await deployRes.json();
   return { deploymentUuid: deploy?.deployments?.[0]?.deployment_uuid ?? null };
 }
+
+// Removes a tenant subdomain from Coolify when its company is deleted, so
+// stale domains don't pile up in the app's config after test/real cleanups.
+export async function deregisterTenantDomain(slug: string): Promise<{ deploymentUuid: string | null }> {
+  const base = process.env.COOLIFY_BASE_URL;
+  const token = process.env.COOLIFY_API_TOKEN;
+  const appUuid = process.env.COOLIFY_APP_UUID;
+  const rootDomain = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
+
+  const appRes = await fetch(`${base}/api/v1/applications/${appUuid}`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  });
+  const app = await appRes.json();
+  const existing: string = app.fqdn ?? "";
+  const domainToRemove = `https://${slug}.${rootDomain}`;
+
+  const remaining = existing
+    .split(",")
+    .map((d) => d.trim())
+    .filter((d) => d && d !== domainToRemove);
+
+  if (remaining.length === existing.split(",").filter(Boolean).length) {
+    return { deploymentUuid: null }; // domain wasn't registered — nothing to do
+  }
+
+  await fetch(`${base}/api/v1/applications/${appUuid}`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ domains: remaining.join(",") }),
+  });
+
+  const deployRes = await fetch(`${base}/api/v1/deploy?uuid=${appUuid}&force=true`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  });
+  const deploy = await deployRes.json();
+  return { deploymentUuid: deploy?.deployments?.[0]?.deployment_uuid ?? null };
+}
