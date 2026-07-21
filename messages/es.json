@@ -101,7 +101,10 @@
     "provisioningBody": "Esto toma uno o dos minutos la primera vez. Serás redirigido automáticamente.",
     "provisioningErrorTitle": "Esto está tardando más de lo esperado",
     "provisioningErrorBody": "No pudimos confirmar automáticamente si terminó. Prueba el enlace de abajo — si aún no está listo, espera un momento e intenta de nuevo.",
-    "provisioningErrorRetry": "Ir a mi espacio de trabajo",
+    "provisioningErrorRetry": "Iniciar sesión de nuevo",
+    "successTitle": "¡Organización creada con éxito!",
+    "successBody": "Tu espacio de trabajo está listo en {domain}. Inicia sesión de nuevo para acceder.",
+    "successOk": "OK, iniciar sesión",
     "pendingTitle": "Solicitud enviada",
     "pendingBody": "Tu empresa ya está en BusinessHub. Avisamos a los administradores — tendrás acceso en cuanto alguien apruebe tu solicitud."
   },

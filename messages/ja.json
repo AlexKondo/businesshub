@@ -101,7 +101,10 @@
     "provisioningBody": "初回は1〜2分ほどかかります。完了すると自動的に移動します。",
     "provisioningErrorTitle": "予想より時間がかかっています",
     "provisioningErrorBody": "完了したかどうかを自動的に確認できませんでした。下のリンクをお試しください — まだ準備できていない場合は、少し待ってから再度お試しください。",
-    "provisioningErrorRetry": "ワークスペースへ移動",
+    "provisioningErrorRetry": "再度ログイン",
+    "successTitle": "組織が作成されました！",
+    "successBody": "ワークスペースの準備ができました：{domain}。アクセスするには再度ログインしてください。",
+    "successOk": "OK、ログインする",
     "pendingTitle": "リクエストを送信しました",
     "pendingBody": "あなたの会社は既にBusinessHubに登録されています。管理者に通知しました。承認され次第アクセスできます。"
   },

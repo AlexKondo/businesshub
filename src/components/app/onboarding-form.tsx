@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { isValidCnpj, formatCnpj } from "@/lib/cnpj";
 import { isValidPhoneBR, formatPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 
 function slugify(input: string) {
   return input
@@ -32,13 +32,15 @@ async function waitForDeployment(deploymentUuid: string, timeoutMs = 5 * 60 * 10
 
 export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const t = useTranslations("onboarding");
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [stage, setStage] = useState<"form" | "confirm" | "provisioning" | "provisioning-error" | "pending">(
-    "form"
-  );
+  const [stage, setStage] = useState<
+    "form" | "confirm" | "provisioning" | "provisioning-error" | "success" | "pending"
+  >("form");
   const [account, setAccount] = useState<{ name: string; email: string } | null>(null);
   const [companyExists, setCompanyExists] = useState<boolean | null>(null);
   const [pendingValues, setPendingValues] = useState<FormValues | null>(null);
+  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
 
   useEffect(() => {
     createClient()
@@ -123,15 +125,21 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     }
 
     setStage("provisioning");
-    const targetUrl = `https://${values.slug}.${appRootDomain}/en-US/dashboard`;
     if (data.deploymentUuid) {
       const status = await waitForDeployment(data.deploymentUuid);
       if (status !== "finished") {
+        setCreatedSlug(values.slug);
         setStage("provisioning-error");
         return;
       }
     }
-    window.location.href = targetUrl;
+    setCreatedSlug(values.slug);
+    setStage("success");
+  }
+
+  async function handleSuccessOk() {
+    await createClient().auth.signOut();
+    router.push("/login");
   }
 
   async function onValidated(values: FormValues) {
@@ -198,8 +206,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     );
   }
 
-  if (stage === "provisioning-error" && pendingValues) {
-    const targetUrl = `https://${pendingValues.slug}.${appRootDomain}/en-US/dashboard`;
+  if (stage === "provisioning-error" && createdSlug) {
     return (
       <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
         <h1 className="text-[18px] font-bold tracking-tight text-(--ink)">
@@ -208,12 +215,33 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
           {t("provisioningErrorBody")}
         </p>
-        <a
-          href={targetUrl}
+        <button
+          type="button"
+          onClick={() => void handleSuccessOk()}
           className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           {t("provisioningErrorRetry")}
-        </a>
+        </button>
+      </div>
+    );
+  }
+
+  if (stage === "success" && createdSlug) {
+    return (
+      <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
+        <h1 className="text-[18px] font-bold tracking-tight text-(--ink)">
+          {t("successTitle")}
+        </h1>
+        <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
+          {t("successBody", { domain: `${createdSlug}.${appRootDomain}` })}
+        </p>
+        <button
+          type="button"
+          onClick={() => void handleSuccessOk()}
+          className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          {t("successOk")}
+        </button>
       </div>
     );
   }

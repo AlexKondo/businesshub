@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { createServerClient } from "@supabase/ssr";
 import { routing } from "./i18n/routing";
+import { getCookieDomain } from "./lib/supabase/cookie-domain";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -40,6 +41,7 @@ export default async function proxy(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      cookieOptions: { domain: getCookieDomain() },
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll: (cookiesToSet) => {
