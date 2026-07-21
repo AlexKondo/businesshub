@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
-import { createClient } from "@/lib/supabase/client";
+import { isValidCnpj, formatCnpj } from "@/lib/cnpj";
 
 function slugify(input: string) {
   return input
@@ -30,10 +30,11 @@ async function waitForDeployment(deploymentUuid: string, timeoutMs = 5 * 60 * 10
 export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const t = useTranslations("onboarding");
   const [serverError, setServerError] = useState<string | null>(null);
-  const [provisioning, setProvisioning] = useState(false);
+  const [stage, setStage] = useState<"form" | "provisioning" | "pending">("form");
 
   const schema = z.object({
     name: z.string().min(2, t("nameTooShort")),
+    taxId: z.string().refine((v) => isValidCnpj(v), t("taxIdInvalid")),
     slug: z
       .string()
       .min(2, t("slugTooShort"))
@@ -46,67 +47,58 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { name: "", slug: "" } });
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { name: "", taxId: "", slug: "" },
+  });
 
   const slugEditedManually = useRef(false);
 
   async function onSubmit(values: FormValues) {
     setServerError(null);
-    const supabase = createClient();
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data: company, error: companyError } = await supabase
-      .from("companies")
-      .insert({ name: values.name, slug: values.slug })
-      .select("id")
-      .single();
-
-    if (companyError) {
-      setServerError(
-        companyError.code === "23505" ? t("slugTaken") : t("errorGeneric")
-      );
-      return;
-    }
-
-    const { data: role } = await supabase
-      .from("roles")
-      .select("id")
-      .eq("name", "Administrador da Empresa")
-      .is("tenant_id", null)
-      .single();
-
-    const { error: membershipError } = await supabase.from("memberships").insert({
-      user_id: user.id,
-      tenant_id: company.id,
-      role_id: role!.id,
-    });
-
-    if (membershipError) {
-      setServerError(t("errorGeneric"));
-      return;
-    }
-
-    setProvisioning(true);
-
-    const registerRes = await fetch("/api/tenants/register-domain", {
+    const res = await fetch("/api/tenants/onboard", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug: values.slug }),
+      body: JSON.stringify(values),
     });
-    const { deploymentUuid } = await registerRes.json();
+    const data = await res.json();
 
-    if (deploymentUuid) {
-      await waitForDeployment(deploymentUuid);
+    if (!res.ok) {
+      const key: Record<string, string> = {
+        invalid_tax_id: "taxIdInvalid",
+        slug_or_tax_id_taken: "slugTaken",
+      };
+      setServerError(t(key[data.error] ?? "errorGeneric"));
+      return;
     }
 
+    if (data.status === "pending") {
+      setStage("pending");
+      return;
+    }
+
+    setStage("provisioning");
+    if (data.deploymentUuid) {
+      await waitForDeployment(data.deploymentUuid);
+    }
     window.location.href = `https://${values.slug}.${appRootDomain}/en-US/dashboard`;
   }
 
-  if (provisioning) {
+  if (stage === "pending") {
+    return (
+      <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
+        <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">
+          {t("pendingTitle")}
+        </h1>
+        <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
+          {t("pendingBody")}
+        </p>
+      </div>
+    );
+  }
+
+  if (stage === "provisioning") {
     return (
       <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
         <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">
@@ -147,6 +139,27 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         </div>
 
         <div className="flex flex-col gap-1.5">
+          <label htmlFor="taxId" className="text-[13px] font-medium text-(--ink)">
+            {t("taxIdLabel")}
+          </label>
+          <input
+            id="taxId"
+            type="text"
+            placeholder="00.000.000/0000-00"
+            {...register("taxId", {
+              onChange: (e) => {
+                e.target.value = formatCnpj(e.target.value);
+              },
+            })}
+            className="h-10 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)"
+          />
+          <span className="text-xs text-(--ink-soft)">{t("taxIdHint")}</span>
+          {errors.taxId && (
+            <span className="text-xs text-(--danger-500)">{errors.taxId.message}</span>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
           <label htmlFor="slug" className="text-[13px] font-medium text-(--ink)">
             {t("slugLabel")}
           </label>
@@ -161,6 +174,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               .{appRootDomain}
             </span>
           </div>
+          <span className="text-xs text-(--ink-soft)">{t("slugHint")}</span>
           {errors.slug && (
             <span className="text-xs text-(--danger-500)">{errors.slug.message}</span>
           )}

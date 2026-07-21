@@ -43,6 +43,7 @@
   "app": {
     "dashboard": "Dashboard",
     "profile": "Profile",
+    "admin": "Administration",
     "comingSoon": "Coming soon",
     "modules": {
       "suppliers": "Suppliers",
@@ -61,7 +62,11 @@
     "title": "Create your organization",
     "subtitle": "You'll be the first admin — invite your team afterwards.",
     "nameLabel": "Organization name",
+    "taxIdLabel": "Company tax ID (CNPJ)",
+    "taxIdHint": "Used to detect if your company is already on BusinessHub.",
+    "taxIdInvalid": "Enter a valid CNPJ.",
     "slugLabel": "Workspace address",
+    "slugHint": "This will be your team's own address on BusinessHub.",
     "nameTooShort": "Enter at least 2 characters.",
     "slugTooShort": "Enter at least 2 characters.",
     "slugInvalid": "Only lowercase letters, numbers and hyphens.",
@@ -70,7 +75,19 @@
     "submit": "Create organization",
     "submitting": "Creating…",
     "provisioningTitle": "Setting up your workspace",
-    "provisioningBody": "This takes a minute or two the first time. You'll be redirected automatically."
+    "provisioningBody": "This takes a minute or two the first time. You'll be redirected automatically.",
+    "pendingTitle": "Request sent",
+    "pendingBody": "Your company is already on BusinessHub. We notified the admins — you'll get access once someone approves your request."
+  },
+  "adminPage": {
+    "title": "Administration",
+    "subtitle": "People waiting for access to your organization.",
+    "noAccess": "You don't have permission to view this page.",
+    "loading": "Loading…",
+    "noPending": "No pending requests.",
+    "selectRole": "Choose a role…",
+    "approve": "Approve",
+    "reject": "Reject"
   },
   "profilePage": {
     "title": "Profile",

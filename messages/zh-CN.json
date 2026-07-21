@@ -43,6 +43,7 @@
   "app": {
     "dashboard": "仪表盘",
     "profile": "个人资料",
+    "admin": "管理",
     "comingSoon": "即将推出",
     "modules": {
       "suppliers": "供应商",
@@ -61,7 +62,11 @@
     "title": "创建您的组织",
     "subtitle": "您将成为第一位管理员——之后可以邀请您的团队。",
     "nameLabel": "组织名称",
+    "taxIdLabel": "企业税号（CNPJ）",
+    "taxIdHint": "用于检测您的企业是否已经在 BusinessHub 上。",
+    "taxIdInvalid": "请输入有效的 CNPJ。",
     "slugLabel": "工作区地址",
+    "slugHint": "这将是您团队在 BusinessHub 上的专属地址。",
     "nameTooShort": "请至少输入 2 个字符。",
     "slugTooShort": "请至少输入 2 个字符。",
     "slugInvalid": "只能使用小写字母、数字和连字符。",
@@ -70,7 +75,19 @@
     "submit": "创建组织",
     "submitting": "正在创建…",
     "provisioningTitle": "正在设置您的工作区",
-    "provisioningBody": "首次设置需要一到两分钟，完成后将自动跳转。"
+    "provisioningBody": "首次设置需要一到两分钟，完成后将自动跳转。",
+    "pendingTitle": "申请已发送",
+    "pendingBody": "您的企业已经在 BusinessHub 上。我们已通知管理员——获得批准后您将拥有访问权限。"
+  },
+  "adminPage": {
+    "title": "管理",
+    "subtitle": "正在等待加入您组织的用户。",
+    "noAccess": "您没有权限查看此页面。",
+    "loading": "加载中…",
+    "noPending": "没有待处理的申请。",
+    "selectRole": "选择角色…",
+    "approve": "批准",
+    "reject": "拒绝"
   },
   "profilePage": {
     "title": "个人资料",

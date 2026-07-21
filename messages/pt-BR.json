@@ -43,6 +43,7 @@
   "app": {
     "dashboard": "Painel",
     "profile": "Perfil",
+    "admin": "Administração",
     "comingSoon": "Em breve",
     "modules": {
       "suppliers": "Fornecedores",
@@ -61,7 +62,11 @@
     "title": "Crie sua organização",
     "subtitle": "Você será o primeiro admin — convide seu time depois.",
     "nameLabel": "Nome da organização",
+    "taxIdLabel": "CNPJ da empresa",
+    "taxIdHint": "Usado para detectar se sua empresa já está no BusinessHub.",
+    "taxIdInvalid": "Digite um CNPJ válido.",
     "slugLabel": "Endereço do workspace",
+    "slugHint": "Esse será o endereço exclusivo do seu time no BusinessHub.",
     "nameTooShort": "Digite pelo menos 2 caracteres.",
     "slugTooShort": "Digite pelo menos 2 caracteres.",
     "slugInvalid": "Apenas letras minúsculas, números e hífens.",
@@ -70,7 +75,19 @@
     "submit": "Criar organização",
     "submitting": "Criando…",
     "provisioningTitle": "Preparando seu workspace",
-    "provisioningBody": "Isso leva um ou dois minutos na primeira vez. Você será redirecionado automaticamente."
+    "provisioningBody": "Isso leva um ou dois minutos na primeira vez. Você será redirecionado automaticamente.",
+    "pendingTitle": "Solicitação enviada",
+    "pendingBody": "Sua empresa já está no BusinessHub. Avisamos os administradores — você terá acesso assim que alguém aprovar seu pedido."
+  },
+  "adminPage": {
+    "title": "Administração",
+    "subtitle": "Pessoas aguardando acesso à sua organização.",
+    "noAccess": "Você não tem permissão para ver esta página.",
+    "loading": "Carregando…",
+    "noPending": "Nenhum pedido pendente.",
+    "selectRole": "Escolha uma role…",
+    "approve": "Aprovar",
+    "reject": "Rejeitar"
   },
   "profilePage": {
     "title": "Perfil",

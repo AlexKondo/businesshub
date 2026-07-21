@@ -5,6 +5,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import {
   LayoutDashboard,
   UserRound,
+  ShieldCheck,
   Truck,
   FileText,
   FolderOpen,
@@ -15,6 +16,7 @@ import {
 const MAIN_ITEMS = [
   { href: "/dashboard", key: "dashboard", icon: LayoutDashboard },
   { href: "/profile", key: "profile", icon: UserRound },
+  { href: "/admin", key: "admin", icon: ShieldCheck },
 ] as const;
 
 const FUTURE_MODULES = [
