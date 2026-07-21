@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { PasswordInput } from "@/components/auth/password-input";
 
 export function SignupForm() {
   const t = useTranslations("auth.signup");
@@ -103,12 +104,11 @@ export function SignupForm() {
           <label htmlFor="password" className="text-[13px] font-medium text-(--ink)">
             {t("passwordLabel")}
           </label>
-          <input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="new-password"
             {...register("password")}
-            className="h-10 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)"
+            className="h-10 w-full rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)"
           />
           {errors.password ? (
             <span className="text-xs text-(--danger-500)">{errors.password.message}</span>

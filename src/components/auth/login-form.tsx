@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { PasswordInput } from "@/components/auth/password-input";
 
 export function LoginForm() {
   const t = useTranslations("auth.login");
@@ -87,12 +88,11 @@ export function LoginForm() {
               {t("forgotPassword")}
             </span>
           </div>
-          <input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="current-password"
             {...register("password")}
-            className="h-10 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)"
+            className="h-10 w-full rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)"
           />
           {errors.password && (
             <span className="text-xs text-(--danger-500)">{errors.password.message}</span>
