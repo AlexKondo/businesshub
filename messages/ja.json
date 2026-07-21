@@ -40,6 +40,33 @@
   "user": {
     "logout": "ログアウト"
   },
+  "app": {
+    "dashboard": "ダッシュボード",
+    "profile": "プロフィール",
+    "comingSoon": "近日公開",
+    "modules": {
+      "suppliers": "サプライヤー",
+      "contracts": "契約",
+      "documents": "ドキュメント",
+      "purchaseOrders": "発注"
+    }
+  },
+  "dashboardPage": {
+    "greeting": "おかえりなさい、{name} さん",
+    "subtitle": "ワークスペースの概要です。",
+    "tenantLabel": "組織",
+    "roleLabel": "あなたの役割"
+  },
+  "profilePage": {
+    "title": "プロフィール",
+    "subtitle": "個人アカウント情報。",
+    "nameLabel": "氏名",
+    "emailLabel": "メールアドレス",
+    "emailHint": "メールアドレスの変更は管理者にお問い合わせください。",
+    "save": "変更を保存",
+    "saving": "保存中…",
+    "saved": "保存しました。"
+  },
   "auth": {
     "login": {
       "title": "BusinessHub にログイン",

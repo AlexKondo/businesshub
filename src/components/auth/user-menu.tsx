@@ -2,12 +2,19 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { ChevronDown, LogOut } from "lucide-react";
+import { ChevronDown, LogOut, LayoutDashboard } from "lucide-react";
 
-export function UserMenu({ firstName }: { firstName: string }) {
+export function UserMenu({
+  firstName,
+  showDashboardLink = false,
+}: {
+  firstName: string;
+  showDashboardLink?: boolean;
+}) {
   const t = useTranslations("user");
+  const tApp = useTranslations("app");
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -41,6 +48,16 @@ export function UserMenu({ firstName }: { firstName: string }) {
       </button>
       {open && (
         <div className="absolute right-0 top-full z-50 mt-1.5 w-40 overflow-hidden rounded-md border border-(--border-default) bg-(--bg-surface-raised) py-1 shadow-lg">
+          {showDashboardLink && (
+            <Link
+              href="/dashboard"
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-(--ink) transition-colors hover:bg-(--accent-soft)"
+            >
+              <LayoutDashboard size={14} strokeWidth={1.5} />
+              {tApp("dashboard")}
+            </Link>
+          )}
           <button
             type="button"
             onClick={handleLogout}

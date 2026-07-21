@@ -40,6 +40,33 @@
   "user": {
     "logout": "Sair"
   },
+  "app": {
+    "dashboard": "Painel",
+    "profile": "Perfil",
+    "comingSoon": "Em breve",
+    "modules": {
+      "suppliers": "Fornecedores",
+      "contracts": "Contratos",
+      "documents": "Documentos",
+      "purchaseOrders": "Pedidos"
+    }
+  },
+  "dashboardPage": {
+    "greeting": "Bem-vindo de volta, {name}",
+    "subtitle": "Aqui está um resumo rápido do seu workspace.",
+    "tenantLabel": "Organização",
+    "roleLabel": "Seu papel"
+  },
+  "profilePage": {
+    "title": "Perfil",
+    "subtitle": "Informações da sua conta pessoal.",
+    "nameLabel": "Nome completo",
+    "emailLabel": "E-mail",
+    "emailHint": "Fale com um admin para alterar seu e-mail.",
+    "save": "Salvar alterações",
+    "saving": "Salvando…",
+    "saved": "Salvo."
+  },
   "auth": {
     "login": {
       "title": "Entrar no BusinessHub",

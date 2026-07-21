@@ -40,6 +40,33 @@
   "user": {
     "logout": "Cerrar sesión"
   },
+  "app": {
+    "dashboard": "Panel",
+    "profile": "Perfil",
+    "comingSoon": "Próximamente",
+    "modules": {
+      "suppliers": "Proveedores",
+      "contracts": "Contratos",
+      "documents": "Documentos",
+      "purchaseOrders": "Pedidos"
+    }
+  },
+  "dashboardPage": {
+    "greeting": "Bienvenido de nuevo, {name}",
+    "subtitle": "Un resumen rápido de tu espacio de trabajo.",
+    "tenantLabel": "Organización",
+    "roleLabel": "Tu rol"
+  },
+  "profilePage": {
+    "title": "Perfil",
+    "subtitle": "Información de tu cuenta personal.",
+    "nameLabel": "Nombre completo",
+    "emailLabel": "Correo electrónico",
+    "emailHint": "Contacta a un administrador para cambiar tu correo.",
+    "save": "Guardar cambios",
+    "saving": "Guardando…",
+    "saved": "Guardado."
+  },
   "auth": {
     "login": {
       "title": "Inicia sesión en BusinessHub",

@@ -29,7 +29,7 @@ export async function SiteHeader() {
         <ThemeToggle />
         <LanguageToggle />
         {user && firstName ? (
-          <UserMenu firstName={firstName} />
+          <UserMenu firstName={firstName} showDashboardLink />
         ) : (
           <>
             <Link

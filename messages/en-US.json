@@ -40,6 +40,33 @@
   "user": {
     "logout": "Log out"
   },
+  "app": {
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "comingSoon": "Coming soon",
+    "modules": {
+      "suppliers": "Suppliers",
+      "contracts": "Contracts",
+      "documents": "Documents",
+      "purchaseOrders": "Purchase Orders"
+    }
+  },
+  "dashboardPage": {
+    "greeting": "Welcome back, {name}",
+    "subtitle": "Here's a quick overview of your workspace.",
+    "tenantLabel": "Organization",
+    "roleLabel": "Your role"
+  },
+  "profilePage": {
+    "title": "Profile",
+    "subtitle": "Your personal account information.",
+    "nameLabel": "Full name",
+    "emailLabel": "Email",
+    "emailHint": "Contact an admin to change your email.",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "saved": "Saved."
+  },
   "auth": {
     "login": {
       "title": "Log in to BusinessHub",

@@ -40,6 +40,33 @@
   "user": {
     "logout": "退出登录"
   },
+  "app": {
+    "dashboard": "仪表盘",
+    "profile": "个人资料",
+    "comingSoon": "即将推出",
+    "modules": {
+      "suppliers": "供应商",
+      "contracts": "合同",
+      "documents": "文档",
+      "purchaseOrders": "采购订单"
+    }
+  },
+  "dashboardPage": {
+    "greeting": "欢迎回来，{name}",
+    "subtitle": "这是您工作区的快速概览。",
+    "tenantLabel": "组织",
+    "roleLabel": "您的角色"
+  },
+  "profilePage": {
+    "title": "个人资料",
+    "subtitle": "您的个人账户信息。",
+    "nameLabel": "姓名",
+    "emailLabel": "邮箱",
+    "emailHint": "如需更改邮箱，请联系管理员。",
+    "save": "保存更改",
+    "saving": "正在保存…",
+    "saved": "已保存。"
+  },
   "auth": {
     "login": {
       "title": "登录 BusinessHub",
