@@ -14,17 +14,36 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const { name, slug, taxId } = await request.json();
+  const {
+    name,
+    legalName,
+    slug,
+    taxId,
+    addressStreet,
+    addressNumber,
+    addressComplement,
+    addressCity,
+    addressState,
+    addressCountry,
+    phone,
+  } = await request.json();
   const normalizedTaxId = String(taxId ?? "").replace(/\D/g, "");
 
   if (!name || typeof name !== "string" || name.trim().length < 2) {
     return NextResponse.json({ error: "invalid_name" }, { status: 400 });
+  }
+  if (!legalName || typeof legalName !== "string" || legalName.trim().length < 2) {
+    return NextResponse.json({ error: "invalid_legal_name" }, { status: 400 });
   }
   if (!isValidCnpj(normalizedTaxId)) {
     return NextResponse.json({ error: "invalid_tax_id" }, { status: 400 });
   }
 
   const admin = createAdminClient();
+
+  if (phone) {
+    await admin.from("profiles").update({ phone }).eq("id", user.id);
+  }
 
   // must not already belong to a tenant
   const { data: existingMembership } = await admin
@@ -93,7 +112,18 @@ export async function POST(request: Request) {
 
   const { data: newCompany, error: companyError } = await admin
     .from("companies")
-    .insert({ name: name.trim(), slug, tax_id: normalizedTaxId })
+    .insert({
+      name: name.trim(),
+      legal_name: legalName.trim(),
+      slug,
+      tax_id: normalizedTaxId,
+      address_street: addressStreet || null,
+      address_number: addressNumber || null,
+      address_complement: addressComplement || null,
+      address_city: addressCity || null,
+      address_state: addressState || null,
+      address_country: addressCountry || "BR",
+    })
     .select("id")
     .single();
 
