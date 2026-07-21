@@ -57,6 +57,21 @@
     "tenantLabel": "Organização",
     "roleLabel": "Seu papel"
   },
+  "onboarding": {
+    "title": "Crie sua organização",
+    "subtitle": "Você será o primeiro admin — convide seu time depois.",
+    "nameLabel": "Nome da organização",
+    "slugLabel": "Endereço do workspace",
+    "nameTooShort": "Digite pelo menos 2 caracteres.",
+    "slugTooShort": "Digite pelo menos 2 caracteres.",
+    "slugInvalid": "Apenas letras minúsculas, números e hífens.",
+    "slugTaken": "Esse endereço já está em uso — tente outro.",
+    "errorGeneric": "Algo deu errado. Tente novamente.",
+    "submit": "Criar organização",
+    "submitting": "Criando…",
+    "provisioningTitle": "Preparando seu workspace",
+    "provisioningBody": "Isso leva um ou dois minutos na primeira vez. Você será redirecionado automaticamente."
+  },
   "profilePage": {
     "title": "Perfil",
     "subtitle": "Informações da sua conta pessoal.",

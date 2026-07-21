@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
   const t = useTranslations("auth.login");
   const tv = useTranslations("auth.validation");
+  const locale = useLocale();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -36,6 +37,19 @@ export function LoginForm() {
       );
       return;
     }
+    const { data: membership } = await supabase
+      .from("memberships")
+      .select("companies(slug)")
+      .limit(1)
+      .maybeSingle<{ companies: { slug: string } | null }>();
+
+    const slug = membership?.companies?.slug;
+    if (slug) {
+      const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
+      window.location.href = `https://${slug}.${root}/${locale}/dashboard`;
+      return;
+    }
+
     router.push("/dashboard");
     router.refresh();
   }

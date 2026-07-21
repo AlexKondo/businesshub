@@ -57,6 +57,21 @@
     "tenantLabel": "組織",
     "roleLabel": "あなたの役割"
   },
+  "onboarding": {
+    "title": "組織を作成",
+    "subtitle": "あなたが最初の管理者になります。後でチームを招待できます。",
+    "nameLabel": "組織名",
+    "slugLabel": "ワークスペースのアドレス",
+    "nameTooShort": "2文字以上で入力してください。",
+    "slugTooShort": "2文字以上で入力してください。",
+    "slugInvalid": "小文字・数字・ハイフンのみ使用できます。",
+    "slugTaken": "そのアドレスは既に使用されています。別のものをお試しください。",
+    "errorGeneric": "問題が発生しました。もう一度お試しください。",
+    "submit": "組織を作成",
+    "submitting": "作成中…",
+    "provisioningTitle": "ワークスペースを準備しています",
+    "provisioningBody": "初回は1〜2分ほどかかります。完了すると自動的に移動します。"
+  },
   "profilePage": {
     "title": "プロフィール",
     "subtitle": "個人アカウント情報。",

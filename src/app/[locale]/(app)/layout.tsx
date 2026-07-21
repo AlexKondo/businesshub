@@ -2,7 +2,9 @@ import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/app/app-shell";
 
-// Route group (app): every page under here requires an authenticated session.
+// Route group (app): every page under here requires an authenticated session
+// AND at least one tenant membership (platform admins are exempt from the
+// tenant requirement — they can operate without belonging to any company).
 export default async function AppLayout({
   children,
   params,
@@ -18,6 +20,15 @@ export default async function AppLayout({
 
   if (!user) {
     redirect({ href: "/login", locale });
+  }
+
+  const [{ data: membership }, { data: platformAdmin }] = await Promise.all([
+    supabase.from("memberships").select("id").eq("user_id", user!.id).maybeSingle(),
+    supabase.from("platform_admins").select("user_id").eq("user_id", user!.id).maybeSingle(),
+  ]);
+
+  if (!membership && !platformAdmin) {
+    redirect({ href: "/onboarding", locale });
   }
 
   return <AppShell user={user!}>{children}</AppShell>;

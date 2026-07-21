@@ -57,6 +57,21 @@
     "tenantLabel": "组织",
     "roleLabel": "您的角色"
   },
+  "onboarding": {
+    "title": "创建您的组织",
+    "subtitle": "您将成为第一位管理员——之后可以邀请您的团队。",
+    "nameLabel": "组织名称",
+    "slugLabel": "工作区地址",
+    "nameTooShort": "请至少输入 2 个字符。",
+    "slugTooShort": "请至少输入 2 个字符。",
+    "slugInvalid": "只能使用小写字母、数字和连字符。",
+    "slugTaken": "该地址已被使用，请换一个。",
+    "errorGeneric": "出现问题，请重试。",
+    "submit": "创建组织",
+    "submitting": "正在创建…",
+    "provisioningTitle": "正在设置您的工作区",
+    "provisioningBody": "首次设置需要一到两分钟，完成后将自动跳转。"
+  },
   "profilePage": {
     "title": "个人资料",
     "subtitle": "您的个人账户信息。",

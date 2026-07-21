@@ -57,6 +57,21 @@
     "tenantLabel": "Organization",
     "roleLabel": "Your role"
   },
+  "onboarding": {
+    "title": "Create your organization",
+    "subtitle": "You'll be the first admin — invite your team afterwards.",
+    "nameLabel": "Organization name",
+    "slugLabel": "Workspace address",
+    "nameTooShort": "Enter at least 2 characters.",
+    "slugTooShort": "Enter at least 2 characters.",
+    "slugInvalid": "Only lowercase letters, numbers and hyphens.",
+    "slugTaken": "That address is already taken — try another.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "submit": "Create organization",
+    "submitting": "Creating…",
+    "provisioningTitle": "Setting up your workspace",
+    "provisioningBody": "This takes a minute or two the first time. You'll be redirected automatically."
+  },
   "profilePage": {
     "title": "Profile",
     "subtitle": "Your personal account information.",

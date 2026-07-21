@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { ChevronDown, LogOut, LayoutDashboard } from "lucide-react";
 
@@ -15,7 +15,6 @@ export function UserMenu({
 }) {
   const t = useTranslations("user");
   const tApp = useTranslations("app");
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -32,8 +31,10 @@ export function UserMenu({
   async function handleLogout() {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/");
-    router.refresh();
+    // full navigation on purpose: logging out from a tenant subdomain must
+    // always land back on the root marketing/login domain.
+    const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
+    window.location.href = root ? `https://${root}` : "/";
   }
 
   return (

@@ -13,6 +13,24 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: membership } = await supabase
+          .from("memberships")
+          .select("companies(slug)")
+          .limit(1)
+          .maybeSingle<{ companies: { slug: string } | null }>();
+
+        const slug = membership?.companies?.slug;
+        if (slug) {
+          const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
+          return NextResponse.redirect(`https://${slug}.${root}${next}`);
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
