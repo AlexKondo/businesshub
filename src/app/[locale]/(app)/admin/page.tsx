@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { PendingApprovals } from "@/components/app/pending-approvals";
+import { CompanyLogoCard } from "@/components/app/company-logo-card";
 
 export default async function AdminPage() {
   const t = await getTranslations("adminPage");
@@ -11,10 +12,14 @@ export default async function AdminPage() {
 
   const { data: membership } = await supabase
     .from("memberships")
-    .select("roles(name)")
+    .select("tenant_id, roles(name), companies(logo_url)")
     .eq("user_id", user!.id)
     .eq("status", "active")
-    .maybeSingle<{ roles: { name: string } | null }>();
+    .maybeSingle<{
+      tenant_id: string;
+      roles: { name: string } | null;
+      companies: { logo_url: string | null } | null;
+    }>();
 
   const { data: platformAdmin } = await supabase
     .from("platform_admins")
@@ -38,6 +43,12 @@ export default async function AdminPage() {
     <div>
       <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{t("title")}</h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">{t("subtitle")}</p>
+      {membership?.tenant_id && (
+        <CompanyLogoCard
+          tenantId={membership.tenant_id}
+          currentLogoUrl={membership.companies?.logo_url ?? null}
+        />
+      )}
       <PendingApprovals />
     </div>
   );

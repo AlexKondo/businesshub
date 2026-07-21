@@ -108,6 +108,15 @@
     "pendingTitle": "Request sent",
     "pendingBody": "Your company is already on BusinessHub. We notified the admins — you'll get access once someone approves your request."
   },
+  "companyLogo": {
+    "title": "Company logo",
+    "changeButton": "Change logo",
+    "uploading": "Uploading…",
+    "hint": "PNG or JPG, up to 1000x1000px and 5MB.",
+    "errorSize": "File too large — 5MB limit.",
+    "errorDimensions": "Image too large — 1000x1000px limit.",
+    "errorGeneric": "Couldn't upload the image. Please try again."
+  },
   "adminPage": {
     "title": "Administration",
     "subtitle": "People waiting for access to your organization.",

@@ -108,6 +108,15 @@
     "pendingTitle": "申请已发送",
     "pendingBody": "您的企业已经在 BusinessHub 上。我们已通知管理员——获得批准后您将拥有访问权限。"
   },
+  "companyLogo": {
+    "title": "企业标志",
+    "changeButton": "更换标志",
+    "uploading": "正在上传…",
+    "hint": "PNG 或 JPG，最大 1000x1000px，5MB 以内。",
+    "errorSize": "文件过大——限制为 5MB。",
+    "errorDimensions": "图片尺寸过大——限制为 1000x1000px。",
+    "errorGeneric": "无法上传图片，请重试。"
+  },
   "adminPage": {
     "title": "管理",
     "subtitle": "正在等待加入您组织的用户。",

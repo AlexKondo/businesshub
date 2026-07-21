@@ -108,6 +108,15 @@
     "pendingTitle": "リクエストを送信しました",
     "pendingBody": "あなたの会社は既にBusinessHubに登録されています。管理者に通知しました。承認され次第アクセスできます。"
   },
+  "companyLogo": {
+    "title": "会社のロゴ",
+    "changeButton": "ロゴを変更",
+    "uploading": "アップロード中…",
+    "hint": "PNGまたはJPG、1000x1000px・5MBまで。",
+    "errorSize": "ファイルが大きすぎます — 上限は5MBです。",
+    "errorDimensions": "画像サイズが大きすぎます — 上限は1000x1000pxです。",
+    "errorGeneric": "画像をアップロードできませんでした。もう一度お試しください。"
+  },
   "adminPage": {
     "title": "管理",
     "subtitle": "組織へのアクセスを待っているユーザー。",
