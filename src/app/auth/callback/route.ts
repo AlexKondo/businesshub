@@ -5,9 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 // then sends the user into the app. Lives outside [locale] on purpose —
 // the link embedded in emails must be a fixed path.
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/en-US/dashboard";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://businesshub.app.br";
+  const root = appUrl.replace(/^https?:\/\//, "");
 
   if (code) {
     const supabase = await createClient();
@@ -26,14 +28,13 @@ export async function GET(request: Request) {
 
         const slug = membership?.companies?.slug;
         if (slug) {
-          const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
           return NextResponse.redirect(`https://${slug}.${root}${next}`);
         }
       }
 
-      return NextResponse.redirect(`${origin}${next}`);
+      return NextResponse.redirect(`${appUrl}${next}`);
     }
   }
 
-  return NextResponse.redirect(`${origin}/en-US/login`);
+  return NextResponse.redirect(`${appUrl}/en-US/login`);
 }
