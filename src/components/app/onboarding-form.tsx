@@ -9,6 +9,15 @@ import { isValidCnpj, formatCnpj } from "@/lib/cnpj";
 import { isValidPhoneBR, formatPhoneBR } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/client";
 import { Link } from "@/i18n/navigation";
+import { Check, Loader2 } from "lucide-react";
+
+const PROVISIONING_STEP_KEYS = [
+  "provisioningStepAccount",
+  "provisioningStepCompany",
+  "provisioningStepDatabase",
+  "provisioningStepSecurity",
+] as const;
+const PROVISIONING_STEP_THRESHOLDS = [1, 4, 9]; // seconds at which steps 0-2 tick; last step spins until done
 
 function slugify(input: string) {
   return input
@@ -214,6 +223,44 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         <p className="mt-5 font-mono text-[26px] font-bold tabular-nums text-(--brand-500)">
           {mm}:{ss}
         </p>
+
+        <ul className="mt-6 flex flex-col gap-2.5 text-left">
+          {PROVISIONING_STEP_KEYS.map((key, i) => {
+            const isLast = i === PROVISIONING_STEP_KEYS.length - 1;
+            const done = !isLast && provisioningSeconds >= PROVISIONING_STEP_THRESHOLDS[i];
+            const active =
+              (isLast && provisioningSeconds >= (PROVISIONING_STEP_THRESHOLDS[i - 1] ?? 0)) ||
+              (!isLast && !done && provisioningSeconds >= (PROVISIONING_STEP_THRESHOLDS[i - 1] ?? 0));
+            return (
+              <li
+                key={key}
+                style={{ animationDelay: `${i * 120}ms` }}
+                className="flex animate-provisioning-step-in items-center gap-2.5 opacity-0 [animation-fill-mode:forwards]"
+              >
+                <span
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${
+                    done
+                      ? "border-(--brand-500) bg-(--brand-500)"
+                      : "border-(--border-default) bg-(--bg-canvas)"
+                  }`}
+                >
+                  {done ? (
+                    <Check className="h-3 w-3 animate-provisioning-check-pop text-white" strokeWidth={3} />
+                  ) : active ? (
+                    <Loader2 className="h-3 w-3 animate-spin text-(--brand-500)" />
+                  ) : null}
+                </span>
+                <span
+                  className={`text-[13px] transition-colors duration-300 ${
+                    done || active ? "text-(--ink)" : "text-(--ink-soft)"
+                  }`}
+                >
+                  {t(key)}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     );
   }
