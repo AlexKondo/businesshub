@@ -27,6 +27,19 @@ function resolveTenantSlug(host: string): string | null {
   return null; // unrecognized host (e.g. a preview URL) — treat as root
 }
 
+// Detects "/", "/en-US", "/en-US/" etc. — the tenant subdomain's own root,
+// where the public tenant landing page lives. Any other path is app
+// territory and stays behind the membership gate.
+function matchBareRootPath(pathname: string): { locale: string } | null {
+  if (pathname === "/") return { locale: routing.defaultLocale };
+  for (const locale of routing.locales) {
+    if (pathname === `/${locale}` || pathname === `/${locale}/`) {
+      return { locale };
+    }
+  }
+  return null;
+}
+
 export default async function proxy(request: NextRequest) {
   const tenantSlug = resolveTenantSlug(request.headers.get("host") ?? "");
 
@@ -53,11 +66,32 @@ export default async function proxy(request: NextRequest) {
     }
   );
 
+  function withAuthCookies(target: NextResponse) {
+    response.cookies.getAll().forEach((c) => target.cookies.set(c.name, c.value));
+    return target;
+  }
+
+  function serveTenantLanding(locale: string) {
+    return withAuthCookies(
+      NextResponse.rewrite(new URL(`/${locale}/tenant-landing/${tenantSlug}`, request.url))
+    );
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const bareRoot = matchBareRootPath(request.nextUrl.pathname);
+
   if (!user) {
+    if (bareRoot) {
+      // anonymous visitor at the tenant's own root — this is the public
+      // landing page (shared with customers/suppliers), not an app path.
+      if (request.nextUrl.pathname === "/") {
+        return NextResponse.redirect(new URL(`/${bareRoot.locale}`, request.url));
+      }
+      return serveTenantLanding(bareRoot.locale);
+    }
     return NextResponse.redirect(`https://${ROOT_DOMAIN}/en-US/login`);
   }
 
@@ -71,13 +105,28 @@ export default async function proxy(request: NextRequest) {
   );
 
   if (!ownsSlug && !platformAdmin) {
-    // authenticated, but not a member of THIS tenant — bounce to their own space
+    if (bareRoot) {
+      // authenticated, but not a member of THIS tenant — the public landing
+      // is still visible to them, same as any other outside visitor.
+      if (request.nextUrl.pathname === "/") {
+        return NextResponse.redirect(new URL(`/${bareRoot.locale}`, request.url));
+      }
+      return serveTenantLanding(bareRoot.locale);
+    }
+    // any other path (dashboard, admin, etc.) — bounce to their own space
     return NextResponse.redirect(`https://${ROOT_DOMAIN}/en-US/dashboard`);
   }
 
+  if (bareRoot) {
+    // a member landing on their own tenant's root skips the public
+    // marketing page entirely and goes straight into the app.
+    return withAuthCookies(
+      NextResponse.redirect(new URL(`/${bareRoot.locale}/dashboard`, request.url))
+    );
+  }
+
   const intlResponse = intlMiddleware(request);
-  response.cookies.getAll().forEach((c) => intlResponse.cookies.set(c.name, c.value));
-  return intlResponse;
+  return withAuthCookies(intlResponse);
 }
 
 export const config = {

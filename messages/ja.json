@@ -109,6 +109,14 @@
     "pendingTitle": "リクエストを送信しました",
     "pendingBody": "あなたの会社は既にBusinessHubに登録されています。管理者に通知しました。承認され次第アクセスできます。"
   },
+  "tenantLanding": {
+    "subtitle": "{name} の BusinessHub ワークスペース。",
+    "loginCta": "ワークスペースにログイン",
+    "poweredBy": "Powered by",
+    "notFoundTitle": "ワークスペースが見つかりません",
+    "notFoundBody": "このアドレスは存在しないか、利用できなくなりました。",
+    "notFoundCta": "BusinessHubへ移動"
+  },
   "companyLogo": {
     "title": "会社のロゴ",
     "changeButton": "ロゴを変更",

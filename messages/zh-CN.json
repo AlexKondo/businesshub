@@ -109,6 +109,14 @@
     "pendingTitle": "申请已发送",
     "pendingBody": "您的企业已经在 BusinessHub 上。我们已通知管理员——获得批准后您将拥有访问权限。"
   },
+  "tenantLanding": {
+    "subtitle": "{name} 在 BusinessHub 上的工作区。",
+    "loginCta": "登录工作区",
+    "poweredBy": "技术支持",
+    "notFoundTitle": "未找到工作区",
+    "notFoundBody": "该地址不存在或已不可用。",
+    "notFoundCta": "前往 BusinessHub"
+  },
   "companyLogo": {
     "title": "企业标志",
     "changeButton": "更换标志",

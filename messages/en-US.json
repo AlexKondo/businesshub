@@ -109,6 +109,14 @@
     "pendingTitle": "Request sent",
     "pendingBody": "Your company is already on BusinessHub. We notified the admins — you'll get access once someone approves your request."
   },
+  "tenantLanding": {
+    "subtitle": "{name}'s workspace on BusinessHub.",
+    "loginCta": "Log in to workspace",
+    "poweredBy": "Built with",
+    "notFoundTitle": "Workspace not found",
+    "notFoundBody": "This address doesn't exist or is no longer available.",
+    "notFoundCta": "Go to BusinessHub"
+  },
   "companyLogo": {
     "title": "Company logo",
     "changeButton": "Change logo",
