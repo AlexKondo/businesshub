@@ -43,28 +43,17 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const t = useTranslations("onboarding");
   const [serverError, setServerError] = useState<string | null>(null);
   const [stage, setStage] = useState<
-    "form" | "confirm" | "provisioning" | "provisioning-error" | "success" | "pending"
+    "form" | "provisioning" | "provisioning-error" | "success" | "pending"
   >("form");
   const [account, setAccount] = useState<{ name: string; email: string } | null>(null);
   const [companyExists, setCompanyExists] = useState<boolean | null>(null);
-  const [pendingValues, setPendingValues] = useState<FormValues | null>(null);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
   const [provisioningSeconds, setProvisioningSeconds] = useState(0);
-  const [confirmGuardSeconds, setConfirmGuardSeconds] = useState(0);
 
   useEffect(() => {
     if (stage !== "provisioning") return;
     setProvisioningSeconds(0);
     const interval = setInterval(() => setProvisioningSeconds((s) => s + 1), 1000);
-    return () => clearInterval(interval);
-  }, [stage]);
-
-  useEffect(() => {
-    if (stage !== "confirm") return;
-    setConfirmGuardSeconds(3);
-    const interval = setInterval(() => {
-      setConfirmGuardSeconds((s) => (s <= 1 ? 0 : s - 1));
-    }, 1000);
     return () => clearInterval(interval);
   }, [stage]);
 
@@ -104,6 +93,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -124,6 +114,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   });
 
   const slugEditedManually = useRef(false);
+  const consentChecked = watch("consent");
 
   async function submitOrganization(values: FormValues) {
     setServerError(null);
@@ -169,11 +160,6 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   }
 
   async function onValidated(values: FormValues) {
-    if (companyExists === false) {
-      setPendingValues(values);
-      setStage("confirm");
-      return;
-    }
     await submitOrganization(values);
   }
 
@@ -186,38 +172,6 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
           {t("pendingBody")}
         </p>
-      </div>
-    );
-  }
-
-  if (stage === "confirm" && pendingValues) {
-    return (
-      <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7">
-        <h1 className="text-[18px] font-bold tracking-tight text-(--ink)">
-          {t("adminNoticeTitle")}
-        </h1>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
-          {t("adminNoticeBody")}
-        </p>
-        <div className="mt-6 flex gap-3">
-          <button
-            type="button"
-            onClick={() => setStage("form")}
-            className="flex-1 inline-flex h-10 items-center justify-center rounded-md border border-(--border-default) text-sm font-semibold text-(--ink) transition-colors hover:bg-(--bg-canvas)"
-          >
-            {t("confirmCancel")}
-          </button>
-          <button
-            type="button"
-            disabled={confirmGuardSeconds > 0}
-            onClick={() => void submitOrganization(pendingValues)}
-            className="flex-1 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {confirmGuardSeconds > 0
-              ? `${t("confirmProceed")} (${confirmGuardSeconds})`
-              : t("confirmProceed")}
-          </button>
-        </div>
       </div>
     );
   }
@@ -570,14 +524,13 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
           </div>
         </fieldset>
 
-        {companyExists === false && (
-          <div className="flex flex-col gap-1.5 rounded-md border border-(--brand-500)/30 bg-(--accent-soft) px-4 py-3">
-            <p className="text-[13px] font-semibold text-(--ink)">{t("adminNoticeTitle")}</p>
-            <p className="text-[12.5px] leading-relaxed text-(--ink-soft)">{t("adminNoticeBody")}</p>
-          </div>
-        )}
-
-        <div className="flex flex-col gap-1.5">
+        <div
+          className={`flex flex-col gap-1.5 rounded-md px-4 py-3.5 ${
+            companyExists === false
+              ? "border border-(--brand-500)/30 bg-(--accent-soft)"
+              : ""
+          }`}
+        >
           <label className="flex items-start gap-2.5 text-[13px] leading-relaxed text-(--ink-soft)">
             <input
               type="checkbox"
@@ -585,7 +538,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               className="mt-0.5 h-4 w-4 shrink-0 accent-(--brand-500)"
             />
             <span>
-              {t.rich("consentLabel", {
+              {t.rich(companyExists === false ? "consentLabelAdmin" : "consentLabel", {
                 terms: (chunks) => (
                   <Link href="/terms" target="_blank" className="font-medium text-(--brand-500)">
                     {chunks}
@@ -610,8 +563,8 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
 
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+          disabled={isSubmitting || !consentChecked}
+          className="inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100"
         >
           {isSubmitting ? t("submitting") : t("submit")}
         </button>
