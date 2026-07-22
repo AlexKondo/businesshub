@@ -81,6 +81,17 @@ function matchLoginPath(pathname: string): boolean {
   );
 }
 
+// Pulls the locale prefix out of a path that already has one (e.g.
+// "/pt-BR/profile" -> "pt-BR"), so redirecting an anonymous visitor to
+// /login preserves whatever language they were already browsing in.
+function extractLocale(pathname: string): string | null {
+  return (
+    routing.locales.find(
+      (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
+    ) ?? null
+  );
+}
+
 export default async function proxy(request: NextRequest, event: NextFetchEvent) {
   const tenantSlug = resolveTenantSlug(request.headers.get("host") ?? "");
 
@@ -153,7 +164,10 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
     if (matchLoginPath(request.nextUrl.pathname)) {
       return withAuthCookies(intlMiddleware(request));
     }
-    return NextResponse.redirect(`https://${ROOT_DOMAIN}/en-US/login`);
+    // Never bounce an anonymous visitor off this subdomain — send them to
+    // THIS SAME host's own /login instead of the root domain's.
+    const locale = extractLocale(request.nextUrl.pathname) ?? initialLocale(request);
+    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
 
   const [{ data: memberships }, { data: platformAdmin }] = await Promise.all([
