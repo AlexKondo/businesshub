@@ -61,6 +61,21 @@ function resolveTenantSlug(host: string): string | null {
   return null; // unrecognized host (e.g. a preview URL) — treat as root
 }
 
+// Resolves the locale for a bare "/" visit (no locale in the URL yet): an
+// explicit saved choice (NEXT_LOCALE cookie) always wins, otherwise fall
+// back to the visitor's region (Cloudflare geo headers).
+function initialLocale(request: NextRequest): string {
+  const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
+  if (cookieLocale && (routing.locales as readonly string[]).includes(cookieLocale)) {
+    return cookieLocale;
+  }
+  try {
+    return localeFromCountry(getGeo(request.headers).country);
+  } catch {
+    return routing.defaultLocale;
+  }
+}
+
 // Detects "/", "/en-US", "/en-US/" etc. — the tenant subdomain's own root,
 // where the public tenant landing page lives. Any other path is app
 // territory and stays behind the membership gate.
@@ -139,7 +154,7 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
       // anonymous visitor at the tenant's own root — this is the public
       // landing page (shared with customers/suppliers), not an app path.
       if (request.nextUrl.pathname === "/") {
-        return NextResponse.redirect(new URL(`/${bareRoot.locale}`, request.url));
+        return NextResponse.redirect(new URL(`/${initialLocale(request)}`, request.url));
       }
       return serveTenantLanding(bareRoot.locale);
     }
@@ -160,7 +175,7 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
       // authenticated, but not a member of THIS tenant — the public landing
       // is still visible to them, same as any other outside visitor.
       if (request.nextUrl.pathname === "/") {
-        return NextResponse.redirect(new URL(`/${bareRoot.locale}`, request.url));
+        return NextResponse.redirect(new URL(`/${initialLocale(request)}`, request.url));
       }
       return serveTenantLanding(bareRoot.locale);
     }
@@ -171,9 +186,8 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
   if (bareRoot) {
     // a member landing on their own tenant's root skips the public
     // marketing page entirely and goes straight into the app.
-    return withAuthCookies(
-      NextResponse.redirect(new URL(`/${bareRoot.locale}/dashboard`, request.url))
-    );
+    const locale = request.nextUrl.pathname === "/" ? initialLocale(request) : bareRoot.locale;
+    return withAuthCookies(NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url)));
   }
 
   const intlResponse = intlMiddleware(request);
