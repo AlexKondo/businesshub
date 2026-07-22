@@ -204,13 +204,19 @@ export function DynamicOnboardingForm({
                   type={
                     field.field_type === "number"
                       ? "number"
-                      : field.field_type === "date"
+                      : field.field_type === "date" && !field.mask
                         ? "date"
                         : "text"
                   }
+                  placeholder={
+                    field.field_type === "date" && field.mask ? field.mask : undefined
+                  }
                   {...register(field.key, {
                     onChange: (e) => {
-                      if (field.field_type === "text" && field.mask) {
+                      if (
+                        (field.field_type === "text" || field.field_type === "date") &&
+                        field.mask
+                      ) {
                         e.target.value = applyMask(e.target.value, field.mask);
                       }
                     },

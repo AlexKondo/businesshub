@@ -1,8 +1,11 @@
 // Generic input mask, admin-configured per field: "9" = digit-only
-// position, "Z" = alphanumeric (letter or digit) position, any other
-// character in the pattern is a literal inserted automatically. Example:
-// "ZZ.ZZZ.ZZZ/ZZZZ-99" for a CNPJ (accepts both the legacy all-numeric
-// format and the alphanumeric format).
+// position, "Z" = alphanumeric (letter or digit) position, "D"/"M"/"Y" =
+// also digit-only (same as "9", just spelled out for readability in a date
+// mask — day/month/year), any other character in the pattern is a literal
+// inserted automatically. Examples: "ZZ.ZZZ.ZZZ/ZZZZ-99" for a CNPJ,
+// "DD/MM/YYYY" for a date.
+const DIGIT_TOKENS = /[9DMY]/;
+
 export function applyMask(raw: string, pattern: string): string {
   const input = raw.toUpperCase();
   let result = "";
@@ -11,7 +14,7 @@ export function applyMask(raw: string, pattern: string): string {
   for (const patternChar of pattern) {
     if (i >= input.length) break;
 
-    if (patternChar === "9") {
+    if (DIGIT_TOKENS.test(patternChar)) {
       while (i < input.length && !/[0-9]/.test(input[i])) i++;
       if (i >= input.length) break;
       result += input[i];

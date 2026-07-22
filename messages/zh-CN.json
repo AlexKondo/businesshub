@@ -195,6 +195,8 @@
     "onboardingFieldMaskTooltipAlnum": "字母或数字",
     "onboardingFieldMaskTooltipLiteral": "自动显示 — 供应商无需输入",
     "onboardingFieldMaskTooltipCnpjNote": "这是CNPJ的格式。使用此掩码时，系统会自动校验最后两位数字是否正确 — 即使错误也不会阻止提交。",
+    "onboardingFieldMaskTooltipDateDigit": "日、月或年的数字 — 字母只是帮助记住顺序",
+    "onboardingFieldMaskTooltipDateNote": "这样供应商就会按您选择的格式输入日期，例如 22/07/2026。",
     "onboardingFieldAllowOtherLabel": "允许\"其他\"（自由填写）",
     "onboardingFieldOptionsLabel": "选项",
     "onboardingFieldOptionPlaceholder": "新选项",

@@ -53,6 +53,7 @@ function FieldEditor({
   const [mask, setMask] = useState(initial?.mask ?? "");
 
   const isChoiceType = fieldType === "select" || fieldType === "multiselect";
+  const showMaskSection = fieldType === "text" || fieldType === "date";
   const displayKey = initial?.key ?? slugify(label);
 
   const typeLabels: Record<OnboardingFieldType, string> = {
@@ -84,7 +85,7 @@ function FieldEditor({
       required,
       allow_other: isChoiceType && allowOther,
       options: isChoiceType ? optionLabels.map((l) => ({ value: slugify(l), label: l })) : [],
-      mask: fieldType === "text" && mask.trim() ? mask.trim() : null,
+      mask: showMaskSection && mask.trim() ? mask.trim() : null,
     });
   }
 
@@ -122,7 +123,7 @@ function FieldEditor({
         </div>
       </div>
 
-      {fieldType === "text" && (
+      {showMaskSection && (
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-1.5">
             <label className="text-[12.5px] font-medium text-(--ink)">
@@ -130,36 +131,61 @@ function FieldEditor({
             </label>
             <InfoTooltip label={t("onboardingFieldMaskTooltipTitle")}>
               <p className="font-semibold text-(--ink)">{t("onboardingFieldMaskTooltipTitle")}</p>
-              <ul className="mt-2 flex flex-col gap-1.5">
-                <li className="flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-(--accent-soft) font-mono text-[11px] font-bold text-(--brand-500)">
-                    9
-                  </span>
-                  <span>{t("onboardingFieldMaskTooltipDigit")}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-(--accent-soft) font-mono text-[11px] font-bold text-(--brand-500)">
-                    Z
-                  </span>
-                  <span>{t("onboardingFieldMaskTooltipAlnum")}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-(--bg-canvas) font-mono text-[11px] font-bold text-(--ink-soft)">
-                    .
-                  </span>
-                  <span>{t("onboardingFieldMaskTooltipLiteral")}</span>
-                </li>
-              </ul>
-              <div className="mt-2.5 rounded-md bg-(--bg-canvas) p-2">
-                <p className="font-mono text-[11px] text-(--brand-500)">ZZ.ZZZ.ZZZ/ZZZZ-99</p>
-                <p className="mt-1 text-(--ink-soft)">{t("onboardingFieldMaskTooltipCnpjNote")}</p>
-              </div>
+              {fieldType === "date" ? (
+                <>
+                  <ul className="mt-2 flex flex-col gap-1.5">
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-5 w-9 shrink-0 items-center justify-center rounded bg-(--accent-soft) font-mono text-[11px] font-bold text-(--brand-500)">
+                        D M Y
+                      </span>
+                      <span>{t("onboardingFieldMaskTooltipDateDigit")}</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-(--bg-canvas) font-mono text-[11px] font-bold text-(--ink-soft)">
+                        /
+                      </span>
+                      <span>{t("onboardingFieldMaskTooltipLiteral")}</span>
+                    </li>
+                  </ul>
+                  <div className="mt-2.5 rounded-md bg-(--bg-canvas) p-2">
+                    <p className="font-mono text-[11px] text-(--brand-500)">DD/MM/YYYY</p>
+                    <p className="mt-1 text-(--ink-soft)">{t("onboardingFieldMaskTooltipDateNote")}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <ul className="mt-2 flex flex-col gap-1.5">
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-(--accent-soft) font-mono text-[11px] font-bold text-(--brand-500)">
+                        9
+                      </span>
+                      <span>{t("onboardingFieldMaskTooltipDigit")}</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-(--accent-soft) font-mono text-[11px] font-bold text-(--brand-500)">
+                        Z
+                      </span>
+                      <span>{t("onboardingFieldMaskTooltipAlnum")}</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-(--bg-canvas) font-mono text-[11px] font-bold text-(--ink-soft)">
+                        .
+                      </span>
+                      <span>{t("onboardingFieldMaskTooltipLiteral")}</span>
+                    </li>
+                  </ul>
+                  <div className="mt-2.5 rounded-md bg-(--bg-canvas) p-2">
+                    <p className="font-mono text-[11px] text-(--brand-500)">ZZ.ZZZ.ZZZ/ZZZZ-99</p>
+                    <p className="mt-1 text-(--ink-soft)">{t("onboardingFieldMaskTooltipCnpjNote")}</p>
+                  </div>
+                </>
+              )}
             </InfoTooltip>
           </div>
           <input
             type="text"
             value={mask}
-            placeholder="ZZ.ZZZ.ZZZ/ZZZZ-99"
+            placeholder={fieldType === "date" ? "DD/MM/YYYY" : "ZZ.ZZZ.ZZZ/ZZZZ-99"}
             onChange={(e) => setMask(e.target.value)}
             className={`${inputClass} font-mono`}
           />

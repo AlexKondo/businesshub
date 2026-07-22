@@ -195,6 +195,8 @@
     "onboardingFieldMaskTooltipAlnum": "Letter or digit",
     "onboardingFieldMaskTooltipLiteral": "Appears on its own — the supplier doesn't type it",
     "onboardingFieldMaskTooltipCnpjNote": "This is the CNPJ pattern. With this mask, the system automatically checks whether the last two digits are correct — without blocking submission if they're wrong.",
+    "onboardingFieldMaskTooltipDateDigit": "Day, month or year digit — the letters just help you remember the order",
+    "onboardingFieldMaskTooltipDateNote": "This is how the supplier types the date, in whatever format you choose — e.g. 22/07/2026.",
     "onboardingFieldAllowOtherLabel": "Allow \"Other\" (free text)",
     "onboardingFieldOptionsLabel": "Options",
     "onboardingFieldOptionPlaceholder": "New option",

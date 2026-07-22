@@ -195,6 +195,8 @@
     "onboardingFieldMaskTooltipAlnum": "文字または数字",
     "onboardingFieldMaskTooltipLiteral": "自動的に挿入されます — 入力の必要はありません",
     "onboardingFieldMaskTooltipCnpjNote": "これはCNPJの形式です。このマスクを使うと、最後の2桁が正しいかどうかをシステムが自動的に確認します — 間違っていても送信はブロックされません。",
+    "onboardingFieldMaskTooltipDateDigit": "日・月・年の数字 — 文字は順番を覚えやすくするためのものです",
+    "onboardingFieldMaskTooltipDateNote": "こうすることで、選んだ形式でサプライヤーが日付を入力できます（例: 22/07/2026）。",
     "onboardingFieldAllowOtherLabel": "「その他」（自由記述）を許可",
     "onboardingFieldOptionsLabel": "選択肢",
     "onboardingFieldOptionPlaceholder": "新しい選択肢",

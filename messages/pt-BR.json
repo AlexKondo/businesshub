@@ -195,6 +195,8 @@
     "onboardingFieldMaskTooltipAlnum": "Letra ou número",
     "onboardingFieldMaskTooltipLiteral": "Aparece sozinho — o fornecedor não precisa digitar",
     "onboardingFieldMaskTooltipCnpjNote": "Esse é o padrão do CNPJ. Com essa máscara, o sistema confere sozinho se os dois últimos números batem — sem travar o envio se estiver errado.",
+    "onboardingFieldMaskTooltipDateDigit": "Dígito do dia, mês ou ano — as letras só ajudam a lembrar a ordem",
+    "onboardingFieldMaskTooltipDateNote": "Assim o fornecedor digita a data no formato que você escolher, por exemplo 22/07/2026.",
     "onboardingFieldAllowOtherLabel": "Permitir opção \"Outro\" (texto livre)",
     "onboardingFieldOptionsLabel": "Opções",
     "onboardingFieldOptionPlaceholder": "Nova opção",
