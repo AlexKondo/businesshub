@@ -27,7 +27,7 @@ export async function SiteHeader() {
         ) : (
           <Link
             href="/login"
-            className="inline-flex h-9 items-center rounded-md px-3 text-[13.5px] font-medium text-(--ink-soft) transition-colors hover:text-(--ink)"
+            className="inline-flex h-9 items-center whitespace-nowrap rounded-md px-3 text-[13.5px] font-medium text-(--ink-soft) transition-colors hover:text-(--ink)"
           >
             {t("login")}
           </Link>
