@@ -182,6 +182,11 @@ export function DynamicOnboardingForm({
       return;
     }
     setSaved(true);
+    fetch("/api/tenants/notify-submission", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tenantId, formId }),
+    }).catch(() => null); // best-effort — a notification failure shouldn't affect the supplier's experience
   }
 
   if (orderedFields.length === 0) {

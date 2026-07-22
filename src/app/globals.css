@@ -93,6 +93,13 @@ body {
   color: var(--ink);
 }
 
+/* Edge/IE inject their own reveal-password icon inside type="password"
+   inputs, which stacks visually with PasswordInput's own eye toggle button. */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
 * {
   border-color: var(--border-default);
 }
