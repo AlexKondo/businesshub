@@ -328,12 +328,12 @@ export function DynamicOnboardingForm({
         })}
 
         {serverError && (
-          <p className="rounded-md bg-(--danger-500)/10 px-3 py-2 text-xs text-(--danger-500)">
+          <p className="col-span-full rounded-md bg-(--danger-500)/10 px-3 py-2 text-xs text-(--danger-500)">
             {serverError}
           </p>
         )}
         {saved && !serverError && (
-          <p className="rounded-md bg-(--success-500)/10 px-3 py-2 text-xs text-(--success-500)">
+          <p className="col-span-full rounded-md bg-(--success-500)/10 px-3 py-2 text-xs text-(--success-500)">
             {t("saveSuccess")}
           </p>
         )}
@@ -341,7 +341,7 @@ export function DynamicOnboardingForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-1 inline-flex h-11 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
+          className="col-span-full mt-1 inline-flex h-11 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
         >
           {isSubmitting ? t("submitting") : t("submit")}
         </button>
