@@ -458,7 +458,7 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
             key={field.id}
             className="flex flex-col gap-3 rounded-[10px] border border-(--border-default) bg-(--bg-surface) p-4 sm:flex-row sm:items-center sm:justify-between"
           >
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-[14px] font-semibold text-(--ink)">{field.label}</p>
                 <span className="rounded-full bg-(--accent-soft) px-2 py-0.5 text-[11px] font-semibold text-(--brand-500)">
@@ -484,7 +484,7 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
                 {field.mask && <span className="font-mono"> · {field.mask}</span>}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               <button
                 type="button"
                 disabled={busy === field.id || idx === 0}
