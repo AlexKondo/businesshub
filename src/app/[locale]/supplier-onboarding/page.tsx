@@ -69,7 +69,7 @@ export default async function SupplierOnboardingPage({
   const [{ data: fields }, { data: submission }] = await Promise.all([
     supabase
       .from("onboarding_form_fields")
-      .select("id, key, label, field_type, options, allow_other, required, position")
+      .select("id, key, label, field_type, options, allow_other, required, position, mask, width")
       .eq("tenant_id", membership.tenant_id)
       .order("position", { ascending: true }),
     supabase
