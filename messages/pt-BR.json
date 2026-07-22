@@ -73,7 +73,7 @@
     "taxIdInvalid": "Digite um CNPJ válido.",
     "zipLabel": "CEP",
     "zipHint": "Preenche o endereço automaticamente.",
-    "zipInvalid": "Digite um CEP válido (8 dígitos).",
+    "zipInvalid": "Digite um CEP válido.",
     "addressStreetLabel": "Endereço",
     "addressNumberLabel": "Número",
     "addressComplementLabel": "Complemento (opcional)",
