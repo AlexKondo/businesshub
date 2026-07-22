@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { MultiSelectWithOther } from "@/components/supplier/multiselect-with-other";
 import { applyMask, isCnpjShapedMask } from "@/lib/mask";
@@ -139,8 +140,18 @@ export function DynamicOnboardingForm({
   initialAnswers: OnboardingAnswers;
 }) {
   const t = useTranslations("supplierOnboarding");
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+
+  // After a successful save, show the confirmation for a beat, then return
+  // to the form picker (which, if this tenant only has one form, redirects
+  // straight back into it).
+  useEffect(() => {
+    if (!saved) return;
+    const timer = setTimeout(() => router.push("/supplier-onboarding"), 3000);
+    return () => clearTimeout(timer);
+  }, [saved, router]);
 
   const orderedFields = useMemo(
     () => [...fields].sort((a, b) => a.position - b.position),
