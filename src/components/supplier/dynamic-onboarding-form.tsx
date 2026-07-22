@@ -7,6 +7,8 @@ import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { MultiSelectWithOther } from "@/components/supplier/multiselect-with-other";
+import { applyMask, isCnpjShapedMask } from "@/lib/mask";
+import { isValidCnpj } from "@/lib/cnpj";
 import type { OnboardingField, OnboardingAnswers } from "@/lib/onboarding-fields";
 
 const inputClass =
@@ -138,6 +140,7 @@ export function DynamicOnboardingForm({
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema), defaultValues });
 
@@ -178,6 +181,14 @@ export function DynamicOnboardingForm({
       >
         {orderedFields.map((field) => {
           const error = errors[field.key];
+          const isMaskedCnpj =
+            field.field_type === "text" && !!field.mask && isCnpjShapedMask(field.mask);
+          const currentValue = isMaskedCnpj ? (watch(field.key) as string | undefined) : undefined;
+          const cnpjLooksIncomplete =
+            !currentValue || currentValue.replace(/[^0-9A-Z]/gi, "").length < 14;
+          const showCnpjWarning =
+            isMaskedCnpj && !error && !cnpjLooksIncomplete && !isValidCnpj(currentValue ?? "");
+
           return (
             <div key={field.id} className="flex flex-col gap-1.5">
               <label htmlFor={field.key} className={labelClass}>
@@ -197,7 +208,13 @@ export function DynamicOnboardingForm({
                         ? "date"
                         : "text"
                   }
-                  {...register(field.key)}
+                  {...register(field.key, {
+                    onChange: (e) => {
+                      if (field.field_type === "text" && field.mask) {
+                        e.target.value = applyMask(e.target.value, field.mask);
+                      }
+                    },
+                  })}
                   className={inputClass}
                 />
               )}
@@ -251,6 +268,9 @@ export function DynamicOnboardingForm({
               )}
 
               {error && <span className={errorClass}>{String(error.message)}</span>}
+              {showCnpjWarning && (
+                <span className="text-xs text-(--warning-500)">{t("cnpjChecksumWarning")}</span>
+              )}
             </div>
           );
         })}

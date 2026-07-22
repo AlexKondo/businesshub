@@ -23,6 +23,7 @@ type FieldDraft = {
   required: boolean;
   allow_other: boolean;
   options: { value: string; label: string }[];
+  mask: string | null;
 };
 
 const inputClass =
@@ -48,6 +49,7 @@ function FieldEditor({
     initial?.options.map((o) => o.label) ?? []
   );
   const [optionDraft, setOptionDraft] = useState("");
+  const [mask, setMask] = useState(initial?.mask ?? "");
 
   const isChoiceType = fieldType === "select" || fieldType === "multiselect";
   const displayKey = initial?.key ?? slugify(label);
@@ -81,6 +83,7 @@ function FieldEditor({
       required,
       allow_other: isChoiceType && allowOther,
       options: isChoiceType ? optionLabels.map((l) => ({ value: slugify(l), label: l })) : [],
+      mask: fieldType === "text" && mask.trim() ? mask.trim() : null,
     });
   }
 
@@ -117,6 +120,22 @@ function FieldEditor({
           </select>
         </div>
       </div>
+
+      {fieldType === "text" && (
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[12.5px] font-medium text-(--ink)">
+            {t("onboardingFieldMaskLabel")}
+          </label>
+          <input
+            type="text"
+            value={mask}
+            placeholder="ZZ.ZZZ.ZZZ/ZZZZ-99"
+            onChange={(e) => setMask(e.target.value)}
+            className={`${inputClass} font-mono`}
+          />
+          <span className="text-[11px] text-(--ink-soft)">{t("onboardingFieldMaskHint")}</span>
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-4">
         <label className="flex items-center gap-2 text-[13px] text-(--ink)">
@@ -223,7 +242,7 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
     const supabase = createClient();
     const { data } = await supabase
       .from("onboarding_form_fields")
-      .select("id, key, label, field_type, options, allow_other, required, position")
+      .select("id, key, label, field_type, options, allow_other, required, position, mask")
       .eq("tenant_id", tenantId)
       .order("position", { ascending: true });
     setFields((data as OnboardingField[] | null) ?? []);
@@ -246,6 +265,7 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
       options: draft.options,
       allow_other: draft.allow_other,
       required: draft.required,
+      mask: draft.mask,
       position: fields?.length ?? 0,
     });
     setBusy(null);
@@ -270,6 +290,7 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
         options: draft.options,
         allow_other: draft.allow_other,
         required: draft.required,
+        mask: draft.mask,
       })
       .eq("id", id);
     setBusy(null);
@@ -352,7 +373,10 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
                   </span>
                 )}
               </div>
-              <p className="text-[12px] text-(--ink-soft)">{field.key}</p>
+              <p className="text-[12px] text-(--ink-soft)">
+                {field.key}
+                {field.mask && <span className="font-mono"> · {field.mask}</span>}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button

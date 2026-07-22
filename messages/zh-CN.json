@@ -154,7 +154,8 @@
     "addCustomOption": "添加",
     "customOptionPlaceholder": "输入并添加一个选项",
     "notMemberTitle": "出现问题",
-    "notMemberBody": "未找到您在该企业的供应商注册记录，请联系支持团队。"
+    "notMemberBody": "未找到您在该企业的供应商注册记录，请联系支持团队。",
+    "cnpjChecksumWarning": "校验位不匹配 — 请检查输入的CNPJ。"
   },
   "companyLogo": {
     "title": "企业标志",
@@ -188,7 +189,9 @@
     "onboardingFieldTypeSelect": "列表（单选）",
     "onboardingFieldTypeMultiselect": "列表（多选）",
     "onboardingFieldRequiredLabel": "必填",
-    "onboardingFieldAllowOtherLabel": "允许“其他”（自由填写）",
+    "onboardingFieldMaskLabel": "输入掩码（可选）",
+    "onboardingFieldMaskHint": "使用 9 表示纯数字位，Z 表示字母或数字位，其他字符将作为固定字符自动插入。例如巴西CNPJ：ZZ.ZZZ.ZZZ/ZZZZ-99。",
+    "onboardingFieldAllowOtherLabel": "允许\"其他\"（自由填写）",
     "onboardingFieldOptionsLabel": "选项",
     "onboardingFieldOptionPlaceholder": "新选项",
     "onboardingFieldAddOption": "添加选项",

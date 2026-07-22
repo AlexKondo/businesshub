@@ -154,7 +154,8 @@
     "addCustomOption": "Add",
     "customOptionPlaceholder": "Type and add an option",
     "notMemberTitle": "Something's not right",
-    "notMemberBody": "We couldn't find your supplier record for this company. Please contact support."
+    "notMemberBody": "We couldn't find your supplier record for this company. Please contact support.",
+    "cnpjChecksumWarning": "The check digits don't match — please double-check the CNPJ."
   },
   "companyLogo": {
     "title": "Company logo",
@@ -188,6 +189,8 @@
     "onboardingFieldTypeSelect": "List (single choice)",
     "onboardingFieldTypeMultiselect": "List (multiple choice)",
     "onboardingFieldRequiredLabel": "Required",
+    "onboardingFieldMaskLabel": "Mask (optional)",
+    "onboardingFieldMaskHint": "Use 9 for a digit-only position, Z for a letter-or-digit position, and any other character as a fixed literal. E.g. ZZ.ZZZ.ZZZ/ZZZZ-99 for a CNPJ.",
     "onboardingFieldAllowOtherLabel": "Allow \"Other\" (free text)",
     "onboardingFieldOptionsLabel": "Options",
     "onboardingFieldOptionPlaceholder": "New option",

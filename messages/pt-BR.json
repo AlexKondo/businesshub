@@ -154,7 +154,8 @@
     "addCustomOption": "Adicionar",
     "customOptionPlaceholder": "Digite e adicione uma opção",
     "notMemberTitle": "Algo não está certo",
-    "notMemberBody": "Não encontramos seu cadastro de fornecedor nesta empresa. Entre em contato com o suporte."
+    "notMemberBody": "Não encontramos seu cadastro de fornecedor nesta empresa. Entre em contato com o suporte.",
+    "cnpjChecksumWarning": "Os dígitos verificadores não conferem — confira o CNPJ digitado."
   },
   "companyLogo": {
     "title": "Logo da empresa",
@@ -188,6 +189,8 @@
     "onboardingFieldTypeSelect": "Lista (escolha única)",
     "onboardingFieldTypeMultiselect": "Lista (múltipla escolha)",
     "onboardingFieldRequiredLabel": "Obrigatório",
+    "onboardingFieldMaskLabel": "Máscara (opcional)",
+    "onboardingFieldMaskHint": "Use 9 para posição numérica, Z para letra ou número, e outros caracteres como literais fixos. Ex.: ZZ.ZZZ.ZZZ/ZZZZ-99 para CNPJ.",
     "onboardingFieldAllowOtherLabel": "Permitir opção \"Outro\" (texto livre)",
     "onboardingFieldOptionsLabel": "Opções",
     "onboardingFieldOptionPlaceholder": "Nova opção",

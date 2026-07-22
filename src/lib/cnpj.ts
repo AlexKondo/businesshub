@@ -1,14 +1,22 @@
-// Validates a Brazilian CNPJ (checksum digits included), format-only for
-// now — the platform doesn't validate other countries' tax ids yet.
+// Validates a Brazilian CNPJ (checksum digits included). Accepts both the
+// legacy all-numeric format and the alphanumeric format Receita Federal
+// starts issuing in 2026 (IN RFB 2.229/2024): the first 12 positions
+// (root + branch) may be letters or digits, the last 2 (check digits) are
+// always numeric. Each character's value for the checksum is its ASCII
+// code minus 48 — for digits this equals the digit's face value (ASCII
+// "0" is 48), so the same formula already covers pure-numeric CNPJs
+// exactly as before.
 export function isValidCnpj(raw: string): boolean {
-  const cnpj = raw.replace(/\D/g, "");
-  if (cnpj.length !== 14) return false;
-  if (/^(\d)\1{13}$/.test(cnpj)) return false; // all same digit
+  const cnpj = raw.replace(/[^0-9A-Za-z]/g, "").toUpperCase();
+  if (!/^[0-9A-Z]{12}[0-9]{2}$/.test(cnpj)) return false;
+  if (/^(.)\1{13}$/.test(cnpj)) return false; // all same character
+
+  const charValue = (c: string) => c.charCodeAt(0) - 48;
 
   const calcCheckDigit = (base: string, weights: number[]) => {
     const sum = base
       .split("")
-      .reduce((acc, digit, i) => acc + Number(digit) * weights[i], 0);
+      .reduce((acc, char, i) => acc + charValue(char) * weights[i], 0);
     const rest = sum % 11;
     return rest < 2 ? 0 : 11 - rest;
   };

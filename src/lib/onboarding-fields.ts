@@ -18,6 +18,7 @@ export type OnboardingField = {
   allow_other: boolean;
   required: boolean;
   position: number;
+  mask: string | null;
 };
 
 export type OnboardingAnswers = Record<string, string | string[] | number | boolean | undefined>;

@@ -154,7 +154,8 @@
     "addCustomOption": "追加",
     "customOptionPlaceholder": "入力して選択肢を追加",
     "notMemberTitle": "問題が発生しました",
-    "notMemberBody": "この企業でのサプライヤー登録情報が見つかりませんでした。サポートまでお問い合わせください。"
+    "notMemberBody": "この企業でのサプライヤー登録情報が見つかりませんでした。サポートまでお問い合わせください。",
+    "cnpjChecksumWarning": "確認桁が一致しません — 入力したCNPJをご確認ください。"
   },
   "companyLogo": {
     "title": "会社のロゴ",
@@ -188,6 +189,8 @@
     "onboardingFieldTypeSelect": "リスト（単一選択）",
     "onboardingFieldTypeMultiselect": "リスト（複数選択）",
     "onboardingFieldRequiredLabel": "必須",
+    "onboardingFieldMaskLabel": "入力マスク（任意）",
+    "onboardingFieldMaskHint": "9は数字のみの桁、Zは英数字（文字または数字）の桁、それ以外の文字は固定文字として挿入されます。例: CNPJの場合 ZZ.ZZZ.ZZZ/ZZZZ-99。",
     "onboardingFieldAllowOtherLabel": "「その他」（自由記述）を許可",
     "onboardingFieldOptionsLabel": "選択肢",
     "onboardingFieldOptionPlaceholder": "新しい選択肢",
