@@ -27,7 +27,6 @@ type FieldDraft = {
   allow_other: boolean;
   options: { value: string; label: string; category?: string }[];
   mask: string | null;
-  category: string | null;
 };
 
 const inputClass =
@@ -67,7 +66,6 @@ function FieldEditor({
   const [optionDraft, setOptionDraft] = useState("");
   const [optionCategoryDraft, setOptionCategoryDraft] = useState("");
   const [mask, setMask] = useState(initial?.mask ?? "");
-  const [category, setCategory] = useState(initial?.category ?? "");
 
   const knownOptionCategories = Array.from(
     new Set(optionDrafts.map((o) => o.category).filter((c): c is string => !!c))
@@ -101,10 +99,8 @@ function FieldEditor({
     setOptionDrafts((prev) => prev.filter((_, i) => i !== idx));
   }
 
-  const canSubmit = label.trim() && (!isChoiceType || category.trim());
-
   function submit() {
-    if (!canSubmit) return;
+    if (!label.trim()) return;
     onSave({
       label: label.trim(),
       field_type: fieldType,
@@ -114,13 +110,12 @@ function FieldEditor({
         ? optionDrafts.map((o) => ({ value: slugify(o.label), label: o.label, category: o.category }))
         : [],
       mask: showMaskSection && mask.trim() ? mask.trim() : null,
-      category: isChoiceType && category.trim() ? category.trim() : null,
     });
   }
 
   return (
     <div className="flex flex-col gap-3 rounded-[10px] border border-(--brand-500)/30 bg-(--accent-soft) p-4">
-      <div className={`grid grid-cols-1 gap-3 ${isChoiceType ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label className="text-[12.5px] font-medium text-(--ink)">
             {t("onboardingFieldLabelInputLabel")}
@@ -149,20 +144,6 @@ function FieldEditor({
             ))}
           </select>
         </div>
-        {isChoiceType && (
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[12.5px] font-medium text-(--ink)">
-              {t("onboardingFieldCategoryLabel")}
-            </label>
-            <input
-              type="text"
-              value={category}
-              placeholder={t("onboardingFieldCategoryPlaceholder")}
-              onChange={(e) => setCategory(e.target.value)}
-              className={inputClass}
-            />
-          </div>
-        )}
       </div>
 
       {showMaskSection && (
@@ -338,7 +319,7 @@ function FieldEditor({
       <div className="flex items-center gap-2">
         <button
           type="button"
-          disabled={saving || !canSubmit}
+          disabled={saving || !label.trim()}
           onClick={submit}
           className="inline-flex h-9 items-center rounded-md bg-(--brand-500) px-3 text-[13px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
@@ -368,7 +349,7 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
     const supabase = createClient();
     const { data } = await supabase
       .from("onboarding_form_fields")
-      .select("id, key, label, field_type, options, allow_other, required, position, mask, category")
+      .select("id, key, label, field_type, options, allow_other, required, position, mask")
       .eq("tenant_id", tenantId)
       .order("position", { ascending: true });
     setFields((data as OnboardingField[] | null) ?? []);
@@ -392,7 +373,6 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
       allow_other: draft.allow_other,
       required: draft.required,
       mask: draft.mask,
-      category: draft.category,
       position: fields?.length ?? 0,
     });
     setBusy(null);
@@ -419,7 +399,6 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
         allow_other: draft.allow_other,
         required: draft.required,
         mask: draft.mask,
-        category: draft.category,
       })
       .eq("id", id);
     setBusy(null);
@@ -496,11 +475,6 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
                 <span className="rounded-full bg-(--accent-soft) px-2 py-0.5 text-[11px] font-semibold text-(--brand-500)">
                   {typeLabels[field.field_type]}
                 </span>
-                {field.category && (
-                  <span className="rounded-full border border-(--border-default) px-2 py-0.5 text-[11px] font-medium text-(--ink-soft)">
-                    {field.category}
-                  </span>
-                )}
                 {field.required && (
                   <span className="text-[11px] font-semibold uppercase text-(--warning-500)">
                     {t("onboardingFieldRequiredLabel")}

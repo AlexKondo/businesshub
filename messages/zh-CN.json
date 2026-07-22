@@ -183,8 +183,6 @@
     "onboardingFieldsAddButton": "添加字段",
     "onboardingFieldLabelInputLabel": "字段名称",
     "onboardingFieldTypeLabel": "字段类型",
-    "onboardingFieldCategoryLabel": "分类",
-    "onboardingFieldCategoryPlaceholder": "例如：电气材料",
     "onboardingFieldTypeText": "短文本",
     "onboardingFieldTypeTextarea": "长文本",
     "onboardingFieldTypeNumber": "数字",
