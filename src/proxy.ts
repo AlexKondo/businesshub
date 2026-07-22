@@ -1,10 +1,44 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextRequest, type NextFetchEvent } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { createServerClient } from "@supabase/ssr";
 import { routing } from "./i18n/routing";
 import { getCookieDomain } from "./lib/supabase/cookie-domain";
+import { getGeo, localeFromCountry } from "./lib/geo";
 
 const intlMiddleware = createMiddleware(routing);
+
+// Records one access-log row per root-domain page view (visitor IP + geo).
+// Fire-and-forget via event.waitUntil so it never adds latency, and fully
+// self-contained in try/catch so a logging failure can never break routing.
+async function logAccess(request: NextRequest) {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !serviceKey) return;
+
+    const { ip, country, city, region } = getGeo(request.headers);
+    await fetch(`${supabaseUrl}/rest/v1/access_logs`, {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        ip,
+        country,
+        city,
+        region,
+        path: request.nextUrl.pathname,
+        locale: request.nextUrl.pathname.split("/")[1] || null,
+        user_agent: request.headers.get("user-agent"),
+      }),
+    });
+  } catch {
+    // logging must never affect the request
+  }
+}
 
 const ROOT_DOMAIN = (process.env.NEXT_PUBLIC_APP_URL ?? "https://businesshub.app.br").replace(
   /^https?:\/\//,
@@ -40,11 +74,28 @@ function matchBareRootPath(pathname: string): { locale: string } | null {
   return null;
 }
 
-export default async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest, event: NextFetchEvent) {
   const tenantSlug = resolveTenantSlug(request.headers.get("host") ?? "");
 
-  // root domain: pure next-intl locale routing, nothing tenant-specific here.
+  // root domain: locale routing + geo-based first-language + access logging.
   if (!tenantSlug) {
+    try {
+      // log real page views only (the bare "/" just redirects, so its target
+      // "/{locale}" is the one that gets logged — avoids double counting).
+      if (request.nextUrl.pathname !== "/") {
+        event.waitUntil(logAccess(request));
+      }
+
+      // first-time visitor (no saved language) on the bare root: start in the
+      // language of their region (Cloudflare CF-IPCountry). An explicit choice
+      // (NEXT_LOCALE cookie) always wins and skips this.
+      if (request.nextUrl.pathname === "/" && !request.cookies.get("NEXT_LOCALE")) {
+        const locale = localeFromCountry(getGeo(request.headers).country);
+        return NextResponse.redirect(new URL(`/${locale}`, request.url));
+      }
+    } catch {
+      // any geo/logging failure falls through to normal locale routing
+    }
     return intlMiddleware(request);
   }
 
