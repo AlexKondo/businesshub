@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { Link } from "@/i18n/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { SupplierSignupForm } from "@/components/tenant/supplier-signup-form";
@@ -122,12 +123,12 @@ export default async function TenantLandingPage({
               >
                 {t("heroCta")}
               </a>
-              <a
-                href={`https://${rootDomain}/en-US/login`}
+              <Link
+                href="/login"
                 className="inline-flex h-11 items-center rounded-md px-6 text-sm font-semibold text-(--ink-soft) transition-colors hover:text-(--ink)"
               >
                 {t("loginCta")}
-              </a>
+              </Link>
             </div>
           </div>
         </section>

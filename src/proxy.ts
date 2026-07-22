@@ -69,6 +69,18 @@ function matchBareRootPath(pathname: string): { locale: string } | null {
   return null;
 }
 
+// Detects "/login", "/en-US/login" etc. — an anonymous visitor on a tenant
+// subdomain must be able to log in without ever being bounced to the root
+// domain (confusing for a supplier who arrived at a specific company's
+// page). LoginForm itself redirects to the visitor's actual tenant
+// subdomain after a successful sign-in.
+function matchLoginPath(pathname: string): boolean {
+  if (pathname === "/login") return true;
+  return routing.locales.some(
+    (locale) => pathname === `/${locale}/login` || pathname === `/${locale}/login/`
+  );
+}
+
 export default async function proxy(request: NextRequest, event: NextFetchEvent) {
   const tenantSlug = resolveTenantSlug(request.headers.get("host") ?? "");
 
@@ -137,6 +149,9 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
         return NextResponse.redirect(new URL(`/${initialLocale(request)}`, request.url));
       }
       return serveTenantLanding(bareRoot.locale);
+    }
+    if (matchLoginPath(request.nextUrl.pathname)) {
+      return withAuthCookies(intlMiddleware(request));
     }
     return NextResponse.redirect(`https://${ROOT_DOMAIN}/en-US/login`);
   }
