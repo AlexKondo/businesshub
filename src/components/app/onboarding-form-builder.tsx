@@ -18,17 +18,31 @@ const FIELD_TYPES: OnboardingFieldType[] = [
   "multiselect",
 ];
 
+type OptionDraft = { label: string; category?: string };
+
 type FieldDraft = {
   label: string;
   field_type: OnboardingFieldType;
   required: boolean;
   allow_other: boolean;
-  options: { value: string; label: string }[];
+  options: { value: string; label: string; category?: string }[];
   mask: string | null;
 };
 
 const inputClass =
   "h-9 rounded-md border border-(--border-default) bg-(--bg-canvas) px-2.5 text-[13px] text-(--ink) outline-none focus:border-(--brand-500)";
+
+// Groups options by category, preserving first-seen order; uncategorized
+// options land under the "" key (rendered without a header).
+function groupByCategory(options: (OptionDraft & { idx: number })[]) {
+  const groups = new Map<string, (OptionDraft & { idx: number })[]>();
+  for (const option of options) {
+    const key = option.category?.trim() || "";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(option);
+  }
+  return Array.from(groups.entries());
+}
 
 function FieldEditor({
   initial,
@@ -46,10 +60,11 @@ function FieldEditor({
   const [fieldType, setFieldType] = useState<OnboardingFieldType>(initial?.field_type ?? "text");
   const [required, setRequired] = useState(initial?.required ?? false);
   const [allowOther, setAllowOther] = useState(initial?.allow_other ?? false);
-  const [optionLabels, setOptionLabels] = useState<string[]>(
-    initial?.options.map((o) => o.label) ?? []
+  const [optionDrafts, setOptionDrafts] = useState<OptionDraft[]>(
+    initial?.options.map((o) => ({ label: o.label, category: o.category })) ?? []
   );
   const [optionDraft, setOptionDraft] = useState("");
+  const [categoryDraft, setCategoryDraft] = useState("");
   const [mask, setMask] = useState(initial?.mask ?? "");
 
   const isChoiceType = fieldType === "select" || fieldType === "multiselect";
@@ -68,13 +83,13 @@ function FieldEditor({
 
   function addOption() {
     const trimmed = optionDraft.trim();
-    if (!trimmed || optionLabels.includes(trimmed)) return;
-    setOptionLabels((prev) => [...prev, trimmed]);
+    if (!trimmed || optionDrafts.some((o) => o.label === trimmed)) return;
+    setOptionDrafts((prev) => [...prev, { label: trimmed, category: categoryDraft.trim() || undefined }]);
     setOptionDraft("");
   }
 
   function removeOption(idx: number) {
-    setOptionLabels((prev) => prev.filter((_, i) => i !== idx));
+    setOptionDrafts((prev) => prev.filter((_, i) => i !== idx));
   }
 
   function submit() {
@@ -84,7 +99,9 @@ function FieldEditor({
       field_type: fieldType,
       required,
       allow_other: isChoiceType && allowOther,
-      options: isChoiceType ? optionLabels.map((l) => ({ value: slugify(l), label: l })) : [],
+      options: isChoiceType
+        ? optionDrafts.map((o) => ({ value: slugify(o.label), label: o.label, category: o.category }))
+        : [],
       mask: showMaskSection && mask.trim() ? mask.trim() : null,
     });
   }
@@ -220,46 +237,71 @@ function FieldEditor({
           <span className="text-[12.5px] font-medium text-(--ink)">
             {t("onboardingFieldOptionsLabel")}
           </span>
-          {optionLabels.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {optionLabels.map((l, idx) => (
-                <span
-                  key={`${l}-${idx}`}
-                  className="inline-flex items-center gap-1 rounded-full bg-(--bg-surface) px-2.5 py-1 text-xs font-medium text-(--ink)"
-                >
-                  {l}
-                  <button
-                    type="button"
-                    onClick={() => removeOption(idx)}
-                    className="text-(--ink-soft) hover:text-(--danger-500)"
-                  >
-                    <X size={12} strokeWidth={2} />
-                  </button>
-                </span>
-              ))}
+          {optionDrafts.length > 0 && (
+            <div className="flex flex-col gap-2.5">
+              {groupByCategory(optionDrafts.map((o, idx) => ({ ...o, idx }))).map(
+                ([category, items]) => (
+                  <div key={category || "__none__"} className="flex flex-col gap-1">
+                    {category && (
+                      <span className="text-[10.5px] font-semibold uppercase tracking-wide text-(--ink-soft)">
+                        {category}
+                      </span>
+                    )}
+                    <div className="flex flex-wrap gap-1.5">
+                      {items.map((o) => (
+                        <span
+                          key={`${o.label}-${o.idx}`}
+                          className="inline-flex items-center gap-1 rounded-full bg-(--bg-surface) px-2.5 py-1 text-xs font-medium text-(--ink)"
+                        >
+                          {o.label}
+                          <button
+                            type="button"
+                            onClick={() => removeOption(o.idx)}
+                            className="text-(--ink-soft) hover:text-(--danger-500)"
+                          >
+                            <X size={12} strokeWidth={2} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )
+              )}
             </div>
           )}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={optionDraft}
-              placeholder={t("onboardingFieldOptionPlaceholder")}
-              onChange={(e) => setOptionDraft(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addOption();
-                }
-              }}
-              className={`${inputClass} flex-1`}
-            />
-            <button
-              type="button"
-              onClick={addOption}
-              className="inline-flex h-9 items-center rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--bg-surface)"
-            >
-              {t("onboardingFieldAddOption")}
-            </button>
+          <div className="flex flex-col gap-1">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={categoryDraft}
+                placeholder={t("onboardingFieldOptionCategoryPlaceholder")}
+                onChange={(e) => setCategoryDraft(e.target.value)}
+                className={`${inputClass} w-44`}
+              />
+              <input
+                type="text"
+                value={optionDraft}
+                placeholder={t("onboardingFieldOptionPlaceholder")}
+                onChange={(e) => setOptionDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addOption();
+                  }
+                }}
+                className={`${inputClass} flex-1`}
+              />
+              <button
+                type="button"
+                onClick={addOption}
+                className="inline-flex h-9 shrink-0 items-center rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--bg-surface)"
+              >
+                {t("onboardingFieldAddOption")}
+              </button>
+            </div>
+            <span className="text-[11px] text-(--ink-soft)">
+              {t("onboardingFieldOptionCategoryHint")}
+            </span>
           </div>
         </div>
       )}

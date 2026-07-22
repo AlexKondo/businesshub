@@ -200,6 +200,8 @@
     "onboardingFieldAllowOtherLabel": "Permitir opção \"Outro\" (texto livre)",
     "onboardingFieldOptionsLabel": "Opções",
     "onboardingFieldOptionPlaceholder": "Nova opção",
+    "onboardingFieldOptionCategoryPlaceholder": "Categoria (opcional)",
+    "onboardingFieldOptionCategoryHint": "A categoria digitada aqui é usada em toda opção adicionada até você trocá-la — assim dá pra cadastrar várias opções seguidas na mesma categoria.",
     "onboardingFieldAddOption": "Adicionar opção",
     "onboardingFieldRemoveOption": "Remover",
     "onboardingFieldSave": "Salvar",

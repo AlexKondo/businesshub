@@ -54,7 +54,7 @@ function SelectWithOther({
   otherLabel,
   otherPlaceholder,
 }: {
-  options: { value: string; label: string }[];
+  options: { value: string; label: string; category?: string }[];
   allowOther: boolean;
   value: string;
   onChange: (v: string) => void;
@@ -63,6 +63,13 @@ function SelectWithOther({
 }) {
   const isKnownValue = options.some((o) => o.value === value);
   const [otherMode, setOtherMode] = useState(allowOther && value !== "" && !isKnownValue);
+
+  const groups = new Map<string, { value: string; label: string }[]>();
+  for (const option of options) {
+    const key = option.category?.trim() || "";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(option);
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -80,11 +87,23 @@ function SelectWithOther({
         className={inputClass}
       >
         <option value="" disabled />
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
+        {Array.from(groups.entries()).map(([category, items]) =>
+          category ? (
+            <optgroup key={category} label={category}>
+              {items.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </optgroup>
+          ) : (
+            items.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))
+          )
+        )}
         {allowOther && <option value="__other__">{otherLabel}</option>}
       </select>
       {otherMode && (

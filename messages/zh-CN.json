@@ -200,6 +200,8 @@
     "onboardingFieldAllowOtherLabel": "允许\"其他\"（自由填写）",
     "onboardingFieldOptionsLabel": "选项",
     "onboardingFieldOptionPlaceholder": "新选项",
+    "onboardingFieldOptionCategoryPlaceholder": "分类（可选）",
+    "onboardingFieldOptionCategoryHint": "此处输入的分类会应用于之后添加的所有选项，直到您更改它 — 方便连续添加同一分类下的多个选项。",
     "onboardingFieldAddOption": "添加选项",
     "onboardingFieldRemoveOption": "移除",
     "onboardingFieldSave": "保存",
