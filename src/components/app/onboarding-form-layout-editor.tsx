@@ -96,9 +96,13 @@ export function OnboardingFormLayoutEditor({
       {fields.length === 0 ? (
         <p className="mt-6 text-[13.5px] text-(--ink-soft)">{t("onboardingFieldsEmpty")}</p>
       ) : (
+        // Capped at the same max-width as the real supplier-facing card
+        // (SupplierOnboardingShell) — otherwise a layout that looks fine
+        // here (using the admin panel's much wider content area) can come
+        // out cramped on the actual, narrower form.
         <div
           ref={containerRef}
-          className="mt-6 grid grid-cols-[repeat(50,minmax(0,1fr))] gap-y-5 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6"
+          className="mt-6 mx-auto grid max-w-[1140px] grid-cols-[repeat(50,minmax(0,1fr))] gap-y-5 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6 sm:p-8"
         >
           {fields.map((field) => (
             <GridResizableCell

@@ -31,7 +31,7 @@ export function SupplierOnboardingShell({
         </div>
       </header>
       <main className="flex-1 px-6 py-10 sm:px-10">
-        <div className="mx-auto max-w-[720px]">{children}</div>
+        <div className="mx-auto max-w-[1140px]">{children}</div>
       </main>
     </div>
   );
