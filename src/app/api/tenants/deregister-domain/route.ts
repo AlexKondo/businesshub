@@ -11,11 +11,11 @@ export async function POST(request: Request) {
   }
 
   const payload = await request.json();
-  const slug = payload?.old_record?.slug;
-  if (!slug || typeof slug !== "string") {
-    return NextResponse.json({ error: "missing_slug" }, { status: 400 });
-  }
+  const slug = payload?.old_record?.slug ?? null;
 
-  const { deploymentUuid } = await deregisterTenantDomain(slug);
+  // Reconciles the full domain list from surviving companies — the deleted
+  // slug is already gone from the DB, so it drops out naturally. Race-free
+  // even if several deletes fire at once.
+  const { deploymentUuid } = await deregisterTenantDomain();
   return NextResponse.json({ ok: true, slug, deploymentUuid });
 }
