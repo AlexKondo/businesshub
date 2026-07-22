@@ -204,6 +204,8 @@
     "onboardingFieldAllowOtherLabel": "Permitir opción \"Otro\" (texto libre)",
     "onboardingFieldOptionsLabel": "Opciones",
     "onboardingFieldOptionPlaceholder": "Nueva opción",
+    "onboardingFieldOptionCategoryPlaceholder": "Categoría del ítem (opcional)",
+    "onboardingFieldOptionCategoryHint": "Empieza a escribir para reutilizar una categoría ya usada en esta lista, o escribe una nueva.",
     "onboardingFieldAddOption": "Agregar opción",
     "onboardingFieldRemoveOption": "Quitar",
     "onboardingFieldSave": "Guardar",

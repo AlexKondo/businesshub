@@ -1,4 +1,4 @@
-export type OnboardingFieldOption = { value: string; label: string };
+export type OnboardingFieldOption = { value: string; label: string; category?: string };
 
 export type OnboardingFieldType =
   | "text"

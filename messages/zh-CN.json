@@ -204,6 +204,8 @@
     "onboardingFieldAllowOtherLabel": "允许\"其他\"（自由填写）",
     "onboardingFieldOptionsLabel": "选项",
     "onboardingFieldOptionPlaceholder": "新选项",
+    "onboardingFieldOptionCategoryPlaceholder": "项目分类（可选）",
+    "onboardingFieldOptionCategoryHint": "开始输入以复用此列表中已使用的分类，或输入新的分类。",
     "onboardingFieldAddOption": "添加选项",
     "onboardingFieldRemoveOption": "移除",
     "onboardingFieldSave": "保存",

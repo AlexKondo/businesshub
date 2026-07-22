@@ -204,6 +204,8 @@
     "onboardingFieldAllowOtherLabel": "Allow \"Other\" (free text)",
     "onboardingFieldOptionsLabel": "Options",
     "onboardingFieldOptionPlaceholder": "New option",
+    "onboardingFieldOptionCategoryPlaceholder": "Item category (optional)",
+    "onboardingFieldOptionCategoryHint": "Start typing to reuse a category already used in this list, or type a new one.",
     "onboardingFieldAddOption": "Add option",
     "onboardingFieldRemoveOption": "Remove",
     "onboardingFieldSave": "Save",

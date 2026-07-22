@@ -204,6 +204,8 @@
     "onboardingFieldAllowOtherLabel": "「その他」（自由記述）を許可",
     "onboardingFieldOptionsLabel": "選択肢",
     "onboardingFieldOptionPlaceholder": "新しい選択肢",
+    "onboardingFieldOptionCategoryPlaceholder": "項目のカテゴリ（任意）",
+    "onboardingFieldOptionCategoryHint": "入力を始めると、このリストで既に使ったカテゴリを再利用できます。新しいカテゴリも入力できます。",
     "onboardingFieldAddOption": "選択肢を追加",
     "onboardingFieldRemoveOption": "削除",
     "onboardingFieldSave": "保存",
