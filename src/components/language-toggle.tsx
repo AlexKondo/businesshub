@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Globe } from "lucide-react";
-import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 const LOCALE_LABELS: Record<string, string> = {
@@ -14,11 +13,23 @@ const LOCALE_LABELS: Record<string, string> = {
   "pt-BR": "Português (BR)",
 };
 
+// Swaps the locale segment using the browser's own address bar
+// (window.location), not next-intl's usePathname/router. On pages reached
+// via a middleware rewrite (e.g. a tenant's public landing, rewritten from
+// "/" to "/{locale}/tenant-landing/{slug}"), next-intl's pathname reflects
+// the rewritten internal route rather than the externally visible URL —
+// navigating from that would send the browser somewhere that was never a
+// real, addressable page. window.location.pathname is always the real one.
+function switchLocale(nextLocale: string) {
+  const segments = window.location.pathname.split("/");
+  segments[1] = nextLocale;
+  const newPath = segments.join("/") || "/";
+  window.location.href = `${newPath}${window.location.search}${window.location.hash}`;
+}
+
 export function LanguageToggle() {
   const t = useTranslations("language");
   const locale = useLocale();
-  const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -51,7 +62,7 @@ export function LanguageToggle() {
               type="button"
               onClick={() => {
                 setOpen(false);
-                router.replace(pathname, { locale: l });
+                switchLocale(l);
               }}
               className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors hover:bg-(--accent-soft) ${
                 l === locale ? "text-(--brand-500) font-medium" : "text-(--ink)"
