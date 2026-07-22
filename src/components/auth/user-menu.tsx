@@ -31,10 +31,11 @@ export function UserMenu({
   async function handleLogout() {
     const supabase = createClient();
     await supabase.auth.signOut();
-    // full navigation on purpose: logging out from a tenant subdomain must
-    // always land back on the root marketing/login domain.
-    const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
-    window.location.href = root ? `https://${root}` : "/";
+    // Full navigation on purpose (fresh trip through proxy.ts), but always
+    // relative — never bounce a tenant subdomain visitor over to the root
+    // domain. On a subdomain this lands back on that tenant's own public
+    // landing page; on the root domain it lands on the marketing homepage.
+    window.location.href = "/";
   }
 
   return (
