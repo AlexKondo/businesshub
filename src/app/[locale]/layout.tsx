@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -28,6 +29,12 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  // Bind next-intl to the URL's locale segment explicitly. Pages reached via a
+  // middleware rewrite (e.g. the tenant public landing) never pass through
+  // intlMiddleware, so without this next-intl can't infer the locale and falls
+  // back to the default — showing English on a /es URL.
+  setRequestLocale(locale);
 
   return (
     <html lang={locale} suppressHydrationWarning>
