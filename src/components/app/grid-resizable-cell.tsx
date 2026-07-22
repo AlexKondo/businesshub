@@ -2,10 +2,15 @@
 
 import { useEffect, useRef } from "react";
 
-// Same drag-to-resize mechanism as ResizableBox, but resizes a 1-12 CSS
-// Grid column span instead of a raw pixel width — drag distance is
-// converted to a span delta relative to the grid container's measured
-// width, so "how many columns" scales correctly regardless of screen size.
+// Shared by every place that renders the field grid (this admin editor and
+// the real supplier form) — keep them in sync if this ever changes.
+export const GRID_TOTAL_COLUMNS = 50;
+
+// Same drag-to-resize mechanism as ResizableBox, but resizes a
+// 1-GRID_TOTAL_COLUMNS CSS Grid column span instead of a raw pixel width —
+// drag distance is converted to a span delta relative to the grid
+// container's measured width, so "how many columns" scales correctly
+// regardless of screen size.
 export function GridResizableCell({
   span,
   containerRef,
@@ -36,9 +41,12 @@ export function GridResizableCell({
     function onMouseMove(e: MouseEvent) {
       if (!dragStartRef.current || !containerRef.current) return;
       const containerWidth = containerRef.current.getBoundingClientRect().width;
-      const perColumn = containerWidth / 12;
+      const perColumn = containerWidth / GRID_TOTAL_COLUMNS;
       const deltaSpan = Math.round((e.clientX - dragStartRef.current.x) / perColumn);
-      const next = Math.min(12, Math.max(1, dragStartRef.current.span + deltaSpan));
+      const next = Math.min(
+        GRID_TOTAL_COLUMNS,
+        Math.max(1, dragStartRef.current.span + deltaSpan)
+      );
       onResizeRef.current(next);
     }
     function onMouseUp() {
@@ -65,7 +73,7 @@ export function GridResizableCell({
   return (
     <div
       style={{ gridColumn: `span ${span}` }}
-      className={`relative ${className ?? ""}`}
+      className={`relative px-2.5 first:pl-0 last:pr-0 ${className ?? ""}`}
     >
       {children}
       <div

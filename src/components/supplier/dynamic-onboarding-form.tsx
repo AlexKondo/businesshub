@@ -198,7 +198,7 @@ export function DynamicOnboardingForm({
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mt-8 grid grid-cols-12 gap-x-5 gap-y-5 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6 sm:p-8"
+        className="mt-8 grid grid-cols-[repeat(50,minmax(0,1fr))] gap-y-5 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6 sm:p-8"
       >
         {orderedFields.map((field) => {
           const error = errors[field.key];
@@ -214,7 +214,7 @@ export function DynamicOnboardingForm({
             <div
               key={field.id}
               style={{ "--field-span": field.width } as React.CSSProperties}
-              className="col-span-12 flex flex-col gap-1.5 sm:[grid-column:span_var(--field-span)]"
+              className="flex flex-col gap-1.5 px-2.5 first:pl-0 last:pr-0 [grid-column:span_50] sm:[grid-column:span_var(--field-span)]"
             >
               <label htmlFor={field.key} className={labelClass}>
                 {field.label}

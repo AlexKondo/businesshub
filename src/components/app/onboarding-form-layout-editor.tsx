@@ -98,7 +98,7 @@ export function OnboardingFormLayoutEditor({
       ) : (
         <div
           ref={containerRef}
-          className="mt-6 grid grid-cols-12 gap-x-5 gap-y-5 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6"
+          className="mt-6 grid grid-cols-[repeat(50,minmax(0,1fr))] gap-y-5 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6"
         >
           {fields.map((field) => (
             <GridResizableCell
