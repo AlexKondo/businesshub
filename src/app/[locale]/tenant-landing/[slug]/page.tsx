@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
-import { SupplierLeadForm } from "@/components/tenant/supplier-lead-form";
+import { SupplierSignupForm } from "@/components/tenant/supplier-signup-form";
 
 // Public, unauthenticated page — reachable at the bare root of a tenant
 // subdomain (e.g. acme.businesshub.app.br). This is the address shared with
@@ -134,7 +134,7 @@ export default async function TenantLandingPage({
 
         <section id="cadastro" className="scroll-mt-10 px-6 pb-24">
           <div className="mx-auto max-w-[640px]">
-            <SupplierLeadForm tenantId={company.id} companyName={displayName} />
+            <SupplierSignupForm tenantId={company.id} companyName={displayName} />
           </div>
         </section>
       </main>

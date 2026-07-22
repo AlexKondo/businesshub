@@ -11,6 +11,7 @@ import { formatCep, isValidCep, lookupCep } from "@/lib/cep";
 import { createClient } from "@/lib/supabase/client";
 import { Link } from "@/i18n/navigation";
 import { Check, Loader2 } from "lucide-react";
+import { slugify } from "@/lib/slug";
 
 const DRAFT_STORAGE_KEY = "businesshub:onboarding-draft";
 
@@ -21,15 +22,6 @@ const PROVISIONING_STEP_KEYS = [
   "provisioningStepSecurity",
 ] as const;
 const PROVISIONING_STEP_THRESHOLDS = [1, 4, 9]; // seconds at which steps 0-2 tick; last step spins until done
-
-function slugify(input: string) {
-  return input
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "") // strip diacritics after NFD split
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
 
 async function checkTaxIdExists(digits: string): Promise<boolean | null> {
   try {

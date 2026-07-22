@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { routing } from "./i18n/routing";
 import { getCookieDomain } from "./lib/supabase/cookie-domain";
 import { getGeo, localeFromCountry } from "./lib/geo";
+import { ROOT_DOMAIN, resolveTenantSlug } from "./lib/tenant";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -38,27 +39,6 @@ async function logAccess(request: NextRequest) {
   } catch {
     // logging must never affect the request
   }
-}
-
-const ROOT_DOMAIN = (process.env.NEXT_PUBLIC_APP_URL ?? "https://businesshub.app.br").replace(
-  /^https?:\/\//,
-  ""
-);
-
-function resolveTenantSlug(host: string): string | null {
-  const hostname = host.split(":")[0];
-  if (
-    hostname === "localhost" ||
-    hostname.endsWith(".local") ||
-    hostname === ROOT_DOMAIN ||
-    hostname === `www.${ROOT_DOMAIN}`
-  ) {
-    return null; // root / marketing / local dev
-  }
-  if (hostname.endsWith(`.${ROOT_DOMAIN}`)) {
-    return hostname.slice(0, -(`.${ROOT_DOMAIN}`.length));
-  }
-  return null; // unrecognized host (e.g. a preview URL) — treat as root
 }
 
 // Resolves the locale for a bare "/" visit (no locale in the URL yet): an

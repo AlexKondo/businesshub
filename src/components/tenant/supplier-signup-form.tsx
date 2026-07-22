@@ -4,12 +4,22 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { formatPhoneBR, isValidPhoneBR } from "@/lib/phone";
+import { createClient } from "@/lib/supabase/client";
+import { PasswordInput } from "@/components/auth/password-input";
 
-export function SupplierLeadForm({ tenantId, companyName }: { tenantId: string; companyName: string }) {
+export function SupplierSignupForm({
+  tenantId,
+  companyName,
+}: {
+  tenantId: string;
+  companyName: string;
+}) {
   const t = useTranslations("tenantLanding");
   const tv = useTranslations("auth.validation");
+  const ts = useTranslations("auth.signup");
+  const locale = useLocale();
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -18,6 +28,7 @@ export function SupplierLeadForm({ tenantId, companyName }: { tenantId: string; 
     companyNameInput: z.string().min(2, t("companyNameTooShort")),
     email: z.string().email(tv("emailInvalid")),
     phone: z.string().refine((v) => isValidPhoneBR(v), t("phoneInvalid")),
+    password: z.string().min(8, tv("passwordMin")),
   });
   type FormValues = z.infer<typeof schema>;
 
@@ -29,18 +40,21 @@ export function SupplierLeadForm({ tenantId, companyName }: { tenantId: string; 
 
   async function onSubmit(values: FormValues) {
     setServerError(null);
-    const res = await fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tenantId,
-        contactName: values.contactName,
-        companyName: values.companyNameInput,
-        email: values.email,
-        phone: values.phone,
-      }),
+    const supabase = createClient();
+    const { error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        data: {
+          full_name: values.contactName,
+          locale,
+          pending_supplier_tenant_id: tenantId,
+          pending_supplier_company_name: values.companyNameInput,
+        },
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/${locale}/supplier-onboarding`,
+      },
     });
-    if (!res.ok) {
+    if (error) {
       setServerError(t("formErrorGeneric"));
       return;
     }
@@ -122,6 +136,23 @@ export function SupplierLeadForm({ tenantId, companyName }: { tenantId: string; 
             />
             {errors.phone && <span className={errorClass}>{errors.phone.message}</span>}
           </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="password" className={labelClass}>
+            {ts("passwordLabel")}
+          </label>
+          <PasswordInput
+            id="password"
+            autoComplete="new-password"
+            {...register("password")}
+            className={inputClass}
+          />
+          {errors.password ? (
+            <span className={errorClass}>{errors.password.message}</span>
+          ) : (
+            <span className="text-xs text-(--ink-soft)">{ts("passwordHint")}</span>
+          )}
         </div>
 
         {serverError && (

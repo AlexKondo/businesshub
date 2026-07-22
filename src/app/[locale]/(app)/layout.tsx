@@ -23,12 +23,23 @@ export default async function AppLayout({
   }
 
   const [{ data: membership }, { data: platformAdmin }] = await Promise.all([
-    supabase.from("memberships").select("id").eq("user_id", user!.id).maybeSingle(),
+    supabase
+      .from("memberships")
+      .select("id, roles(name)")
+      .eq("user_id", user!.id)
+      .maybeSingle<{ id: string; roles: { name: string } | null }>(),
     supabase.from("platform_admins").select("user_id").eq("user_id", user!.id).maybeSingle(),
   ]);
 
   if (!membership && !platformAdmin) {
     redirect({ href: "/onboarding", locale });
+  }
+
+  // A Fornecedor has no use for the internal staff shell (Suppliers/
+  // Contracts/Documents/Purchase Orders) — send them to their own onboarding
+  // page instead, even if they reached /dashboard directly on the root domain.
+  if (membership?.roles?.name === "Fornecedor") {
+    redirect({ href: "/supplier-onboarding", locale });
   }
 
   return <AppShell user={user!}>{children}</AppShell>;

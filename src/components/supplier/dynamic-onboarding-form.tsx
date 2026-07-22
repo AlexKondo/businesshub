@@ -1,0 +1,270 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useTranslations } from "next-intl";
+import { createClient } from "@/lib/supabase/client";
+import { MultiSelectWithOther } from "@/components/supplier/multiselect-with-other";
+import type { OnboardingField, OnboardingAnswers } from "@/lib/onboarding-fields";
+
+const inputClass =
+  "h-10 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)";
+const labelClass = "text-[13px] font-medium text-(--ink)";
+const errorClass = "text-xs text-(--danger-500)";
+
+function fieldToZod(field: OnboardingField, requiredMessage: string): z.ZodTypeAny {
+  switch (field.field_type) {
+    case "number": {
+      const base = z.coerce.number();
+      return field.required ? base : base.optional();
+    }
+    case "boolean":
+      return z.boolean().optional();
+    case "multiselect": {
+      const base = z.array(z.string());
+      return field.required ? base.min(1, requiredMessage) : base.optional();
+    }
+    case "text":
+    case "textarea":
+    case "select":
+    default: {
+      const base = z.string();
+      return field.required ? base.min(1, requiredMessage) : base.optional();
+    }
+  }
+}
+
+function defaultValueFor(field: OnboardingField, initialAnswers: OnboardingAnswers) {
+  const saved = initialAnswers[field.key];
+  if (field.field_type === "multiselect") return Array.isArray(saved) ? saved : [];
+  if (field.field_type === "boolean") return Boolean(saved);
+  return saved ?? "";
+}
+
+function SelectWithOther({
+  options,
+  allowOther,
+  value,
+  onChange,
+  otherLabel,
+  otherPlaceholder,
+}: {
+  options: { value: string; label: string }[];
+  allowOther: boolean;
+  value: string;
+  onChange: (v: string) => void;
+  otherLabel: string;
+  otherPlaceholder: string;
+}) {
+  const isKnownValue = options.some((o) => o.value === value);
+  const [otherMode, setOtherMode] = useState(allowOther && value !== "" && !isKnownValue);
+
+  return (
+    <div className="flex flex-col gap-2">
+      <select
+        value={otherMode ? "__other__" : isKnownValue ? value : ""}
+        onChange={(e) => {
+          if (e.target.value === "__other__") {
+            setOtherMode(true);
+            onChange("");
+          } else {
+            setOtherMode(false);
+            onChange(e.target.value);
+          }
+        }}
+        className={inputClass}
+      >
+        <option value="" disabled />
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+        {allowOther && <option value="__other__">{otherLabel}</option>}
+      </select>
+      {otherMode && (
+        <input
+          type="text"
+          value={value}
+          placeholder={otherPlaceholder}
+          onChange={(e) => onChange(e.target.value)}
+          className={inputClass}
+        />
+      )}
+    </div>
+  );
+}
+
+export function DynamicOnboardingForm({
+  tenantId,
+  membershipId,
+  companyName,
+  fields,
+  initialAnswers,
+}: {
+  tenantId: string;
+  membershipId: string;
+  companyName: string;
+  fields: OnboardingField[];
+  initialAnswers: OnboardingAnswers;
+}) {
+  const t = useTranslations("supplierOnboarding");
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+
+  const orderedFields = useMemo(
+    () => [...fields].sort((a, b) => a.position - b.position),
+    [fields]
+  );
+
+  const schema = useMemo(
+    () =>
+      z.object(
+        Object.fromEntries(orderedFields.map((f) => [f.key, fieldToZod(f, t("requiredError"))]))
+      ),
+    [orderedFields, t]
+  );
+
+  const defaultValues = useMemo(
+    () =>
+      Object.fromEntries(orderedFields.map((f) => [f.key, defaultValueFor(f, initialAnswers)])),
+    [orderedFields, initialAnswers]
+  );
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: zodResolver(schema), defaultValues });
+
+  async function onSubmit(values: Record<string, unknown>) {
+    setServerError(null);
+    setSaved(false);
+    const supabase = createClient();
+    const { error } = await supabase.from("supplier_onboarding_submissions").upsert(
+      { tenant_id: tenantId, membership_id: membershipId, answers: values },
+      { onConflict: "membership_id" }
+    );
+    if (error) {
+      setServerError(t("saveError"));
+      return;
+    }
+    setSaved(true);
+  }
+
+  if (orderedFields.length === 0) {
+    return (
+      <div className="rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
+        <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">{t("emptyTitle")}</h1>
+        <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
+          {t("emptyBody", { name: companyName })}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{t("title")}</h1>
+      <p className="mt-1 text-[14px] text-(--ink-soft)">{t("subtitle", { name: companyName })}</p>
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="mt-8 flex flex-col gap-5 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6 sm:p-8"
+      >
+        {orderedFields.map((field) => {
+          const error = errors[field.key];
+          return (
+            <div key={field.id} className="flex flex-col gap-1.5">
+              <label htmlFor={field.key} className={labelClass}>
+                {field.label}
+                {field.required && <span className="text-(--danger-500)"> *</span>}
+              </label>
+
+              {(field.field_type === "text" || field.field_type === "number") && (
+                <input
+                  id={field.key}
+                  type={field.field_type === "number" ? "number" : "text"}
+                  {...register(field.key)}
+                  className={inputClass}
+                />
+              )}
+
+              {field.field_type === "textarea" && (
+                <textarea id={field.key} rows={4} {...register(field.key)} className={inputClass} />
+              )}
+
+              {field.field_type === "boolean" && (
+                <label className="flex items-center gap-2.5 text-[13px] text-(--ink)">
+                  <input
+                    type="checkbox"
+                    {...register(field.key)}
+                    className="h-4 w-4 shrink-0 accent-(--brand-500)"
+                  />
+                </label>
+              )}
+
+              {field.field_type === "select" && (
+                <Controller
+                  control={control}
+                  name={field.key}
+                  render={({ field: controllerField }) => (
+                    <SelectWithOther
+                      options={field.options}
+                      allowOther={field.allow_other}
+                      value={(controllerField.value as string) ?? ""}
+                      onChange={controllerField.onChange}
+                      otherLabel={t("otherOptionLabel")}
+                      otherPlaceholder={t("otherOptionPlaceholder")}
+                    />
+                  )}
+                />
+              )}
+
+              {field.field_type === "multiselect" && (
+                <Controller
+                  control={control}
+                  name={field.key}
+                  render={({ field: controllerField }) => (
+                    <MultiSelectWithOther
+                      options={field.options}
+                      allowOther={field.allow_other}
+                      value={(controllerField.value as string[]) ?? []}
+                      onChange={controllerField.onChange}
+                      addLabel={t("addCustomOption")}
+                      placeholder={t("customOptionPlaceholder")}
+                    />
+                  )}
+                />
+              )}
+
+              {error && <span className={errorClass}>{String(error.message)}</span>}
+            </div>
+          );
+        })}
+
+        {serverError && (
+          <p className="rounded-md bg-(--danger-500)/10 px-3 py-2 text-xs text-(--danger-500)">
+            {serverError}
+          </p>
+        )}
+        {saved && !serverError && (
+          <p className="rounded-md bg-(--success-500)/10 px-3 py-2 text-xs text-(--success-500)">
+            {t("saveSuccess")}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="mt-1 inline-flex h-11 items-center justify-center rounded-md bg-(--brand-500) text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
+        >
+          {isSubmitting ? t("submitting") : t("submit")}
+        </button>
+      </form>
+    </div>
+  );
+}
