@@ -4,11 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { isValidCnpj, formatCnpj } from "@/lib/cnpj";
 import { isValidPhoneBR, formatPhoneBR } from "@/lib/phone";
-import { lookupCep } from "@/lib/cep";
-import { postalConfig } from "@/lib/postal";
+import { formatCep, isValidCep, lookupCep } from "@/lib/cep";
 import { createClient } from "@/lib/supabase/client";
 import { Link } from "@/i18n/navigation";
 import { Check, Loader2 } from "lucide-react";
@@ -55,8 +54,6 @@ async function waitForDeployment(deploymentUuid: string, timeoutMs = 5 * 60 * 10
 
 export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const t = useTranslations("onboarding");
-  const locale = useLocale();
-  const postal = postalConfig(locale);
   const [serverError, setServerError] = useState<string | null>(null);
   const [stage, setStage] = useState<
     "form" | "provisioning" | "provisioning-error" | "success" | "pending"
@@ -90,7 +87,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     legalName: z.string().min(2, t("legalNameTooShort")),
     name: z.string().min(2, t("nameTooShort")),
     taxId: z.string().refine((v) => isValidCnpj(v), t("taxIdInvalid")),
-    addressZip: z.string().refine((v) => postal.isValid(v), t("zipInvalid")),
+    addressZip: z.string().trim().min(1, t("zipInvalid")),
     addressStreet: z.string().min(2, t("addressRequired")),
     addressNumber: z.string().min(1, t("addressRequired")),
     addressComplement: z.string().optional(),
@@ -413,14 +410,19 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
               <input
                 id="addressZip"
                 type="text"
-                inputMode="numeric"
-                placeholder={postal.placeholder}
+                placeholder="00000-000"
                 {...register("addressZip", {
                   onChange: (e) => {
-                    e.target.value = postal.format(e.target.value);
+                    // Only nudge the value toward the BR CEP mask while it still
+                    // looks like a plain digit sequence — any other shape (letters,
+                    // spaces, other countries' formats) passes through untouched,
+                    // since the company being registered may be outside Brazil.
+                    if (/^[\d-]*$/.test(e.target.value)) {
+                      e.target.value = formatCep(e.target.value);
+                    }
                   },
                   onBlur: async (e) => {
-                    if (!postal.autofill || !postal.isValid(e.target.value)) return;
+                    if (!isValidCep(e.target.value)) return;
                     const found = await lookupCep(e.target.value);
                     if (!found) return;
                     if (found.street)
@@ -439,9 +441,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
                 })}
                 className={inputClass}
               />
-              {postal.autofill && (
-                <span className="text-xs text-(--ink-soft)">{t("zipHint")}</span>
-              )}
+              <span className="text-xs text-(--ink-soft)">{t("zipHint")}</span>
               {errors.addressZip && <span className={errorClass}>{errors.addressZip.message}</span>}
             </div>
           </div>

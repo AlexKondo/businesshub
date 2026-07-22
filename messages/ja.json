@@ -72,7 +72,7 @@
     "taxIdHint": "会社が既にBusinessHubに登録されているか確認するために使用します。",
     "taxIdInvalid": "有効なCNPJを入力してください。",
     "zipLabel": "郵便番号",
-    "zipHint": "住所を自動入力します。",
+    "zipHint": "ブラジルの郵便番号の場合、住所を自動入力します。",
     "zipInvalid": "有効な郵便番号を入力してください。",
     "addressStreetLabel": "住所",
     "addressNumberLabel": "番地",

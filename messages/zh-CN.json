@@ -72,7 +72,7 @@
     "taxIdHint": "用于检测您的企业是否已经在 BusinessHub 上。",
     "taxIdInvalid": "请输入有效的 CNPJ。",
     "zipLabel": "邮政编码",
-    "zipHint": "自动填写地址。",
+    "zipHint": "如果是巴西邮政编码，将自动填写地址。",
     "zipInvalid": "请输入有效的邮政编码。",
     "addressStreetLabel": "街道地址",
     "addressNumberLabel": "门牌号",

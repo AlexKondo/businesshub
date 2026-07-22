@@ -72,7 +72,7 @@
     "taxIdHint": "Usado para detectar se sua empresa já está no BusinessHub.",
     "taxIdInvalid": "Digite um CNPJ válido.",
     "zipLabel": "CEP",
-    "zipHint": "Preenche o endereço automaticamente.",
+    "zipHint": "Se for um CEP brasileiro, preenche o endereço automaticamente.",
     "zipInvalid": "Digite um CEP válido.",
     "addressStreetLabel": "Endereço",
     "addressNumberLabel": "Número",

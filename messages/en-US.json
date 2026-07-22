@@ -72,7 +72,7 @@
     "taxIdHint": "Used to detect if your company is already on BusinessHub.",
     "taxIdInvalid": "Enter a valid CNPJ.",
     "zipLabel": "ZIP code",
-    "zipHint": "Fills the address automatically.",
+    "zipHint": "For Brazilian postal codes, this fills the address automatically.",
     "zipInvalid": "Enter a valid ZIP code.",
     "addressStreetLabel": "Street",
     "addressNumberLabel": "Number",
