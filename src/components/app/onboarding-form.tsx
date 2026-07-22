@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { isValidCnpj, formatCnpj } from "@/lib/cnpj";
 import { isValidPhoneBR, formatPhoneBR } from "@/lib/phone";
+import { formatCep, isValidCep, lookupCep } from "@/lib/cep";
 import { createClient } from "@/lib/supabase/client";
 import { Link } from "@/i18n/navigation";
 import { Check, Loader2 } from "lucide-react";
@@ -86,6 +87,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
     legalName: z.string().min(2, t("legalNameTooShort")),
     name: z.string().min(2, t("nameTooShort")),
     taxId: z.string().refine((v) => isValidCnpj(v), t("taxIdInvalid")),
+    addressZip: z.string().refine((v) => isValidCep(v), t("zipInvalid")),
     addressStreet: z.string().min(2, t("addressRequired")),
     addressNumber: z.string().min(1, t("addressRequired")),
     addressComplement: z.string().optional(),
@@ -114,6 +116,7 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
       legalName: "",
       name: "",
       taxId: "",
+      addressZip: "",
       addressStreet: "",
       addressNumber: "",
       addressComplement: "",
@@ -397,6 +400,45 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
             />
             <span className="text-xs text-(--ink-soft)">{t("taxIdHint")}</span>
             {errors.taxId && <span className={errorClass}>{errors.taxId.message}</span>}
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="addressZip" className={labelClass}>
+                {t("zipLabel")}
+              </label>
+              <input
+                id="addressZip"
+                type="text"
+                inputMode="numeric"
+                placeholder="00000-000"
+                {...register("addressZip", {
+                  onChange: (e) => {
+                    e.target.value = formatCep(e.target.value);
+                  },
+                  onBlur: async (e) => {
+                    if (!isValidCep(e.target.value)) return;
+                    const found = await lookupCep(e.target.value);
+                    if (!found) return;
+                    if (found.street)
+                      setValue("addressStreet", found.street.toUpperCase(), {
+                        shouldValidate: true,
+                      });
+                    if (found.city)
+                      setValue("addressCity", found.city.toUpperCase(), {
+                        shouldValidate: true,
+                      });
+                    if (found.state)
+                      setValue("addressState", found.state.toUpperCase(), {
+                        shouldValidate: true,
+                      });
+                  },
+                })}
+                className={inputClass}
+              />
+              <span className="text-xs text-(--ink-soft)">{t("zipHint")}</span>
+              {errors.addressZip && <span className={errorClass}>{errors.addressZip.message}</span>}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
