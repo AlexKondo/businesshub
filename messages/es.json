@@ -111,11 +111,28 @@
   },
   "tenantLanding": {
     "subtitle": "Workspace de {name} en BusinessHub.",
-    "loginCta": "Iniciar sesión en el workspace",
+    "loginCta": "Ya soy proveedor · Iniciar sesión",
     "poweredBy": "Creado con",
     "notFoundTitle": "Workspace no encontrado",
     "notFoundBody": "Esta dirección no existe o ya no está disponible.",
-    "notFoundCta": "Ir a BusinessHub"
+    "notFoundCta": "Ir a BusinessHub",
+    "heroEyebrow": "Portal de Proveedores",
+    "heroHeadline": "Sé un proveedor de {name}",
+    "heroSubheadline": "Registra tu empresa y entérate de las oportunidades de suministro de materiales y servicios.",
+    "heroCta": "Registrar interés",
+    "companyNameTooShort": "Ingresa al menos 2 caracteres.",
+    "phoneInvalid": "Ingresa un número de teléfono válido.",
+    "formTitle": "Registra tu empresa",
+    "formSubtitle": "Completa tus datos — nuestro equipo se pondrá en contacto si surge una oportunidad compatible.",
+    "contactNameLabel": "Tu nombre",
+    "companyNameLabel": "Nombre de la empresa",
+    "emailLabel": "Correo electrónico",
+    "phoneLabel": "Celular",
+    "formSubmit": "Enviar registro",
+    "formSubmitting": "Enviando…",
+    "formErrorGeneric": "Algo salió mal. Intenta de nuevo.",
+    "formSuccessTitle": "¡Registro recibido!",
+    "formSuccessBody": "Gracias por tu interés. Nuestro equipo revisará tus datos y se pondrá en contacto si surge una oportunidad compatible."
   },
   "companyLogo": {
     "title": "Logo de la empresa",
@@ -134,7 +151,13 @@
     "noPending": "No hay solicitudes pendientes.",
     "selectRole": "Elige un rol…",
     "approve": "Aprobar",
-    "reject": "Rechazar"
+    "reject": "Rechazar",
+    "leadsTitle": "Leads de Proveedores",
+    "leadsSubtitle": "Empresas que mostraron interés en ser proveedoras a través de la landing page pública.",
+    "noLeads": "Aún no se recibieron leads.",
+    "leadStatusPending": "Pendiente",
+    "leadStatusApproved": "Aprobado",
+    "leadStatusRejected": "Rechazado"
   },
   "profilePage": {
     "title": "Perfil",

@@ -111,11 +111,28 @@
   },
   "tenantLanding": {
     "subtitle": "{name} の BusinessHub ワークスペース。",
-    "loginCta": "ワークスペースにログイン",
+    "loginCta": "既に取引先の方はこちら・ログイン",
     "poweredBy": "Powered by",
     "notFoundTitle": "ワークスペースが見つかりません",
     "notFoundBody": "このアドレスは存在しないか、利用できなくなりました。",
-    "notFoundCta": "BusinessHubへ移動"
+    "notFoundCta": "BusinessHubへ移動",
+    "heroEyebrow": "サプライヤーポータル",
+    "heroHeadline": "{name} のサプライヤーになる",
+    "heroSubheadline": "貴社情報をご登録いただくと、資材・サービスの調達機会をいち早くお届けします。",
+    "heroCta": "登録する",
+    "companyNameTooShort": "2文字以上で入力してください。",
+    "phoneInvalid": "有効な電話番号を入力してください。",
+    "formTitle": "貴社情報を登録",
+    "formSubtitle": "情報をご入力ください。マッチする案件があれば担当者よりご連絡いたします。",
+    "contactNameLabel": "お名前",
+    "companyNameLabel": "会社名",
+    "emailLabel": "メールアドレス",
+    "phoneLabel": "携帯電話番号",
+    "formSubmit": "送信する",
+    "formSubmitting": "送信中…",
+    "formErrorGeneric": "問題が発生しました。もう一度お試しください。",
+    "formSuccessTitle": "登録を受け付けました！",
+    "formSuccessBody": "ご関心をお寄せいただきありがとうございます。内容を確認し、マッチする案件があれば担当者よりご連絡いたします。"
   },
   "companyLogo": {
     "title": "会社のロゴ",
@@ -134,7 +151,13 @@
     "noPending": "保留中のリクエストはありません。",
     "selectRole": "役割を選択…",
     "approve": "承認",
-    "reject": "却下"
+    "reject": "却下",
+    "leadsTitle": "サプライヤーリード",
+    "leadsSubtitle": "公開ランディングページからサプライヤー登録に関心を示した企業。",
+    "noLeads": "まだリードがありません。",
+    "leadStatusPending": "保留中",
+    "leadStatusApproved": "承認済み",
+    "leadStatusRejected": "却下"
   },
   "profilePage": {
     "title": "プロフィール",

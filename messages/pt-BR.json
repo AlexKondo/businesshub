@@ -111,11 +111,28 @@
   },
   "tenantLanding": {
     "subtitle": "Workspace da {name} no BusinessHub.",
-    "loginCta": "Entrar no workspace",
+    "loginCta": "Já sou fornecedor · Entrar",
     "poweredBy": "Desenvolvido com",
     "notFoundTitle": "Workspace não encontrado",
     "notFoundBody": "Esse endereço não existe ou não está mais disponível.",
-    "notFoundCta": "Ir para o BusinessHub"
+    "notFoundCta": "Ir para o BusinessHub",
+    "heroEyebrow": "Portal do Fornecedor",
+    "heroHeadline": "Seja um fornecedor da {name}",
+    "heroSubheadline": "Cadastre sua empresa e fique por dentro das oportunidades de fornecimento de materiais e serviços.",
+    "heroCta": "Cadastrar interesse",
+    "companyNameTooShort": "Digite pelo menos 2 caracteres.",
+    "phoneInvalid": "Digite um telefone válido.",
+    "formTitle": "Cadastre sua empresa",
+    "formSubtitle": "Preencha seus dados — nossa equipe entra em contato caso haja uma oportunidade compatível.",
+    "contactNameLabel": "Seu nome",
+    "companyNameLabel": "Nome da empresa",
+    "emailLabel": "E-mail",
+    "phoneLabel": "Celular",
+    "formSubmit": "Enviar cadastro",
+    "formSubmitting": "Enviando…",
+    "formErrorGeneric": "Algo deu errado. Tente novamente.",
+    "formSuccessTitle": "Cadastro recebido!",
+    "formSuccessBody": "Obrigado pelo interesse. Nossa equipe vai analisar seus dados e entrar em contato se houver uma oportunidade compatível."
   },
   "companyLogo": {
     "title": "Logo da empresa",
@@ -134,7 +151,13 @@
     "noPending": "Nenhum pedido pendente.",
     "selectRole": "Escolha uma role…",
     "approve": "Aprovar",
-    "reject": "Rejeitar"
+    "reject": "Rejeitar",
+    "leadsTitle": "Leads de Fornecedores",
+    "leadsSubtitle": "Empresas que demonstraram interesse em ser fornecedoras pela landing page pública.",
+    "noLeads": "Nenhum lead recebido ainda.",
+    "leadStatusPending": "Pendente",
+    "leadStatusApproved": "Aprovado",
+    "leadStatusRejected": "Rejeitado"
   },
   "profilePage": {
     "title": "Perfil",

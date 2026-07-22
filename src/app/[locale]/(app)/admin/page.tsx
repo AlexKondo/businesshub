@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { PendingApprovals } from "@/components/app/pending-approvals";
 import { CompanyLogoCard } from "@/components/app/company-logo-card";
+import { SupplierLeadsPanel } from "@/components/app/supplier-leads-panel";
 
 export default async function AdminPage() {
   const t = await getTranslations("adminPage");
@@ -50,6 +51,13 @@ export default async function AdminPage() {
         />
       )}
       <PendingApprovals />
+      {membership?.tenant_id && (
+        <div className="mt-8">
+          <h2 className="text-[15px] font-semibold text-(--ink)">{t("leadsTitle")}</h2>
+          <p className="mt-1 text-[13px] text-(--ink-soft)">{t("leadsSubtitle")}</p>
+          <SupplierLeadsPanel tenantId={membership.tenant_id} />
+        </div>
+      )}
     </div>
   );
 }

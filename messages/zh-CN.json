@@ -111,11 +111,28 @@
   },
   "tenantLanding": {
     "subtitle": "{name} 在 BusinessHub 上的工作区。",
-    "loginCta": "登录工作区",
+    "loginCta": "我已是供应商 · 登录",
     "poweredBy": "技术支持",
     "notFoundTitle": "未找到工作区",
     "notFoundBody": "该地址不存在或已不可用。",
-    "notFoundCta": "前往 BusinessHub"
+    "notFoundCta": "前往 BusinessHub",
+    "heroEyebrow": "供应商门户",
+    "heroHeadline": "成为 {name} 的供应商",
+    "heroSubheadline": "登记您的企业信息，第一时间了解物料与服务供应机会。",
+    "heroCta": "登记意向",
+    "companyNameTooShort": "请至少输入 2 个字符。",
+    "phoneInvalid": "请输入有效的电话号码。",
+    "formTitle": "登记您的企业",
+    "formSubtitle": "请填写您的信息——如有匹配的合作机会，我们的团队会与您联系。",
+    "contactNameLabel": "您的姓名",
+    "companyNameLabel": "企业名称",
+    "emailLabel": "邮箱",
+    "phoneLabel": "手机号码",
+    "formSubmit": "提交登记",
+    "formSubmitting": "正在提交…",
+    "formErrorGeneric": "出现问题，请重试。",
+    "formSuccessTitle": "登记已收到！",
+    "formSuccessBody": "感谢您的关注。我们的团队将审核您的信息，如有匹配的合作机会会与您联系。"
   },
   "companyLogo": {
     "title": "企业标志",
@@ -134,7 +151,13 @@
     "noPending": "没有待处理的申请。",
     "selectRole": "选择角色…",
     "approve": "批准",
-    "reject": "拒绝"
+    "reject": "拒绝",
+    "leadsTitle": "供应商线索",
+    "leadsSubtitle": "通过公开着陆页表达合作意向的企业。",
+    "noLeads": "暂无收到的线索。",
+    "leadStatusPending": "待处理",
+    "leadStatusApproved": "已批准",
+    "leadStatusRejected": "已拒绝"
   },
   "profilePage": {
     "title": "个人资料",

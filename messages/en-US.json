@@ -111,11 +111,28 @@
   },
   "tenantLanding": {
     "subtitle": "{name}'s workspace on BusinessHub.",
-    "loginCta": "Log in to workspace",
+    "loginCta": "Already a supplier · Log in",
     "poweredBy": "Built with",
     "notFoundTitle": "Workspace not found",
     "notFoundBody": "This address doesn't exist or is no longer available.",
-    "notFoundCta": "Go to BusinessHub"
+    "notFoundCta": "Go to BusinessHub",
+    "heroEyebrow": "Supplier Portal",
+    "heroHeadline": "Become a supplier for {name}",
+    "heroSubheadline": "Register your company and stay informed about upcoming material and service supply opportunities.",
+    "heroCta": "Register interest",
+    "companyNameTooShort": "Enter at least 2 characters.",
+    "phoneInvalid": "Enter a valid phone number.",
+    "formTitle": "Register your company",
+    "formSubtitle": "Fill in your details — our team will reach out if a matching opportunity comes up.",
+    "contactNameLabel": "Your name",
+    "companyNameLabel": "Company name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "formSubmit": "Submit",
+    "formSubmitting": "Submitting…",
+    "formErrorGeneric": "Something went wrong. Please try again.",
+    "formSuccessTitle": "Registration received!",
+    "formSuccessBody": "Thanks for your interest. Our team will review your details and reach out if a matching opportunity comes up."
   },
   "companyLogo": {
     "title": "Company logo",
@@ -134,7 +151,13 @@
     "noPending": "No pending requests.",
     "selectRole": "Choose a role…",
     "approve": "Approve",
-    "reject": "Reject"
+    "reject": "Reject",
+    "leadsTitle": "Supplier Leads",
+    "leadsSubtitle": "Companies that expressed interest in becoming a supplier through the public landing page.",
+    "noLeads": "No leads received yet.",
+    "leadStatusPending": "Pending",
+    "leadStatusApproved": "Approved",
+    "leadStatusRejected": "Rejected"
   },
   "profilePage": {
     "title": "Profile",
