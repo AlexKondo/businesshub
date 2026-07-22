@@ -427,6 +427,15 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
                     {t("onboardingFieldRequiredLabel")}
                   </span>
                 )}
+                {(field.field_type === "select" || field.field_type === "multiselect") &&
+                  field.options.map((o) => (
+                    <span
+                      key={o.value}
+                      className="rounded-full border border-(--border-default) bg-(--bg-canvas) px-2 py-0.5 text-[11px] font-medium text-(--ink-soft)"
+                    >
+                      {o.label}
+                    </span>
+                  ))}
               </div>
               <p className="text-[12px] text-(--ink-soft)">
                 {field.key}
