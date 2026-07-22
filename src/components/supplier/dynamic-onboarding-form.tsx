@@ -22,8 +22,10 @@ function fieldToZod(field: OnboardingField, requiredMessage: string): z.ZodTypeA
       const base = z.coerce.number();
       return field.required ? base : base.optional();
     }
-    case "boolean":
-      return z.boolean().optional();
+    case "boolean": {
+      const base = z.boolean().optional();
+      return field.required ? base.refine((v) => v !== undefined, requiredMessage) : base;
+    }
     case "multiselect": {
       const base = z.array(z.string());
       return field.required ? base.min(1, requiredMessage) : base.optional();
@@ -42,7 +44,7 @@ function fieldToZod(field: OnboardingField, requiredMessage: string): z.ZodTypeA
 function defaultValueFor(field: OnboardingField, initialAnswers: OnboardingAnswers) {
   const saved = initialAnswers[field.key];
   if (field.field_type === "multiselect") return Array.isArray(saved) ? saved : [];
-  if (field.field_type === "boolean") return Boolean(saved);
+  if (field.field_type === "boolean") return typeof saved === "boolean" ? saved : undefined;
   return saved ?? "";
 }
 
@@ -54,7 +56,7 @@ function SelectWithOther({
   otherLabel,
   otherPlaceholder,
 }: {
-  options: { value: string; label: string; category?: string }[];
+  options: { value: string; label: string }[];
   allowOther: boolean;
   value: string;
   onChange: (v: string) => void;
@@ -63,13 +65,6 @@ function SelectWithOther({
 }) {
   const isKnownValue = options.some((o) => o.value === value);
   const [otherMode, setOtherMode] = useState(allowOther && value !== "" && !isKnownValue);
-
-  const groups = new Map<string, { value: string; label: string }[]>();
-  for (const option of options) {
-    const key = option.category?.trim() || "";
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key)!.push(option);
-  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -87,23 +82,11 @@ function SelectWithOther({
         className={inputClass}
       >
         <option value="" disabled />
-        {Array.from(groups.entries()).map(([category, items]) =>
-          category ? (
-            <optgroup key={category} label={category}>
-              {items.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </optgroup>
-          ) : (
-            items.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))
-          )
-        )}
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
         {allowOther && <option value="__other__">{otherLabel}</option>}
       </select>
       {otherMode && (
@@ -249,13 +232,34 @@ export function DynamicOnboardingForm({
               )}
 
               {field.field_type === "boolean" && (
-                <label className="flex items-center gap-2.5 text-[13px] text-(--ink)">
-                  <input
-                    type="checkbox"
-                    {...register(field.key)}
-                    className="h-4 w-4 shrink-0 accent-(--brand-500)"
-                  />
-                </label>
+                <Controller
+                  control={control}
+                  name={field.key}
+                  render={({ field: controllerField }) => (
+                    <div className="flex items-center gap-4">
+                      <label className="flex items-center gap-2 text-[13px] text-(--ink)">
+                        <input
+                          type="radio"
+                          name={field.key}
+                          checked={controllerField.value === true}
+                          onChange={() => controllerField.onChange(true)}
+                          className="h-4 w-4 accent-(--brand-500)"
+                        />
+                        {t("booleanYes")}
+                      </label>
+                      <label className="flex items-center gap-2 text-[13px] text-(--ink)">
+                        <input
+                          type="radio"
+                          name={field.key}
+                          checked={controllerField.value === false}
+                          onChange={() => controllerField.onChange(false)}
+                          className="h-4 w-4 accent-(--brand-500)"
+                        />
+                        {t("booleanNo")}
+                      </label>
+                    </div>
+                  )}
+                />
               )}
 
               {field.field_type === "select" && (

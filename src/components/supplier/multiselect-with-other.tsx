@@ -27,15 +27,6 @@ export function MultiSelectWithOther({
   const [draft, setDraft] = useState("");
   const customValues = value.filter((v) => !options.some((o) => o.value === v));
 
-  // Groups options by category, preserving first-seen order; uncategorized
-  // options ("") render without a header.
-  const groups = new Map<string, OnboardingFieldOption[]>();
-  for (const option of options) {
-    const key = option.category?.trim() || "";
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key)!.push(option);
-  }
-
   function toggle(optionValue: string) {
     onChange(
       value.includes(optionValue)
@@ -58,31 +49,17 @@ export function MultiSelectWithOther({
   return (
     <div className="flex flex-col gap-3">
       {options.length > 0 && (
-        <div className="flex flex-col gap-3">
-          {Array.from(groups.entries()).map(([category, items]) => (
-            <div key={category || "__none__"} className="flex flex-col gap-1.5">
-              {category && (
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-(--ink-soft)">
-                  {category}
-                </span>
-              )}
-              <div className="flex flex-col gap-2">
-                {items.map((o) => (
-                  <label
-                    key={o.value}
-                    className="flex items-center gap-2.5 text-[13px] text-(--ink)"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={value.includes(o.value)}
-                      onChange={() => toggle(o.value)}
-                      className="h-4 w-4 shrink-0 accent-(--brand-500)"
-                    />
-                    {o.label}
-                  </label>
-                ))}
-              </div>
-            </div>
+        <div className="flex flex-col gap-2">
+          {options.map((o) => (
+            <label key={o.value} className="flex items-center gap-2.5 text-[13px] text-(--ink)">
+              <input
+                type="checkbox"
+                checked={value.includes(o.value)}
+                onChange={() => toggle(o.value)}
+                className="h-4 w-4 shrink-0 accent-(--brand-500)"
+              />
+              {o.label}
+            </label>
           ))}
         </div>
       )}
