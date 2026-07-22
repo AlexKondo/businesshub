@@ -35,6 +35,7 @@ export default async function SupplierOnboardingIndexPage({
     .from("onboarding_forms")
     .select("id, name")
     .eq("tenant_id", membership.tenant_id)
+    .eq("active", true)
     .order("position", { ascending: true });
 
   if (!forms || forms.length === 0) {

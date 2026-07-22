@@ -242,7 +242,9 @@
     "onboardingFormDeleteConfirm": "Confirmar exclusão",
     "onboardingFormDeleteWarning": "Isso apaga o formulário, seus campos e os cadastros já enviados. Essa ação não pode ser desfeita.",
     "onboardingFormFieldsCount": "{count} campos",
-    "onboardingFormsBackToList": "Voltar aos formulários"
+    "onboardingFormsBackToList": "Voltar aos formulários",
+    "onboardingFormActiveLabel": "Ativo",
+    "onboardingFormInactiveLabel": "Inativo"
   },
   "profilePage": {
     "title": "Perfil",

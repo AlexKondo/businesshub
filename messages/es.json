@@ -242,7 +242,9 @@
     "onboardingFormDeleteConfirm": "Confirmar eliminación",
     "onboardingFormDeleteWarning": "Esto elimina el formulario, sus campos y los registros ya enviados. Esta acción no se puede deshacer.",
     "onboardingFormFieldsCount": "{count} campos",
-    "onboardingFormsBackToList": "Volver a los formularios"
+    "onboardingFormsBackToList": "Volver a los formularios",
+    "onboardingFormActiveLabel": "Activo",
+    "onboardingFormInactiveLabel": "Inactivo"
   },
   "profilePage": {
     "title": "Perfil",

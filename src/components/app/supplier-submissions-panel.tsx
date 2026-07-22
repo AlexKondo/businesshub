@@ -25,7 +25,7 @@ export function SupplierSubmissionsPanel({ tenantId }: { tenantId: string }) {
       const supabase = createClient();
       const { data } = await supabase
         .from("onboarding_forms")
-        .select("id, tenant_id, name, position")
+        .select("id, tenant_id, name, position, active")
         .eq("tenant_id", tenantId)
         .order("position", { ascending: true });
       setForms(data ?? []);

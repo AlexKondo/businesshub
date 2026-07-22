@@ -22,7 +22,7 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
     const supabase = createClient();
     const { data: formRows } = await supabase
       .from("onboarding_forms")
-      .select("id, tenant_id, name, position")
+      .select("id, tenant_id, name, position, active")
       .eq("tenant_id", tenantId)
       .order("position", { ascending: true });
     const rows = formRows ?? [];
@@ -70,6 +70,14 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
     await supabase.from("onboarding_forms").update({ name }).eq("id", id);
     setBusy(null);
     setRenamingId(null);
+    load();
+  }
+
+  async function handleToggleActive(id: string, active: boolean) {
+    setBusy(id);
+    const supabase = createClient();
+    await supabase.from("onboarding_forms").update({ active }).eq("id", id);
+    setBusy(null);
     load();
   }
 
@@ -129,9 +137,29 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
           >
             <div className="min-w-0 flex-1">
               <p className="text-[14px] font-semibold text-(--ink)">{form.name}</p>
-              <p className="text-[12px] text-(--ink-soft)">
-                {t("onboardingFormFieldsCount", { count: form.fieldCount })}
-              </p>
+              <div className="mt-1.5 flex items-center gap-2">
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={form.active}
+                  disabled={busy === form.id}
+                  onClick={() => handleToggleActive(form.id, !form.active)}
+                  className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+                    form.active ? "bg-(--brand-500)" : "bg-(--border-default)"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                      form.active ? "translate-x-[18px]" : "translate-x-[3px]"
+                    }`}
+                  />
+                </button>
+                <span className="text-[12px] text-(--ink-soft)">
+                  {form.active ? t("onboardingFormActiveLabel") : t("onboardingFormInactiveLabel")}
+                  {" · "}
+                  {t("onboardingFormFieldsCount", { count: form.fieldCount })}
+                </span>
+              </div>
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link

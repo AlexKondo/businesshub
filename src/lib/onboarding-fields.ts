@@ -3,6 +3,7 @@ export type OnboardingForm = {
   tenant_id: string;
   name: string;
   position: number;
+  active: boolean;
 };
 
 export type OnboardingFieldOption = { value: string; label: string; category?: string };

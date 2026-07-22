@@ -242,7 +242,9 @@
     "onboardingFormDeleteConfirm": "削除を確定",
     "onboardingFormDeleteWarning": "フォーム、その項目、既に送信された登録内容がすべて削除されます。この操作は取り消せません。",
     "onboardingFormFieldsCount": "{count} 項目",
-    "onboardingFormsBackToList": "フォーム一覧に戻る"
+    "onboardingFormsBackToList": "フォーム一覧に戻る",
+    "onboardingFormActiveLabel": "有効",
+    "onboardingFormInactiveLabel": "無効"
   },
   "profilePage": {
     "title": "プロフィール",

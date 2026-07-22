@@ -25,9 +25,9 @@ export default async function AppLayout({
   const [{ data: membership }, { data: platformAdmin }] = await Promise.all([
     supabase
       .from("memberships")
-      .select("id, tenant_id, roles(name)")
+      .select("id, roles(name)")
       .eq("user_id", user!.id)
-      .maybeSingle<{ id: string; tenant_id: string; roles: { name: string } | null }>(),
+      .maybeSingle<{ id: string; roles: { name: string } | null }>(),
     supabase.from("platform_admins").select("user_id").eq("user_id", user!.id).maybeSingle(),
   ]);
 
@@ -42,9 +42,5 @@ export default async function AppLayout({
     redirect({ href: "/supplier-onboarding", locale });
   }
 
-  return (
-    <AppShell user={user!} tenantId={membership?.tenant_id ?? null}>
-      {children}
-    </AppShell>
-  );
+  return <AppShell user={user!}>{children}</AppShell>;
 }

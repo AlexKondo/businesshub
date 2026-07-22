@@ -242,7 +242,9 @@
     "onboardingFormDeleteConfirm": "Confirm deletion",
     "onboardingFormDeleteWarning": "This deletes the form, its fields, and any submissions already sent. This can't be undone.",
     "onboardingFormFieldsCount": "{count} fields",
-    "onboardingFormsBackToList": "Back to forms"
+    "onboardingFormsBackToList": "Back to forms",
+    "onboardingFormActiveLabel": "Active",
+    "onboardingFormInactiveLabel": "Inactive"
   },
   "profilePage": {
     "title": "Profile",

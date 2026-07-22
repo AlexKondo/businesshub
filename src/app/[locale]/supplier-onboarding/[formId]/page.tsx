@@ -35,6 +35,7 @@ export default async function SupplierOnboardingFormPage({
       .select("id, name")
       .eq("id", formId)
       .eq("tenant_id", membership.tenant_id)
+      .eq("active", true)
       .maybeSingle<{ id: string; name: string }>(),
     supabase
       .from("onboarding_form_fields")
