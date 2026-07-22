@@ -1,9 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import { Link } from "@/i18n/navigation";
-import { OnboardingFormBuilder } from "@/components/app/onboarding-form-builder";
+import { OnboardingFormsList } from "@/components/app/onboarding-forms-list";
 
-export default async function SuppliersOnboardingFormPage() {
+export default async function SuppliersOnboardingFormsPage() {
   const t = await getTranslations("adminPage");
   const supabase = await createClient();
   const {
@@ -29,7 +28,7 @@ export default async function SuppliersOnboardingFormPage() {
     return (
       <div>
         <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
-          {t("onboardingFieldsTitle")}
+          {t("onboardingFormsTitle")}
         </h1>
         <p className="mt-2 text-[14px] text-(--ink-soft)">{t("noAccess")}</p>
       </div>
@@ -38,21 +37,11 @@ export default async function SuppliersOnboardingFormPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
-            {t("onboardingFieldsTitle")}
-          </h1>
-          <p className="mt-1 text-[14px] text-(--ink-soft)">{t("onboardingFieldsSubtitle")}</p>
-        </div>
-        <Link
-          href="/suppliers/onboarding-form/preview"
-          className="inline-flex h-9 shrink-0 items-center rounded-md bg-(--brand-500) px-3 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          {t("onboardingFieldsViewFormButton")}
-        </Link>
-      </div>
-      <OnboardingFormBuilder tenantId={membership.tenant_id} />
+      <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
+        {t("onboardingFormsTitle")}
+      </h1>
+      <p className="mt-1 text-[14px] text-(--ink-soft)">{t("onboardingFormsSubtitle")}</p>
+      <OnboardingFormsList tenantId={membership.tenant_id} />
     </div>
   );
 }

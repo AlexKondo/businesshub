@@ -124,12 +124,16 @@ function SelectWithOther({
 export function DynamicOnboardingForm({
   tenantId,
   membershipId,
+  formId,
+  formName,
   companyName,
   fields,
   initialAnswers,
 }: {
   tenantId: string;
   membershipId: string;
+  formId: string;
+  formName: string;
   companyName: string;
   fields: OnboardingField[];
   initialAnswers: OnboardingAnswers;
@@ -170,8 +174,8 @@ export function DynamicOnboardingForm({
     setSaved(false);
     const supabase = createClient();
     const { error } = await supabase.from("supplier_onboarding_submissions").upsert(
-      { tenant_id: tenantId, membership_id: membershipId, answers: values },
-      { onConflict: "membership_id" }
+      { tenant_id: tenantId, membership_id: membershipId, form_id: formId, answers: values },
+      { onConflict: "membership_id,form_id" }
     );
     if (error) {
       setServerError(t("saveError"));
@@ -193,7 +197,7 @@ export function DynamicOnboardingForm({
 
   return (
     <div>
-      <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{t("title")}</h1>
+      <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{formName}</h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">{t("subtitle", { name: companyName })}</p>
 
       <form

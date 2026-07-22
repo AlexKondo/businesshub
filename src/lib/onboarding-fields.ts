@@ -1,3 +1,10 @@
+export type OnboardingForm = {
+  id: string;
+  tenant_id: string;
+  name: string;
+  position: number;
+};
+
 export type OnboardingFieldOption = { value: string; label: string; category?: string };
 
 export type OnboardingFieldType =

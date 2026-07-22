@@ -157,7 +157,11 @@
     "customOptionPlaceholder": "入力して選択肢を追加",
     "notMemberTitle": "問題が発生しました",
     "notMemberBody": "この企業でのサプライヤー登録情報が見つかりませんでした。サポートまでお問い合わせください。",
-    "cnpjChecksumWarning": "確認桁が一致しません — 入力したCNPJをご確認ください。"
+    "cnpjChecksumWarning": "確認桁が一致しません — 入力したCNPJをご確認ください。",
+    "formsMenuTitle": "利用可能なフォーム",
+    "formsMenuSubtitle": "{name}には複数の登録フォームがあります — 入力するフォームを選んでください。",
+    "formStatusCompleted": "送信済み",
+    "formStatusPending": "未送信"
   },
   "companyLogo": {
     "title": "会社のロゴ",
@@ -224,7 +228,21 @@
     "submissionsSubtitle": "オンボーディング中にサプライヤーが送信した回答。",
     "submissionsEmpty": "まだ登録がありません。",
     "submissionsUpdatedAt": "{date} に更新",
-    "submissionsNoAnswer": "— 未回答 —"
+    "submissionsNoAnswer": "— 未回答 —",
+    "onboardingFormsTitle": "オンボーディングフォーム",
+    "onboardingFormsSubtitle": "サプライヤーのカテゴリーごとに異なるフォームを作成できます。",
+    "onboardingFormsEmpty": "まだフォームが作成されていません。",
+    "onboardingFormsCreateButton": "フォームを作成",
+    "onboardingFormNameInputLabel": "フォーム名",
+    "onboardingFormNamePlaceholder": "例：資材サプライヤー",
+    "onboardingFormCreate": "作成",
+    "onboardingFormOpenButton": "開く",
+    "onboardingFormRename": "名前を変更",
+    "onboardingFormDelete": "削除",
+    "onboardingFormDeleteConfirm": "削除を確定",
+    "onboardingFormDeleteWarning": "フォーム、その項目、既に送信された登録内容がすべて削除されます。この操作は取り消せません。",
+    "onboardingFormFieldsCount": "{count} 項目",
+    "onboardingFormsBackToList": "フォーム一覧に戻る"
   },
   "profilePage": {
     "title": "プロフィール",

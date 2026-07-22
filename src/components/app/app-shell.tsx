@@ -15,9 +15,11 @@ const DEFAULT_SIDEBAR_WIDTH = 240;
 
 export function AppShell({
   user,
+  tenantId,
   children,
 }: {
   user: User;
+  tenantId: string | null;
   children: React.ReactNode;
 }) {
   const firstName =
@@ -78,7 +80,7 @@ export function AppShell({
         <div className="border-b border-(--border-default) px-5 py-4">
           <Wordmark />
         </div>
-        <SidebarNav />
+        <SidebarNav tenantId={tenantId} />
         <div
           onMouseDown={startDrag}
           role="separator"

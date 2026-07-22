@@ -10,8 +10,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const tenantId = searchParams.get("tenantId");
-  if (!tenantId) {
-    return NextResponse.json({ error: "missing_tenant" }, { status: 400 });
+  const formId = searchParams.get("formId");
+  if (!tenantId || !formId) {
+    return NextResponse.json({ error: "missing_tenant_or_form" }, { status: 400 });
   }
 
   const supabase = await createClient();
@@ -35,6 +36,7 @@ export async function GET(request: Request) {
     .from("supplier_onboarding_submissions")
     .select("id, answers, updated_at, memberships(user_id)")
     .eq("tenant_id", tenantId)
+    .eq("form_id", formId)
     .order("updated_at", { ascending: false });
 
   const enriched = await Promise.all(

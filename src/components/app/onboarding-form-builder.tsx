@@ -387,7 +387,13 @@ function FieldEditor({
   );
 }
 
-export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
+export function OnboardingFormBuilder({
+  tenantId,
+  formId,
+}: {
+  tenantId: string;
+  formId: string;
+}) {
   const t = useTranslations("adminPage");
   const [fields, setFields] = useState<OnboardingField[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -427,15 +433,16 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
     const { data } = await supabase
       .from("onboarding_form_fields")
       .select("id, key, label, field_type, options, allow_other, required, position, mask, width")
-      .eq("tenant_id", tenantId)
+      .eq("form_id", formId)
       .order("position", { ascending: true });
     setFields((data as OnboardingField[] | null) ?? []);
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount: setFields runs after an await, not synchronously
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [formId]);
 
   async function handleCreate(draft: FieldDraft) {
     setErrorMsg(null);
@@ -443,6 +450,7 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
     const supabase = createClient();
     const { error } = await supabase.from("onboarding_form_fields").insert({
       tenant_id: tenantId,
+      form_id: formId,
       key: slugify(draft.label),
       label: draft.label,
       field_type: draft.field_type,

@@ -3,7 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { OnboardingFormLayoutEditor } from "@/components/app/onboarding-form-layout-editor";
 import type { OnboardingField } from "@/lib/onboarding-fields";
 
-export default async function SuppliersOnboardingFormPreviewPage() {
+export default async function SuppliersOnboardingFormPreviewPage({
+  params,
+}: {
+  params: Promise<{ formId: string }>;
+}) {
+  const { formId } = await params;
   const t = await getTranslations("adminPage");
   const supabase = await createClient();
   const {
@@ -40,14 +45,35 @@ export default async function SuppliersOnboardingFormPreviewPage() {
     );
   }
 
-  const { data: fields } = await supabase
-    .from("onboarding_form_fields")
-    .select("id, key, label, field_type, options, allow_other, required, position, mask, width")
-    .eq("tenant_id", membership.tenant_id)
-    .order("position", { ascending: true });
+  const [{ data: form }, { data: fields }] = await Promise.all([
+    supabase
+      .from("onboarding_forms")
+      .select("id, name")
+      .eq("id", formId)
+      .eq("tenant_id", membership.tenant_id)
+      .maybeSingle<{ id: string; name: string }>(),
+    supabase
+      .from("onboarding_form_fields")
+      .select("id, key, label, field_type, options, allow_other, required, position, mask, width")
+      .eq("form_id", formId)
+      .order("position", { ascending: true }),
+  ]);
+
+  if (!form) {
+    return (
+      <div>
+        <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
+          {t("onboardingFormPreviewTitle")}
+        </h1>
+        <p className="mt-2 text-[14px] text-(--ink-soft)">{t("noAccess")}</p>
+      </div>
+    );
+  }
 
   return (
     <OnboardingFormLayoutEditor
+      formId={form.id}
+      formName={form.name}
       companyName={membership.companies?.name ?? ""}
       initialFields={(fields as OnboardingField[] | null) ?? []}
     />

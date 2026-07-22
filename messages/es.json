@@ -157,7 +157,11 @@
     "customOptionPlaceholder": "Escribe y agrega una opción",
     "notMemberTitle": "Algo no está bien",
     "notMemberBody": "No encontramos tu registro de proveedor en esta empresa. Contacta al soporte.",
-    "cnpjChecksumWarning": "Los dígitos verificadores no coinciden — revisa el CNPJ ingresado."
+    "cnpjChecksumWarning": "Los dígitos verificadores no coinciden — revisa el CNPJ ingresado.",
+    "formsMenuTitle": "Formularios disponibles",
+    "formsMenuSubtitle": "{name} tiene más de un formulario de registro — elige cuál completar.",
+    "formStatusCompleted": "Enviado",
+    "formStatusPending": "Pendiente"
   },
   "companyLogo": {
     "title": "Logo de la empresa",
@@ -224,7 +228,21 @@
     "submissionsSubtitle": "Respuestas enviadas por los proveedores durante el onboarding.",
     "submissionsEmpty": "Aún no se recibieron registros.",
     "submissionsUpdatedAt": "Actualizado el {date}",
-    "submissionsNoAnswer": "— sin responder —"
+    "submissionsNoAnswer": "— sin responder —",
+    "onboardingFormsTitle": "Formularios de Onboarding",
+    "onboardingFormsSubtitle": "Crea un formulario diferente para cada categoría de proveedor.",
+    "onboardingFormsEmpty": "Aún no hay formularios creados.",
+    "onboardingFormsCreateButton": "Crear formulario",
+    "onboardingFormNameInputLabel": "Nombre del formulario",
+    "onboardingFormNamePlaceholder": "Ej.: Proveedores de Material",
+    "onboardingFormCreate": "Crear",
+    "onboardingFormOpenButton": "Abrir",
+    "onboardingFormRename": "Renombrar",
+    "onboardingFormDelete": "Eliminar",
+    "onboardingFormDeleteConfirm": "Confirmar eliminación",
+    "onboardingFormDeleteWarning": "Esto elimina el formulario, sus campos y los registros ya enviados. Esta acción no se puede deshacer.",
+    "onboardingFormFieldsCount": "{count} campos",
+    "onboardingFormsBackToList": "Volver a los formularios"
   },
   "profilePage": {
     "title": "Perfil",

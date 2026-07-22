@@ -52,9 +52,13 @@ function FieldPreview({ field }: { field: OnboardingField }) {
 }
 
 export function OnboardingFormLayoutEditor({
+  formId,
+  formName,
   companyName,
   initialFields,
 }: {
+  formId: string;
+  formName: string;
   companyName: string;
   initialFields: OnboardingField[];
 }) {
@@ -78,15 +82,13 @@ export function OnboardingFormLayoutEditor({
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
-            {t("onboardingFormPreviewTitle")}
-          </h1>
+          <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{formName}</h1>
           <p className="mt-1 text-[14px] text-(--ink-soft)">
             {t("onboardingFormPreviewSubtitle")}
           </p>
         </div>
         <Link
-          href="/suppliers/onboarding-form"
+          href={`/suppliers/onboarding-form/${formId}`}
           className="inline-flex h-9 shrink-0 items-center rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
         >
           {t("onboardingFieldsBackToBuilder")}

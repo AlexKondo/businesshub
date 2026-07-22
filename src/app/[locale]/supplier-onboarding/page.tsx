@@ -1,55 +1,24 @@
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { resolveTenantSlug } from "@/lib/tenant";
+import { Link, redirect } from "@/i18n/navigation";
+import { requireSupplierMembership } from "@/lib/supplier-onboarding-gate";
 import { SupplierOnboardingShell } from "@/components/supplier/supplier-onboarding-shell";
-import { DynamicOnboardingForm } from "@/components/supplier/dynamic-onboarding-form";
-import type { OnboardingField, OnboardingAnswers } from "@/lib/onboarding-fields";
 
 // Outside (app) on purpose, same precedent as /onboarding: a Fornecedor
 // member has no use for the internal staff shell (Suppliers/Contracts/
 // Documents/Purchase Orders), so this page manages its own gate + shell
 // instead of going through (app)/layout.tsx.
-export default async function SupplierOnboardingPage({
+export default async function SupplierOnboardingIndexPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
   const t = await getTranslations("supplierOnboarding");
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect({ href: "/login", locale });
-  }
-
-  const tenantSlug = resolveTenantSlug((await headers()).get("host") ?? "");
-  if (!tenantSlug) {
-    redirect({ href: "/dashboard", locale });
-  }
-
-  const { data: membership } = await supabase
-    .from("memberships")
-    .select("id, tenant_id, roles(name), companies!inner(slug, name)")
-    .eq("user_id", user!.id)
-    .eq("status", "active")
-    .eq("companies.slug", tenantSlug)
-    .maybeSingle<{
-      id: string;
-      tenant_id: string;
-      roles: { name: string } | null;
-      companies: { slug: string; name: string } | null;
-    }>();
+  const { user, membership, supabase } = await requireSupplierMembership(locale);
 
   if (!membership) {
-    // Defensive fallback only — src/proxy.ts's tenant gate should already
-    // have blocked a non-member from reaching this page.
     return (
-      <SupplierOnboardingShell user={user!}>
+      <SupplierOnboardingShell user={user}>
         <div className="rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
           <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">
             {t("notMemberTitle")}
@@ -62,32 +31,68 @@ export default async function SupplierOnboardingPage({
     );
   }
 
-  if (membership.roles?.name !== "Fornecedor") {
-    redirect({ href: "/dashboard", locale });
+  const { data: forms } = await supabase
+    .from("onboarding_forms")
+    .select("id, name")
+    .eq("tenant_id", membership.tenant_id)
+    .order("position", { ascending: true });
+
+  if (!forms || forms.length === 0) {
+    return (
+      <SupplierOnboardingShell user={user}>
+        <div className="rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
+          <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">
+            {t("emptyTitle")}
+          </h1>
+          <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
+            {t("emptyBody", { name: membership.companies?.name ?? "" })}
+          </p>
+        </div>
+      </SupplierOnboardingShell>
+    );
   }
 
-  const [{ data: fields }, { data: submission }] = await Promise.all([
-    supabase
-      .from("onboarding_form_fields")
-      .select("id, key, label, field_type, options, allow_other, required, position, mask, width")
-      .eq("tenant_id", membership.tenant_id)
-      .order("position", { ascending: true }),
-    supabase
-      .from("supplier_onboarding_submissions")
-      .select("answers")
-      .eq("membership_id", membership.id)
-      .maybeSingle<{ answers: OnboardingAnswers }>(),
-  ]);
+  // The common case (one form) skips straight to it — the picker below only
+  // earns its keep once a tenant actually has more than one form.
+  if (forms.length === 1) {
+    redirect({ href: `/supplier-onboarding/${forms[0].id}`, locale });
+  }
+
+  const { data: submissions } = await supabase
+    .from("supplier_onboarding_submissions")
+    .select("form_id")
+    .eq("membership_id", membership.id);
+  const completedFormIds = new Set((submissions ?? []).map((s) => s.form_id));
 
   return (
-    <SupplierOnboardingShell user={user!}>
-      <DynamicOnboardingForm
-        tenantId={membership.tenant_id}
-        membershipId={membership.id}
-        companyName={membership.companies?.name ?? ""}
-        fields={(fields as OnboardingField[] | null) ?? []}
-        initialAnswers={submission?.answers ?? {}}
-      />
+    <SupplierOnboardingShell user={user}>
+      <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{t("formsMenuTitle")}</h1>
+      <p className="mt-1 text-[14px] text-(--ink-soft)">
+        {t("formsMenuSubtitle", { name: membership.companies?.name ?? "" })}
+      </p>
+      <div className="mt-6 flex flex-col gap-3">
+        {forms.map((form) => {
+          const completed = completedFormIds.has(form.id);
+          return (
+            <Link
+              key={form.id}
+              href={`/supplier-onboarding/${form.id}`}
+              className="flex items-center justify-between gap-3 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-5 transition-colors hover:border-(--brand-500)/40"
+            >
+              <span className="text-[15px] font-semibold text-(--ink)">{form.name}</span>
+              <span
+                className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${
+                  completed
+                    ? "bg-(--success-500)/10 text-(--success-500)"
+                    : "bg-(--warning-500)/10 text-(--warning-500)"
+                }`}
+              >
+                {completed ? t("formStatusCompleted") : t("formStatusPending")}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </SupplierOnboardingShell>
   );
 }

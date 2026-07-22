@@ -157,7 +157,11 @@
     "customOptionPlaceholder": "输入并添加一个选项",
     "notMemberTitle": "出现问题",
     "notMemberBody": "未找到您在该企业的供应商注册记录，请联系支持团队。",
-    "cnpjChecksumWarning": "校验位不匹配 — 请检查输入的CNPJ。"
+    "cnpjChecksumWarning": "校验位不匹配 — 请检查输入的CNPJ。",
+    "formsMenuTitle": "可用表单",
+    "formsMenuSubtitle": "{name}提供了不止一个入驻表单 — 请选择要填写的表单。",
+    "formStatusCompleted": "已提交",
+    "formStatusPending": "待提交"
   },
   "companyLogo": {
     "title": "企业标志",
@@ -224,7 +228,21 @@
     "submissionsSubtitle": "供应商在入驻过程中提交的回答。",
     "submissionsEmpty": "暂无收到的注册记录。",
     "submissionsUpdatedAt": "更新于 {date}",
-    "submissionsNoAnswer": "— 未回答 —"
+    "submissionsNoAnswer": "— 未回答 —",
+    "onboardingFormsTitle": "入驻表单",
+    "onboardingFormsSubtitle": "为每类供应商创建不同的表单。",
+    "onboardingFormsEmpty": "尚未创建任何表单。",
+    "onboardingFormsCreateButton": "创建表单",
+    "onboardingFormNameInputLabel": "表单名称",
+    "onboardingFormNamePlaceholder": "例如：材料供应商",
+    "onboardingFormCreate": "创建",
+    "onboardingFormOpenButton": "打开",
+    "onboardingFormRename": "重命名",
+    "onboardingFormDelete": "删除",
+    "onboardingFormDeleteConfirm": "确认删除",
+    "onboardingFormDeleteWarning": "此操作会删除该表单、其字段及已提交的注册记录，且无法撤销。",
+    "onboardingFormFieldsCount": "{count} 个字段",
+    "onboardingFormsBackToList": "返回表单列表"
   },
   "profilePage": {
     "title": "个人资料",
