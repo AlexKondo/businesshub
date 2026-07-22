@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Globe } from "lucide-react";
 import { routing } from "@/i18n/routing";
@@ -13,25 +14,29 @@ const LOCALE_LABELS: Record<string, string> = {
   "pt-BR": "Português (BR)",
 };
 
-// Swaps the locale segment using the browser's own address bar
-// (window.location), not next-intl's usePathname/router. On pages reached
-// via a middleware rewrite (e.g. a tenant's public landing, rewritten from
-// "/" to "/{locale}/tenant-landing/{slug}"), next-intl's pathname reflects
-// the rewritten internal route rather than the externally visible URL —
-// navigating from that would send the browser somewhere that was never a
-// real, addressable page. window.location.pathname is always the real one.
-function switchLocale(nextLocale: string) {
-  const segments = window.location.pathname.split("/");
-  segments[1] = nextLocale;
-  const newPath = segments.join("/") || "/";
-  window.location.href = `${newPath}${window.location.search}${window.location.hash}`;
-}
-
 export function LanguageToggle() {
   const t = useTranslations("language");
   const locale = useLocale();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  // Computes the target path from the browser's own address bar
+  // (window.location), not next-intl's usePathname/router: on pages reached
+  // via a middleware rewrite (e.g. a tenant's public landing, rewritten from
+  // "/" to "/{locale}/tenant-landing/{slug}"), next-intl's pathname reflects
+  // the rewritten internal route rather than the externally visible URL.
+  // Navigation itself goes through Next's client router (not
+  // window.location.href) so it's a soft transition — a hard reload
+  // remounts the whole page and silently wipes any in-progress client
+  // state (e.g. mid-flow screens like the onboarding form's "provisioning"
+  // stage), which is exactly the bug this used to cause.
+  function switchLocale(nextLocale: string) {
+    const segments = window.location.pathname.split("/");
+    segments[1] = nextLocale;
+    const newPath = segments.join("/") || "/";
+    router.push(`${newPath}${window.location.search}${window.location.hash}`);
+  }
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
