@@ -6,7 +6,19 @@ import { X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { slugify } from "@/lib/slug";
 import { InfoTooltip } from "@/components/app/info-tooltip";
+import { ResizableBox } from "@/components/app/resizable-box";
 import type { OnboardingField, OnboardingFieldType } from "@/lib/onboarding-fields";
+
+type FieldWidths = { label: number; type: number; optionCategory: number; optionLabel: number };
+
+const DEFAULT_FIELD_WIDTHS: FieldWidths = {
+  label: 420,
+  type: 260,
+  optionCategory: 200,
+  optionLabel: 420,
+};
+const MIN_FIELD_WIDTH = 140;
+const MAX_FIELD_WIDTH = 700;
 
 const FIELD_TYPES: OnboardingFieldType[] = [
   "text",
@@ -49,11 +61,17 @@ function FieldEditor({
   onCancel,
   onSave,
   saving,
+  widths,
+  onResizeWidth,
+  onCommitWidth,
 }: {
   initial: OnboardingField | null;
   onCancel: () => void;
   onSave: (draft: FieldDraft) => void;
   saving: boolean;
+  widths: FieldWidths;
+  onResizeWidth: (key: keyof FieldWidths, width: number) => void;
+  onCommitWidth: (key: keyof FieldWidths, width: number) => void;
 }) {
   const t = useTranslations("adminPage");
   const [label, setLabel] = useState(initial?.label ?? "");
@@ -115,35 +133,51 @@ function FieldEditor({
 
   return (
     <div className="flex flex-col gap-3 rounded-[10px] border border-(--brand-500)/30 bg-(--accent-soft) p-4">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-[12.5px] font-medium text-(--ink)">
-            {t("onboardingFieldLabelInputLabel")}
-          </label>
-          <input
-            type="text"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            className={inputClass}
-          />
-          {displayKey && <span className="text-[11px] text-(--ink-soft)">{displayKey}</span>}
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <label className="text-[12.5px] font-medium text-(--ink)">
-            {t("onboardingFieldTypeLabel")}
-          </label>
-          <select
-            value={fieldType}
-            onChange={(e) => setFieldType(e.target.value as OnboardingFieldType)}
-            className={inputClass}
-          >
-            {FIELD_TYPES.map((ft) => (
-              <option key={ft} value={ft}>
-                {typeLabels[ft]}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex flex-wrap gap-3">
+        <ResizableBox
+          width={widths.label}
+          minWidth={MIN_FIELD_WIDTH}
+          maxWidth={MAX_FIELD_WIDTH}
+          onResize={(w) => onResizeWidth("label", w)}
+          onResizeEnd={(w) => onCommitWidth("label", w)}
+        >
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12.5px] font-medium text-(--ink)">
+              {t("onboardingFieldLabelInputLabel")}
+            </label>
+            <input
+              type="text"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              className={`${inputClass} w-full`}
+            />
+            {displayKey && <span className="text-[11px] text-(--ink-soft)">{displayKey}</span>}
+          </div>
+        </ResizableBox>
+        <ResizableBox
+          width={widths.type}
+          minWidth={MIN_FIELD_WIDTH}
+          maxWidth={MAX_FIELD_WIDTH}
+          onResize={(w) => onResizeWidth("type", w)}
+          onResizeEnd={(w) => onCommitWidth("type", w)}
+        >
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12.5px] font-medium text-(--ink)">
+              {t("onboardingFieldTypeLabel")}
+            </label>
+            <select
+              value={fieldType}
+              onChange={(e) => setFieldType(e.target.value as OnboardingFieldType)}
+              className={`${inputClass} w-full`}
+            >
+              {FIELD_TYPES.map((ft) => (
+                <option key={ft} value={ft}>
+                  {typeLabels[ft]}
+                </option>
+              ))}
+            </select>
+          </div>
+        </ResizableBox>
       </div>
 
       {showMaskSection && (
@@ -275,33 +309,49 @@ function FieldEditor({
               )}
             </div>
           )}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              list="option-category-suggestions"
-              value={optionCategoryDraft}
-              placeholder={t("onboardingFieldOptionCategoryPlaceholder")}
-              onChange={(e) => setOptionCategoryDraft(e.target.value)}
-              className={`${inputClass} w-44`}
-            />
+          <div className="flex flex-wrap gap-2">
+            <ResizableBox
+              width={widths.optionCategory}
+              minWidth={MIN_FIELD_WIDTH}
+              maxWidth={MAX_FIELD_WIDTH}
+              onResize={(w) => onResizeWidth("optionCategory", w)}
+              onResizeEnd={(w) => onCommitWidth("optionCategory", w)}
+            >
+              <input
+                type="text"
+                list="option-category-suggestions"
+                value={optionCategoryDraft}
+                placeholder={t("onboardingFieldOptionCategoryPlaceholder")}
+                onChange={(e) => setOptionCategoryDraft(e.target.value)}
+                className={`${inputClass} w-full`}
+              />
+            </ResizableBox>
             <datalist id="option-category-suggestions">
               {knownOptionCategories.map((c) => (
                 <option key={c} value={c} />
               ))}
             </datalist>
-            <input
-              type="text"
-              value={optionDraft}
-              placeholder={t("onboardingFieldOptionPlaceholder")}
-              onChange={(e) => setOptionDraft(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addOption();
-                }
-              }}
-              className={`${inputClass} flex-1`}
-            />
+            <ResizableBox
+              width={widths.optionLabel}
+              minWidth={MIN_FIELD_WIDTH}
+              maxWidth={MAX_FIELD_WIDTH}
+              onResize={(w) => onResizeWidth("optionLabel", w)}
+              onResizeEnd={(w) => onCommitWidth("optionLabel", w)}
+            >
+              <input
+                type="text"
+                value={optionDraft}
+                placeholder={t("onboardingFieldOptionPlaceholder")}
+                onChange={(e) => setOptionDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addOption();
+                  }
+                }}
+                className={`${inputClass} w-full`}
+              />
+            </ResizableBox>
             <button
               type="button"
               onClick={addOption}
@@ -344,6 +394,33 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [widths, setWidths] = useState<FieldWidths>(DEFAULT_FIELD_WIDTHS);
+
+  // Column widths are a per-user preference (user_metadata, same mechanism
+  // as the sidebar width) — loaded once, applied to every field being
+  // added/edited in this builder.
+  useEffect(() => {
+    async function loadWidths() {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const saved = user?.user_metadata?.onboarding_builder_widths as Partial<FieldWidths> | undefined;
+      if (saved) setWidths((prev) => ({ ...prev, ...saved }));
+    }
+    loadWidths();
+  }, []);
+
+  function resizeWidth(key: keyof FieldWidths, width: number) {
+    setWidths((prev) => ({ ...prev, [key]: width }));
+  }
+
+  async function commitWidth(key: keyof FieldWidths, width: number) {
+    const next = { ...widths, [key]: width };
+    setWidths(next);
+    const supabase = createClient();
+    await supabase.auth.updateUser({ data: { onboarding_builder_widths: next } });
+  }
 
   async function load() {
     const supabase = createClient();
@@ -463,6 +540,9 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
             saving={busy === field.id}
             onCancel={() => setEditingId(null)}
             onSave={(draft) => handleUpdate(field.id, draft)}
+            widths={widths}
+            onResizeWidth={resizeWidth}
+            onCommitWidth={commitWidth}
           />
         ) : (
           <div
@@ -539,6 +619,9 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
           saving={busy === "new"}
           onCancel={() => setAdding(false)}
           onSave={handleCreate}
+          widths={widths}
+          onResizeWidth={resizeWidth}
+          onCommitWidth={commitWidth}
         />
       ) : (
         <button
