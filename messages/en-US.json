@@ -49,6 +49,8 @@
     "comingSoon": "Coming soon",
     "modules": {
       "suppliers": "Suppliers",
+      "suppliersOnboardingForm": "Onboarding Form",
+      "suppliersSubmissions": "Submissions",
       "contracts": "Contracts",
       "documents": "Documents",
       "purchaseOrders": "Purchase Orders"
@@ -182,6 +184,7 @@
     "onboardingFieldTypeTextarea": "Long text",
     "onboardingFieldTypeNumber": "Number",
     "onboardingFieldTypeBoolean": "Yes/No",
+    "onboardingFieldTypeDate": "Date",
     "onboardingFieldTypeSelect": "List (single choice)",
     "onboardingFieldTypeMultiselect": "List (multiple choice)",
     "onboardingFieldRequiredLabel": "Required",

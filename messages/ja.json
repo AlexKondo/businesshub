@@ -49,6 +49,8 @@
     "comingSoon": "近日公開",
     "modules": {
       "suppliers": "サプライヤー",
+      "suppliersOnboardingForm": "登録フォーム",
+      "suppliersSubmissions": "登録内容",
       "contracts": "契約",
       "documents": "ドキュメント",
       "purchaseOrders": "発注"
@@ -182,6 +184,7 @@
     "onboardingFieldTypeTextarea": "長いテキスト",
     "onboardingFieldTypeNumber": "数値",
     "onboardingFieldTypeBoolean": "はい/いいえ",
+    "onboardingFieldTypeDate": "日付",
     "onboardingFieldTypeSelect": "リスト（単一選択）",
     "onboardingFieldTypeMultiselect": "リスト（複数選択）",
     "onboardingFieldRequiredLabel": "必須",

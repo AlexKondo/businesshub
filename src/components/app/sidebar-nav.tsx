@@ -10,6 +10,8 @@ import {
   FileText,
   FolderOpen,
   ShoppingCart,
+  ClipboardList,
+  Users,
   Lock,
 } from "lucide-react";
 
@@ -19,8 +21,12 @@ const MAIN_ITEMS = [
   { href: "/admin", key: "admin", icon: ShieldCheck },
 ] as const;
 
+const SUPPLIERS_CHILDREN = [
+  { href: "/suppliers/onboarding-form", key: "suppliersOnboardingForm", icon: ClipboardList },
+  { href: "/suppliers/submissions", key: "suppliersSubmissions", icon: Users },
+] as const;
+
 const FUTURE_MODULES = [
-  { key: "suppliers", icon: Truck },
   { key: "contracts", icon: FileText },
   { key: "documents", icon: FolderOpen },
   { key: "purchaseOrders", icon: ShoppingCart },
@@ -51,6 +57,40 @@ export function SidebarNav() {
             </li>
           );
         })}
+
+        <li>
+          <Link
+            href={SUPPLIERS_CHILDREN[0].href}
+            className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium transition-colors ${
+              pathname === SUPPLIERS_CHILDREN[0].href
+                ? "bg-(--accent-soft) text-(--brand-500)"
+                : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
+            }`}
+          >
+            <Truck size={16} strokeWidth={1.5} />
+            {t("modules.suppliers")}
+          </Link>
+          <ul className="ml-[19px] mt-0.5 flex flex-col gap-0.5 border-l border-(--border-default) pl-3.5">
+            {SUPPLIERS_CHILDREN.map(({ href, key, icon: Icon }) => {
+              const active = pathname === href;
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
+                      active
+                        ? "bg-(--accent-soft) text-(--brand-500)"
+                        : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
+                    }`}
+                  >
+                    <Icon size={14} strokeWidth={1.5} />
+                    {t(`modules.${key}`)}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </li>
       </ul>
 
       <div>

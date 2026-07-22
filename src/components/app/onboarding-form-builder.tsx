@@ -12,6 +12,7 @@ const FIELD_TYPES: OnboardingFieldType[] = [
   "textarea",
   "number",
   "boolean",
+  "date",
   "select",
   "multiselect",
 ];
@@ -56,6 +57,7 @@ function FieldEditor({
     textarea: t("onboardingFieldTypeTextarea"),
     number: t("onboardingFieldTypeNumber"),
     boolean: t("onboardingFieldTypeBoolean"),
+    date: t("onboardingFieldTypeDate"),
     select: t("onboardingFieldTypeSelect"),
     multiselect: t("onboardingFieldTypeMultiselect"),
   };
@@ -309,6 +311,7 @@ export function OnboardingFormBuilder({ tenantId }: { tenantId: string }) {
     textarea: t("onboardingFieldTypeTextarea"),
     number: t("onboardingFieldTypeNumber"),
     boolean: t("onboardingFieldTypeBoolean"),
+    date: t("onboardingFieldTypeDate"),
     select: t("onboardingFieldTypeSelect"),
     multiselect: t("onboardingFieldTypeMultiselect"),
   };

@@ -28,6 +28,7 @@ function fieldToZod(field: OnboardingField, requiredMessage: string): z.ZodTypeA
     }
     case "text":
     case "textarea":
+    case "date":
     case "select":
     default: {
       const base = z.string();
@@ -184,10 +185,18 @@ export function DynamicOnboardingForm({
                 {field.required && <span className="text-(--danger-500)"> *</span>}
               </label>
 
-              {(field.field_type === "text" || field.field_type === "number") && (
+              {(field.field_type === "text" ||
+                field.field_type === "number" ||
+                field.field_type === "date") && (
                 <input
                   id={field.key}
-                  type={field.field_type === "number" ? "number" : "text"}
+                  type={
+                    field.field_type === "number"
+                      ? "number"
+                      : field.field_type === "date"
+                        ? "date"
+                        : "text"
+                  }
                   {...register(field.key)}
                   className={inputClass}
                 />

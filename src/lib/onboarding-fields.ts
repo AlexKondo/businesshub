@@ -1,6 +1,13 @@
 export type OnboardingFieldOption = { value: string; label: string };
 
-export type OnboardingFieldType = "text" | "textarea" | "number" | "boolean" | "select" | "multiselect";
+export type OnboardingFieldType =
+  | "text"
+  | "textarea"
+  | "number"
+  | "boolean"
+  | "date"
+  | "select"
+  | "multiselect";
 
 export type OnboardingField = {
   id: string;

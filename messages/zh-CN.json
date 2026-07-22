@@ -49,6 +49,8 @@
     "comingSoon": "即将推出",
     "modules": {
       "suppliers": "供应商",
+      "suppliersOnboardingForm": "入驻表单",
+      "suppliersSubmissions": "注册记录",
       "contracts": "合同",
       "documents": "文档",
       "purchaseOrders": "采购订单"
@@ -182,6 +184,7 @@
     "onboardingFieldTypeTextarea": "长文本",
     "onboardingFieldTypeNumber": "数字",
     "onboardingFieldTypeBoolean": "是/否",
+    "onboardingFieldTypeDate": "日期",
     "onboardingFieldTypeSelect": "列表（单选）",
     "onboardingFieldTypeMultiselect": "列表（多选）",
     "onboardingFieldRequiredLabel": "必填",
