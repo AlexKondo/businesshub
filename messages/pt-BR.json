@@ -183,6 +183,8 @@
     "onboardingFieldsAddButton": "Adicionar campo",
     "onboardingFieldLabelInputLabel": "Rótulo do campo",
     "onboardingFieldTypeLabel": "Tipo de campo",
+    "onboardingFieldCategoryLabel": "Categoria",
+    "onboardingFieldCategoryPlaceholder": "Ex: Materiais Elétricos",
     "onboardingFieldTypeText": "Texto curto",
     "onboardingFieldTypeTextarea": "Texto longo",
     "onboardingFieldTypeNumber": "Número",

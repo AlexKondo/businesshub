@@ -183,6 +183,8 @@
     "onboardingFieldsAddButton": "項目を追加",
     "onboardingFieldLabelInputLabel": "項目名",
     "onboardingFieldTypeLabel": "項目の種類",
+    "onboardingFieldCategoryLabel": "カテゴリ",
+    "onboardingFieldCategoryPlaceholder": "例: 電気材料",
     "onboardingFieldTypeText": "短いテキスト",
     "onboardingFieldTypeTextarea": "長いテキスト",
     "onboardingFieldTypeNumber": "数値",

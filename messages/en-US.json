@@ -183,6 +183,8 @@
     "onboardingFieldsAddButton": "Add field",
     "onboardingFieldLabelInputLabel": "Field label",
     "onboardingFieldTypeLabel": "Field type",
+    "onboardingFieldCategoryLabel": "Category",
+    "onboardingFieldCategoryPlaceholder": "E.g. Electrical materials",
     "onboardingFieldTypeText": "Short text",
     "onboardingFieldTypeTextarea": "Long text",
     "onboardingFieldTypeNumber": "Number",
