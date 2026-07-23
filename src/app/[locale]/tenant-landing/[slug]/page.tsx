@@ -22,12 +22,18 @@ export default async function TenantLandingPage({
   const admin = createAdminClient();
   const { data: company } = await admin
     .from("companies")
-    .select("id, name, legal_name, logo_url")
+    .select("id, name, legal_name, logo_url, status")
     .eq("slug", slug)
     .is("deleted_at", null)
     .maybeSingle();
 
-  if (!company) {
+  // A pending_approval tenant's subdomain is reachable (see registerTenantDomain
+  // in /api/tenants/onboard) so login/dashboard can show the real "awaiting
+  // approval" status instead of a raw routing error — but the PUBLIC
+  // marketing/supplier-signup page must stay hidden until a platform admin
+  // actually approves it. From an anonymous visitor's perspective this looks
+  // identical to "doesn't exist yet".
+  if (!company || company.status !== "active") {
     return (
       <div className="flex min-h-screen flex-col bg-(--bg-canvas)">
         <header className="flex items-center justify-end gap-2 px-6 py-5 sm:px-10">

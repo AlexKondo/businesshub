@@ -6,10 +6,8 @@ import { sendMail } from "@/lib/mail";
 import { logAudit } from "@/lib/audit-log";
 
 // Platform-admin-only approve/reject for a pending "create a new company"
-// request (see /api/tenants/onboard). The subdomain is already registered
-// at request time now (so it's reachable before approval too), so this
-// registerTenantDomain call is normally a fast no-op reconcile — it's kept
-// as a safety net in case that earlier registration failed. Rejecting
+// request (see /api/tenants/onboard). Approving is the ONLY place a
+// subdomain gets provisioned for a self-service company now — rejecting
 // deletes the company row outright (cascades the requester's pending
 // membership) so its slug/tax_id are free for a future attempt, rather than
 // leaving a dead reservation behind.
