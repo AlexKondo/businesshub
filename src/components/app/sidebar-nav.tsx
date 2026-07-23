@@ -26,7 +26,7 @@ const MAIN_ITEMS = [
 
 const SUPPLIERS_CHILDREN = [
   { href: "/suppliers/onboarding-form", key: "suppliersOnboardingForm", icon: ClipboardList },
-  { href: "/suppliers/users", key: "suppliersUsers", icon: Users },
+  { href: "/suppliers/users", key: "suppliersUsers", icon: Users, adminOnly: true },
   { href: "/suppliers/submissions", key: "suppliersSubmissions", icon: Users },
 ] as const;
 
@@ -183,12 +183,22 @@ function FornecedorSidebar({ tenantId }: { tenantId: string }) {
   );
 }
 
-function StaffSidebar({ isPlatformAdmin }: { isPlatformAdmin: boolean }) {
+function StaffSidebar({
+  roleName,
+  isPlatformAdmin,
+}: {
+  roleName: string | null;
+  isPlatformAdmin: boolean;
+}) {
   const t = useTranslations("app");
   const pathname = usePathname();
   const locale = useLocale();
   const onRootDomain =
     typeof window !== "undefined" && resolveTenantSlug(window.location.host) === null;
+  const canManageUsers = isPlatformAdmin || roleName === "Administrador da Empresa";
+  const suppliersChildren = SUPPLIERS_CHILDREN.filter(
+    (item) => !("adminOnly" in item) || canManageUsers
+  );
 
   return (
     <nav className="flex flex-1 flex-col gap-6 px-3 py-4">
@@ -225,7 +235,7 @@ function StaffSidebar({ isPlatformAdmin }: { isPlatformAdmin: boolean }) {
             {t("modules.suppliers")}
           </div>
           <ul className="ml-[19px] mt-0.5 flex flex-col gap-0.5 border-l border-(--border-default) pl-3.5">
-            {SUPPLIERS_CHILDREN.map(({ href, key, icon: Icon }) => (
+            {suppliersChildren.map(({ href, key, icon: Icon }) => (
               <li key={href}>
                 <NavLink
                   href={href}
@@ -272,5 +282,5 @@ export function SidebarNav({
   if (roleName === "Fornecedor" && tenantId) {
     return <FornecedorSidebar tenantId={tenantId} />;
   }
-  return <StaffSidebar isPlatformAdmin={isPlatformAdmin} />;
+  return <StaffSidebar roleName={roleName} isPlatformAdmin={isPlatformAdmin} />;
 }
