@@ -32,6 +32,10 @@ export function PendingCompaniesPanel() {
   const [approvingError, setApprovingError] = useState(false);
   const [approvingSeconds, setApprovingSeconds] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Synchronous guard against a genuine double-click firing two requests
+  // before React re-renders the disabled button — state alone isn't fast
+  // enough to prevent that window.
+  const reviewingIdsRef = useRef<Set<string>>(new Set());
 
   async function load() {
     const res = await fetch("/api/tenants/pending-companies");
@@ -71,6 +75,8 @@ export function PendingCompaniesPanel() {
   }
 
   async function review(company: PendingCompany, action: "approve" | "reject") {
+    if (reviewingIdsRef.current.has(company.id)) return;
+    reviewingIdsRef.current.add(company.id);
     setBusy(company.id);
 
     if (action === "approve") {
@@ -105,6 +111,7 @@ export function PendingCompaniesPanel() {
       }
     }
 
+    reviewingIdsRef.current.delete(company.id);
     load();
   }
 

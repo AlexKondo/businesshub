@@ -50,7 +50,17 @@ async function handleReview(request: Request) {
     .select("id, name, slug, status")
     .eq("id", companyId)
     .maybeSingle();
-  if (!company || company.status !== "pending_approval") {
+  if (!company) {
+    return NextResponse.json({ error: "not_pending" }, { status: 400 });
+  }
+  // Idempotent on purpose: a double-click (or a duplicate request from the
+  // client) racing against the first, already-successful approval would
+  // otherwise land here with the company already 'active' and get a scary
+  // "not_pending" error even though the approval genuinely went through.
+  if (action === "approve" && company.status === "active") {
+    return NextResponse.json({ ok: true, deploymentUuid: null });
+  }
+  if (company.status !== "pending_approval") {
     return NextResponse.json({ error: "not_pending" }, { status: 400 });
   }
 
