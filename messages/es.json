@@ -238,7 +238,7 @@
     "onboardingFormsBackToList": "Volver a los formularios",
     "onboardingFormActiveLabel": "Activo",
     "onboardingFormInactiveLabel": "Inactivo",
-    "supplierUsersTitle": "Proveedores Registrados",
+    "supplierUsersTitle": "Gestionar Usuarios",
     "supplierUsersSubtitle": "Personas que crearon una cuenta de proveedor en esta empresa.",
     "supplierUsersEmpty": "Aún no hay proveedores registrados.",
     "supplierUsersSignedUpAt": "Registrado el {date}",

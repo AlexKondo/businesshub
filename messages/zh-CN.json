@@ -238,7 +238,7 @@
     "onboardingFormsBackToList": "返回表单列表",
     "onboardingFormActiveLabel": "启用",
     "onboardingFormInactiveLabel": "停用",
-    "supplierUsersTitle": "已注册供应商",
+    "supplierUsersTitle": "管理用户",
     "supplierUsersSubtitle": "在该企业创建了供应商账户的用户。",
     "supplierUsersEmpty": "尚未有供应商注册。",
     "supplierUsersSignedUpAt": "注册于{date}",

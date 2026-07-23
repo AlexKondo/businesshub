@@ -238,7 +238,7 @@
     "onboardingFormsBackToList": "フォーム一覧に戻る",
     "onboardingFormActiveLabel": "有効",
     "onboardingFormInactiveLabel": "無効",
-    "supplierUsersTitle": "登録済みサプライヤー",
+    "supplierUsersTitle": "ユーザーを管理",
     "supplierUsersSubtitle": "この企業でサプライヤーアカウントを作成した人。",
     "supplierUsersEmpty": "まだ登録されたサプライヤーはいません。",
     "supplierUsersSignedUpAt": "{date}に登録",

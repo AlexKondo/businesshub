@@ -238,7 +238,7 @@
     "onboardingFormsBackToList": "Back to forms",
     "onboardingFormActiveLabel": "Active",
     "onboardingFormInactiveLabel": "Inactive",
-    "supplierUsersTitle": "Registered Suppliers",
+    "supplierUsersTitle": "Manage Users",
     "supplierUsersSubtitle": "People who created a supplier account for this company.",
     "supplierUsersEmpty": "No suppliers registered yet.",
     "supplierUsersSignedUpAt": "Signed up on {date}",
