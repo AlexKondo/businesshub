@@ -202,7 +202,8 @@ function FieldEditor({
         </ResizableBox>
       </div>
 
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         {showMaskSection && (
           <div className="flex items-center gap-1.5">
             <label className="text-[12.5px] font-medium text-(--ink) whitespace-nowrap">
@@ -290,11 +291,15 @@ function FieldEditor({
             {t("onboardingFieldAllowOtherLabel")}
           </label>
         )}
+        </div>
 
         {/* For choice types, options are configured below — Save/Cancel
             belong after that, not here, so they stay the last thing on
-            screen regardless of field type. */}
-        {!isChoiceType && <div className="ml-auto flex items-center gap-2">{saveCancelButtons}</div>}
+            screen regardless of field type. Kept as its own flex item
+            (not ml-auto on a shared line) so it wraps as a whole unit
+            onto its own line, right where you'd expect it, instead of
+            competing for space with the mask/required group above. */}
+        {!isChoiceType && <div className="flex items-center gap-2">{saveCancelButtons}</div>}
       </div>
 
       {isChoiceType && (
