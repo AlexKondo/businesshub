@@ -50,6 +50,7 @@
     "modules": {
       "suppliers": "Suppliers",
       "suppliersOnboardingForm": "Onboarding Form",
+      "suppliersUsers": "Users",
       "suppliersSubmissions": "Submissions",
       "contracts": "Contracts",
       "documents": "Documents",
@@ -244,7 +245,14 @@
     "onboardingFormFieldsCount": "{count} fields",
     "onboardingFormsBackToList": "Back to forms",
     "onboardingFormActiveLabel": "Active",
-    "onboardingFormInactiveLabel": "Inactive"
+    "onboardingFormInactiveLabel": "Inactive",
+    "supplierUsersTitle": "Registered Suppliers",
+    "supplierUsersSubtitle": "People who created a supplier account for this company.",
+    "supplierUsersEmpty": "No suppliers registered yet.",
+    "supplierUsersSignedUpAt": "Signed up on {date}",
+    "supplierUsersFormSubmitted": "Submitted",
+    "supplierUsersFormPending": "Pending",
+    "supplierUsersLoadError": "Couldn't load suppliers. Please try again."
   },
   "profilePage": {
     "title": "Profile",

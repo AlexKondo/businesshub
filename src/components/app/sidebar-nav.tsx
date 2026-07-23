@@ -11,6 +11,7 @@ import {
   FolderOpen,
   ShoppingCart,
   ClipboardList,
+  UsersRound,
   Users,
   Lock,
 } from "lucide-react";
@@ -23,6 +24,7 @@ const MAIN_ITEMS = [
 
 const SUPPLIERS_CHILDREN = [
   { href: "/suppliers/onboarding-form", key: "suppliersOnboardingForm", icon: ClipboardList },
+  { href: "/suppliers/users", key: "suppliersUsers", icon: UsersRound },
   { href: "/suppliers/submissions", key: "suppliersSubmissions", icon: Users },
 ] as const;
 

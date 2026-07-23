@@ -50,6 +50,7 @@
     "modules": {
       "suppliers": "Proveedores",
       "suppliersOnboardingForm": "Formulario de Onboarding",
+      "suppliersUsers": "Usuarios",
       "suppliersSubmissions": "Registros",
       "contracts": "Contratos",
       "documents": "Documentos",
@@ -244,7 +245,14 @@
     "onboardingFormFieldsCount": "{count} campos",
     "onboardingFormsBackToList": "Volver a los formularios",
     "onboardingFormActiveLabel": "Activo",
-    "onboardingFormInactiveLabel": "Inactivo"
+    "onboardingFormInactiveLabel": "Inactivo",
+    "supplierUsersTitle": "Proveedores Registrados",
+    "supplierUsersSubtitle": "Personas que crearon una cuenta de proveedor en esta empresa.",
+    "supplierUsersEmpty": "Aún no hay proveedores registrados.",
+    "supplierUsersSignedUpAt": "Registrado el {date}",
+    "supplierUsersFormSubmitted": "Enviado",
+    "supplierUsersFormPending": "Pendiente",
+    "supplierUsersLoadError": "No se pudieron cargar los proveedores. Inténtalo de nuevo."
   },
   "profilePage": {
     "title": "Perfil",

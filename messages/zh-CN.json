@@ -50,6 +50,7 @@
     "modules": {
       "suppliers": "供应商",
       "suppliersOnboardingForm": "入驻表单",
+      "suppliersUsers": "用户",
       "suppliersSubmissions": "注册记录",
       "contracts": "合同",
       "documents": "文档",
@@ -244,7 +245,14 @@
     "onboardingFormFieldsCount": "{count} 个字段",
     "onboardingFormsBackToList": "返回表单列表",
     "onboardingFormActiveLabel": "启用",
-    "onboardingFormInactiveLabel": "停用"
+    "onboardingFormInactiveLabel": "停用",
+    "supplierUsersTitle": "已注册供应商",
+    "supplierUsersSubtitle": "在该企业创建了供应商账户的用户。",
+    "supplierUsersEmpty": "尚未有供应商注册。",
+    "supplierUsersSignedUpAt": "注册于{date}",
+    "supplierUsersFormSubmitted": "已提交",
+    "supplierUsersFormPending": "待提交",
+    "supplierUsersLoadError": "无法加载供应商列表，请重试。"
   },
   "profilePage": {
     "title": "个人资料",
