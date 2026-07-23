@@ -155,7 +155,11 @@ function FieldEditor({
 
   return (
     <div className="flex flex-col gap-3 rounded-[10px] border border-(--brand-500)/30 bg-(--accent-soft) p-4">
-      <div className="flex flex-wrap gap-3">
+      {/* One responsive row: label, type, mask, required, save/cancel.
+          items-end so every input's bottom lines up on the same baseline
+          regardless of the label-on-top headers; wraps gracefully when the
+          screen can't fit it all. */}
+      <div className="flex flex-wrap items-end gap-x-4 gap-y-3 pb-4">
         <ResizableBox
           width={widths.label}
           minWidth={MIN_FIELD_WIDTH}
@@ -163,7 +167,7 @@ function FieldEditor({
           onResize={(w) => onResizeWidth("label", w)}
           onResizeEnd={(w) => onCommitWidth("label", w)}
         >
-          <div className="flex flex-col gap-1.5">
+          <div className="relative flex flex-col gap-1.5">
             <label className="text-[12.5px] font-medium text-(--ink)">
               {t("onboardingFieldLabelInputLabel")}
             </label>
@@ -173,7 +177,11 @@ function FieldEditor({
               onChange={(e) => setLabel(e.target.value)}
               className={`${inputClass} w-full`}
             />
-            {displayKey && <span className="text-[11px] text-(--ink-soft)">{displayKey}</span>}
+            {displayKey && (
+              <span className="absolute left-0 top-full mt-1 truncate text-[11px] text-(--ink-soft)">
+                {displayKey}
+              </span>
+            )}
           </div>
         </ResizableBox>
         <ResizableBox
@@ -200,18 +208,18 @@ function FieldEditor({
             </select>
           </div>
         </ResizableBox>
-      </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         {showMaskSection && (
-          <div className="flex items-center gap-1.5">
-            <label className="text-[12.5px] font-medium text-(--ink) whitespace-nowrap">
-              {t("onboardingFieldMaskLabel")}
-            </label>
-            <InfoTooltip label={t("onboardingFieldMaskTooltipTitle")}>
-              <p className="font-semibold text-(--ink)">{t("onboardingFieldMaskTooltipTitle")}</p>
-              {fieldType === "date" ? (
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-1.5">
+              <label className="text-[12.5px] font-medium text-(--ink) whitespace-nowrap">
+                {t("onboardingFieldMaskLabel")}
+              </label>
+              <InfoTooltip label={t("onboardingFieldMaskTooltipTitle")}>
+                <p className="font-semibold text-(--ink)">
+                  {t("onboardingFieldMaskTooltipTitle")}
+                </p>
+                {fieldType === "date" ? (
                 <>
                   <ul className="mt-2 flex flex-col gap-1.5">
                     <li className="flex items-center gap-2">
@@ -260,7 +268,8 @@ function FieldEditor({
                   </div>
                 </>
               )}
-            </InfoTooltip>
+              </InfoTooltip>
+            </div>
             <input
               type="text"
               value={mask}
@@ -271,7 +280,7 @@ function FieldEditor({
           </div>
         )}
 
-        <label className="flex items-center gap-2 text-[13px] text-(--ink)">
+        <label className="flex h-9 items-center gap-2 text-[13px] text-(--ink)">
           <input
             type="checkbox"
             checked={required}
@@ -281,7 +290,7 @@ function FieldEditor({
           {t("onboardingFieldRequiredLabel")}
         </label>
         {isChoiceType && (
-          <label className="flex items-center gap-2 text-[13px] text-(--ink)">
+          <label className="flex h-9 items-center gap-2 text-[13px] text-(--ink)">
             <input
               type="checkbox"
               checked={allowOther}
@@ -291,15 +300,11 @@ function FieldEditor({
             {t("onboardingFieldAllowOtherLabel")}
           </label>
         )}
-        </div>
 
         {/* For choice types, options are configured below — Save/Cancel
             belong after that, not here, so they stay the last thing on
-            screen regardless of field type. Kept as its own flex item
-            (not ml-auto on a shared line) so it wraps as a whole unit
-            onto its own line, right where you'd expect it, instead of
-            competing for space with the mask/required group above. */}
-        {!isChoiceType && <div className="flex items-center gap-2">{saveCancelButtons}</div>}
+            screen regardless of field type. */}
+        {!isChoiceType && <div className="ml-auto flex h-9 items-center gap-2">{saveCancelButtons}</div>}
       </div>
 
       {isChoiceType && (
