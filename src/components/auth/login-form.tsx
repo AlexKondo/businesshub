@@ -42,6 +42,13 @@ export function LoginForm() {
       }
       return;
     }
+    // Enforce a single active session per account: signing in here revokes
+    // every other refresh token for this user (other devices/browsers get
+    // signed out the next time they make a request), so a shared password
+    // can't be used concurrently. Best-effort — a failure here shouldn't
+    // block the login that already succeeded.
+    await supabase.auth.signOut({ scope: "others" }).catch(() => null);
+
     const { data: membership } = await supabase
       .from("memberships")
       .select("companies(slug)")
@@ -51,6 +58,7 @@ export function LoginForm() {
     const slug = membership?.companies?.slug;
     if (slug) {
       const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
+      // eslint-disable-next-line react-hooks/immutability -- window.location is a browser global, not React-tracked state
       window.location.href = `https://${slug}.${root}/${locale}/dashboard`;
       return;
     }

@@ -16,6 +16,11 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Enforce a single active session per account (see login-form.tsx for
+      // the primary enforcement point) — best-effort, a failure here
+      // shouldn't block the confirmation that already succeeded.
+      await supabase.auth.signOut({ scope: "others" }).catch(() => null);
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
