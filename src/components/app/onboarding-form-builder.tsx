@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { X, ChevronUp, ChevronDown, Pencil, Trash2 } from "lucide-react";
+import { X, Check, ChevronUp, ChevronDown, Pencil, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { slugify } from "@/lib/slug";
 import { InfoTooltip } from "@/components/app/info-tooltip";
@@ -131,6 +131,28 @@ function FieldEditor({
     });
   }
 
+  const saveCancelButtons = (
+    <>
+      <button
+        type="button"
+        disabled={saving || !label.trim()}
+        onClick={submit}
+        title={t("onboardingFieldSave")}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-(--brand-500) text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+      >
+        <Check size={16} strokeWidth={2.25} />
+      </button>
+      <button
+        type="button"
+        onClick={onCancel}
+        title={t("onboardingFieldCancel")}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--ink) transition-colors hover:bg-(--bg-surface)"
+      >
+        <X size={16} strokeWidth={2} />
+      </button>
+    </>
+  );
+
   return (
     <div className="flex flex-col gap-3 rounded-[10px] border border-(--brand-500)/30 bg-(--accent-soft) p-4">
       <div className="flex flex-wrap gap-3">
@@ -180,10 +202,10 @@ function FieldEditor({
         </ResizableBox>
       </div>
 
-      {showMaskSection && (
-        <div className="flex flex-col gap-1.5">
+      <div className="flex flex-wrap items-center gap-4">
+        {showMaskSection && (
           <div className="flex items-center gap-1.5">
-            <label className="text-[12.5px] font-medium text-(--ink)">
+            <label className="text-[12.5px] font-medium text-(--ink) whitespace-nowrap">
               {t("onboardingFieldMaskLabel")}
             </label>
             <InfoTooltip label={t("onboardingFieldMaskTooltipTitle")}>
@@ -238,18 +260,16 @@ function FieldEditor({
                 </>
               )}
             </InfoTooltip>
+            <input
+              type="text"
+              value={mask}
+              placeholder={fieldType === "date" ? "DD/MM/YYYY" : "ZZ.ZZZ.ZZZ/ZZZZ-99"}
+              onChange={(e) => setMask(e.target.value)}
+              className={`${inputClass} w-[220px] font-mono`}
+            />
           </div>
-          <input
-            type="text"
-            value={mask}
-            placeholder={fieldType === "date" ? "DD/MM/YYYY" : "ZZ.ZZZ.ZZZ/ZZZZ-99"}
-            onChange={(e) => setMask(e.target.value)}
-            className={`${inputClass} font-mono`}
-          />
-        </div>
-      )}
+        )}
 
-      <div className="flex flex-wrap items-center gap-4">
         <label className="flex items-center gap-2 text-[13px] text-(--ink)">
           <input
             type="checkbox"
@@ -270,6 +290,11 @@ function FieldEditor({
             {t("onboardingFieldAllowOtherLabel")}
           </label>
         )}
+
+        {/* For choice types, options are configured below — Save/Cancel
+            belong after that, not here, so they stay the last thing on
+            screen regardless of field type. */}
+        {!isChoiceType && <div className="ml-auto flex items-center gap-2">{saveCancelButtons}</div>}
       </div>
 
       {isChoiceType && (
@@ -363,26 +388,9 @@ function FieldEditor({
           <span className="text-[11px] text-(--ink-soft)">
             {t("onboardingFieldOptionCategoryHint")}
           </span>
+          <div className="flex items-center justify-end gap-2">{saveCancelButtons}</div>
         </div>
       )}
-
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          disabled={saving || !label.trim()}
-          onClick={submit}
-          className="inline-flex h-9 items-center rounded-md bg-(--brand-500) px-3 text-[13px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          {t("onboardingFieldSave")}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="inline-flex h-9 items-center rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--bg-surface)"
-        >
-          {t("onboardingFieldCancel")}
-        </button>
-      </div>
     </div>
   );
 }
