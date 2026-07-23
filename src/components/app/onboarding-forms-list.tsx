@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Settings2, Pencil, Trash2 } from "lucide-react";
 import type { OnboardingForm } from "@/lib/onboarding-fields";
 
 type FormRow = OnboardingForm & { fieldCount: number };
@@ -164,9 +165,10 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link
                 href={`/suppliers/onboarding-form/${form.id}`}
-                className="inline-flex h-8 items-center rounded-md bg-(--brand-500) px-3 text-[12.5px] font-semibold text-white transition-opacity hover:opacity-90"
+                title={t("onboardingFormOpenButton")}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-(--brand-500) text-white transition-opacity hover:opacity-90"
               >
-                {t("onboardingFormOpenButton")}
+                <Settings2 size={15} strokeWidth={1.75} />
               </Link>
               <button
                 type="button"
@@ -175,9 +177,10 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
                   setRenamingId(form.id);
                   setRenameDraft(form.name);
                 }}
-                className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-3 text-[12.5px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
+                title={t("onboardingFormRename")}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--ink) transition-colors hover:bg-(--accent-soft)"
               >
-                {t("onboardingFormRename")}
+                <Pencil size={14} strokeWidth={1.75} />
               </button>
               {confirmDeleteId === form.id ? (
                 <>
@@ -202,9 +205,10 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
                   type="button"
                   disabled={busy === form.id}
                   onClick={() => setConfirmDeleteId(form.id)}
-                  className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-3 text-[12.5px] font-medium text-(--danger-500) transition-colors hover:bg-(--danger-500)/10"
+                  title={t("onboardingFormDelete")}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--danger-500) transition-colors hover:bg-(--danger-500)/10"
                 >
-                  {t("onboardingFormDelete")}
+                  <Trash2 size={14} strokeWidth={1.75} />
                 </button>
               )}
             </div>

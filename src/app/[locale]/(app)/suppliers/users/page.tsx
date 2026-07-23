@@ -43,7 +43,6 @@ export default async function SuppliersUsersPage() {
       <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
         {t("supplierUsersTitle")}
       </h1>
-      <p className="mt-1 text-[14px] text-(--ink-soft)">{t("supplierUsersSubtitle")}</p>
       <SupplierUsersPanel tenantId={membership.tenant_id} />
     </div>
   );

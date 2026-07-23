@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { X } from "lucide-react";
+import { X, ChevronUp, ChevronDown, Pencil, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { slugify } from "@/lib/slug";
 import { InfoTooltip } from "@/components/app/info-tooltip";
@@ -399,6 +399,7 @@ export function OnboardingFormBuilder({
   const [busy, setBusy] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [widths, setWidths] = useState<FieldWidths>(DEFAULT_FIELD_WIDTHS);
 
@@ -500,6 +501,7 @@ export function OnboardingFormBuilder({
     const supabase = createClient();
     await supabase.from("onboarding_form_fields").delete().eq("id", id);
     setBusy(null);
+    setConfirmDeleteId(null);
     load();
   }
 
@@ -588,34 +590,58 @@ export function OnboardingFormBuilder({
                 type="button"
                 disabled={busy === field.id || idx === 0}
                 onClick={() => move(field.id, "up")}
-                className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-2 text-[12px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-40"
+                title={t("onboardingFieldMoveUp")}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-40"
               >
-                {t("onboardingFieldMoveUp")}
+                <ChevronUp size={15} strokeWidth={1.75} />
               </button>
               <button
                 type="button"
                 disabled={busy === field.id || idx === fields.length - 1}
                 onClick={() => move(field.id, "down")}
-                className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-2 text-[12px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-40"
+                title={t("onboardingFieldMoveDown")}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-40"
               >
-                {t("onboardingFieldMoveDown")}
+                <ChevronDown size={15} strokeWidth={1.75} />
               </button>
               <button
                 type="button"
                 disabled={busy === field.id}
                 onClick={() => setEditingId(field.id)}
-                className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-3 text-[12.5px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
+                title={t("onboardingFieldEdit")}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--ink) transition-colors hover:bg-(--accent-soft)"
               >
-                {t("onboardingFieldEdit")}
+                <Pencil size={14} strokeWidth={1.75} />
               </button>
-              <button
-                type="button"
-                disabled={busy === field.id}
-                onClick={() => handleDelete(field.id)}
-                className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-3 text-[12.5px] font-medium text-(--danger-500) transition-colors hover:bg-(--danger-500)/10"
-              >
-                {t("onboardingFieldDelete")}
-              </button>
+              {confirmDeleteId === field.id ? (
+                <>
+                  <button
+                    type="button"
+                    disabled={busy === field.id}
+                    onClick={() => handleDelete(field.id)}
+                    className="inline-flex h-8 items-center rounded-md bg-(--danger-500) px-3 text-[12.5px] font-semibold text-white transition-opacity hover:opacity-90"
+                  >
+                    {t("onboardingFormDeleteConfirm")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDeleteId(null)}
+                    className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-3 text-[12.5px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
+                  >
+                    {t("onboardingFieldCancel")}
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  disabled={busy === field.id}
+                  onClick={() => setConfirmDeleteId(field.id)}
+                  title={t("onboardingFieldDelete")}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--danger-500) transition-colors hover:bg-(--danger-500)/10"
+                >
+                  <Trash2 size={14} strokeWidth={1.75} />
+                </button>
+              )}
             </div>
           </div>
         )
