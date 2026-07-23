@@ -9,6 +9,12 @@ import type { OnboardingField } from "@/lib/onboarding-fields";
 
 const previewInputClass =
   "h-10 w-full rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink-soft) outline-none disabled:cursor-not-allowed";
+// No h-10 here on purpose: a fixed CSS height overrides the browser's
+// rows-based intrinsic sizing for <textarea>, which is exactly what made
+// dragging the height handle look like it did nothing — the `rows` prop was
+// updating correctly, the rendered box just couldn't grow past 40px.
+const previewTextareaClass =
+  "w-full resize-none rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 py-2 text-sm text-(--ink-soft) outline-none disabled:cursor-not-allowed";
 
 const MIN_TEXTAREA_ROWS = 2;
 const MAX_TEXTAREA_ROWS = 12;
@@ -70,7 +76,7 @@ function ResizableTextareaPreview({
 
   return (
     <div className="relative">
-      <textarea disabled rows={liveRows} className={previewInputClass} />
+      <textarea disabled rows={liveRows} className={previewTextareaClass} />
       <div
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}

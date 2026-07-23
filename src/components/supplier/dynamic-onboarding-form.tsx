@@ -16,6 +16,12 @@ import { normalizeLabel } from "@/lib/text";
 
 const inputClass =
   "h-10 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)";
+// No h-10 here: a fixed CSS height overrides the browser's rows-based
+// intrinsic sizing for <textarea>, which would silently ignore the admin's
+// configured field.rows. resize-y (not -none) so the supplier can still
+// stretch it further by hand if they need more room while typing.
+const textareaClass =
+  "resize-y rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 py-2 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)";
 const labelClass = "text-[13px] font-medium text-(--ink)";
 const errorClass = "text-xs text-(--danger-500)";
 
@@ -306,7 +312,7 @@ export function DynamicOnboardingForm({
                   id={field.key}
                   rows={field.rows}
                   {...register(field.key)}
-                  className={inputClass}
+                  className={textareaClass}
                 />
               )}
 
