@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { SupplierSubmissionsPanel } from "@/components/app/supplier-submissions-panel";
+import { PendingCompaniesPanel } from "@/components/app/pending-companies-panel";
+import { AllCompaniesPanel } from "@/components/app/all-companies-panel";
 
 export default async function SuppliersSubmissionsPage() {
   const t = await getTranslations("adminPage");
@@ -24,24 +26,47 @@ export default async function SuppliersSubmissionsPage() {
 
   const canManage = !!platformAdmin || membership?.roles?.name === "Administrador da Empresa";
 
-  if (!canManage || !membership?.tenant_id) {
+  if (!canManage || (!membership?.tenant_id && !platformAdmin)) {
     return (
       <div>
-        <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
-          {t("submissionsTitle")}
-        </h1>
-        <p className="mt-2 text-[14px] text-(--ink-soft)">{t("noAccess")}</p>
+        <p className="text-[14px] text-(--ink-soft)">{t("noAccess")}</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
-        {t("submissionsTitle")}
-      </h1>
-      <p className="mt-1 text-[14px] text-(--ink-soft)">{t("submissionsSubtitle")}</p>
-      <SupplierSubmissionsPanel tenantId={membership.tenant_id} />
+    <div className="flex flex-col gap-8">
+      <div>
+        <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
+          {t("submissionsTitle")}
+        </h1>
+        {membership?.tenant_id && (
+          <p className="mt-1 text-[14px] text-(--ink-soft)">{t("submissionsSubtitle")}</p>
+        )}
+      </div>
+      {membership?.tenant_id && <SupplierSubmissionsPanel tenantId={membership.tenant_id} />}
+      {!!platformAdmin && (
+        <div>
+          <h2 className="text-[16px] font-semibold text-(--ink)">
+            {t("pendingCompaniesSectionTitle")}
+          </h2>
+          <p className="mt-1 text-[13px] text-(--ink-soft)">
+            {t("pendingCompaniesSectionSubtitle")}
+          </p>
+          <PendingCompaniesPanel />
+        </div>
+      )}
+      {!!platformAdmin && (
+        <div>
+          <h2 className="text-[16px] font-semibold text-(--ink)">
+            {t("allCompaniesSectionTitle")}
+          </h2>
+          <p className="mt-1 text-[13px] text-(--ink-soft)">
+            {t("allCompaniesSectionSubtitle")}
+          </p>
+          <AllCompaniesPanel />
+        </div>
+      )}
     </div>
   );
 }
