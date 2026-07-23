@@ -298,6 +298,7 @@
       "forgotPassword": "忘记密码？",
       "errorInvalid": "邮箱或密码不正确。",
       "errorEmailNotConfirmed": "请先确认您的邮箱再登录 — 查看我们发送到您邮箱的链接。",
+      "errorNoAccountHere": "该账户尚未在此企业注册。请返回首页进行注册。",
       "errorGeneric": "出现问题，请重试。"
     },
     "signup": {

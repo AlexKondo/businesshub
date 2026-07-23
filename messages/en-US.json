@@ -298,6 +298,7 @@
       "forgotPassword": "Forgot your password?",
       "errorInvalid": "Invalid email or password.",
       "errorEmailNotConfirmed": "Confirm your email before logging in — check the link we sent to your inbox.",
+      "errorNoAccountHere": "This account doesn't have an account at this company. Go back to the homepage to sign up.",
       "errorGeneric": "Something went wrong. Please try again."
     },
     "signup": {

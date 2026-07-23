@@ -298,6 +298,7 @@
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "errorInvalid": "Correo electrónico o contraseña inválidos.",
       "errorEmailNotConfirmed": "Confirma tu correo antes de iniciar sesión — revisa el enlace que enviamos a tu bandeja de entrada.",
+      "errorNoAccountHere": "Esta cuenta no tiene registro en esta empresa. Vuelve a la página de inicio para registrarte.",
       "errorGeneric": "Algo salió mal. Intenta de nuevo."
     },
     "signup": {

@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { resolveTenantSlug } from "@/lib/tenant";
 import { PasswordInput } from "@/components/auth/password-input";
 
 export function LoginForm() {
@@ -49,17 +50,34 @@ export function LoginForm() {
     // block the login that already succeeded.
     await supabase.auth.signOut({ scope: "others" }).catch(() => null);
 
-    const { data: membership } = await supabase
+    const { data: memberships } = await supabase
       .from("memberships")
       .select("companies(slug)")
-      .limit(1)
-      .maybeSingle<{ companies: { slug: string } | null }>();
+      .eq("status", "active");
+    const slugs = (memberships ?? [])
+      .map((m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug)
+      .filter((s): s is string => !!s);
 
-    const slug = membership?.companies?.slug;
-    if (slug) {
+    const currentSlug = resolveTenantSlug(window.location.host);
+    if (currentSlug) {
+      // Logging in FROM a specific tenant's subdomain must only succeed for
+      // that tenant — never silently swap the visitor over to some other
+      // company they happen to belong to, which is confusing and looks
+      // broken from where they started.
+      if (!slugs.includes(currentSlug)) {
+        await supabase.auth.signOut().catch(() => null);
+        setServerError(t("errorNoAccountHere"));
+        return;
+      }
+      router.push("/dashboard");
+      router.refresh();
+      return;
+    }
+
+    if (slugs[0]) {
       const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
       // eslint-disable-next-line react-hooks/immutability -- window.location is a browser global, not React-tracked state
-      window.location.href = `https://${slug}.${root}/${locale}/dashboard`;
+      window.location.href = `https://${slugs[0]}.${root}/${locale}/dashboard`;
       return;
     }
 
