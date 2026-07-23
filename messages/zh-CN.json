@@ -268,7 +268,12 @@
     "fornecedorMenuSectionSubtitle": "选择该企业的供应商可以看到的侧边栏项目。",
     "fornecedorMenuDashboard": "面板",
     "fornecedorMenuOnboardingForm": "入驻表单",
-    "fornecedorMenuUsers": "用户"
+    "fornecedorMenuUsers": "用户",
+    "allCompaniesRunVaas": "运行 VaaS",
+    "allCompaniesVaasRunning": "运行中…",
+    "allCompaniesEnableVaasForTenant": "使用 VaaS 评估（供应商）",
+    "allCompaniesVaasOk": "VaaS 响应",
+    "allCompaniesVaasError": "调用 VaaS 出错"
   },
   "profilePage": {
     "title": "个人资料",

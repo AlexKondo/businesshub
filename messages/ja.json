@@ -268,7 +268,12 @@
     "fornecedorMenuSectionSubtitle": "この企業のサプライヤーが見られるサイドバー項目を選択します。",
     "fornecedorMenuDashboard": "ダッシュボード",
     "fornecedorMenuOnboardingForm": "オンボーディングフォーム",
-    "fornecedorMenuUsers": "ユーザー"
+    "fornecedorMenuUsers": "ユーザー",
+    "allCompaniesRunVaas": "VaaSを実行",
+    "allCompaniesVaasRunning": "実行中…",
+    "allCompaniesEnableVaasForTenant": "VaaSで評価する（サプライヤー）",
+    "allCompaniesVaasOk": "VaaSからの応答",
+    "allCompaniesVaasError": "VaaS呼び出しエラー"
   },
   "profilePage": {
     "title": "プロフィール",

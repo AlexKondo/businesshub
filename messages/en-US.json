@@ -268,7 +268,12 @@
     "fornecedorMenuSectionSubtitle": "Choose which sidebar items this company's suppliers can see.",
     "fornecedorMenuDashboard": "Dashboard",
     "fornecedorMenuOnboardingForm": "Onboarding Form",
-    "fornecedorMenuUsers": "Users"
+    "fornecedorMenuUsers": "Users",
+    "allCompaniesRunVaas": "Run VaaS",
+    "allCompaniesVaasRunning": "Running…",
+    "allCompaniesEnableVaasForTenant": "Evaluate with VaaS (suppliers)",
+    "allCompaniesVaasOk": "VaaS response",
+    "allCompaniesVaasError": "Error calling VaaS"
   },
   "profilePage": {
     "title": "Profile",

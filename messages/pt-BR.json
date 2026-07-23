@@ -268,7 +268,12 @@
     "fornecedorMenuSectionSubtitle": "Escolha quais itens do menu lateral os fornecedores desta empresa podem ver.",
     "fornecedorMenuDashboard": "Painel",
     "fornecedorMenuOnboardingForm": "Formulário de Onboarding",
-    "fornecedorMenuUsers": "Usuários"
+    "fornecedorMenuUsers": "Usuários",
+    "allCompaniesRunVaas": "Executar o VaaS",
+    "allCompaniesVaasRunning": "Executando…",
+    "allCompaniesEnableVaasForTenant": "Avaliar com VaaS (fornecedores)",
+    "allCompaniesVaasOk": "Resposta da VaaS",
+    "allCompaniesVaasError": "Erro ao chamar a VaaS"
   },
   "profilePage": {
     "title": "Perfil",

@@ -26,7 +26,7 @@ export async function GET() {
   const admin = createAdminClient();
   const { data: companies } = await admin
     .from("companies")
-    .select("id, name, legal_name, slug, tax_id, status, created_at")
+    .select("id, name, legal_name, slug, tax_id, status, vaas_enabled, created_at")
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
@@ -44,6 +44,7 @@ export async function GET() {
         slug: c.slug,
         taxId: c.tax_id,
         status: c.status,
+        vaasEnabled: c.vaas_enabled,
         createdAt: c.created_at,
         memberCount: count ?? 0,
       };

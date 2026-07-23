@@ -18,8 +18,17 @@ type Company = {
   slug: string;
   taxId: string;
   status: "active" | "pending_approval" | "inactive";
+  vaasEnabled: boolean;
   createdAt: string;
   memberCount: number;
+};
+
+type VaasResult = {
+  ok: boolean;
+  message?: string;
+  status?: number;
+  body?: unknown;
+  data?: unknown;
 };
 
 type CompanyMember = {
@@ -51,6 +60,8 @@ export function AllCompaniesPanel() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [members, setMembers] = useState<CompanyMember[] | null>(null);
   const [auditLog, setAuditLog] = useState<AuditEntry[] | null>(null);
+  const [vaasBusy, setVaasBusy] = useState<string | null>(null);
+  const [vaasResult, setVaasResult] = useState<Record<string, VaasResult>>({});
 
   async function load() {
     const res = await fetch("/api/tenants/all-companies");
@@ -106,6 +117,26 @@ export function AllCompaniesPanel() {
     });
     setBusy(null);
     load();
+  }
+
+  async function handleToggleVaasEnabled(companyId: string, enabled: boolean) {
+    setBusy(companyId);
+    const supabase = createClient();
+    await supabase.from("companies").update({ vaas_enabled: enabled }).eq("id", companyId);
+    setBusy(null);
+    load();
+  }
+
+  async function handleRunVaasCheck(companyId: string) {
+    setVaasBusy(companyId);
+    const res = await fetch("/api/tenants/vaas-check-company", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ companyId }),
+    });
+    const result = await res.json().catch(() => ({ ok: false, message: "Resposta inválida." }));
+    setVaasResult((prev) => ({ ...prev, [companyId]: result }));
+    setVaasBusy(null);
   }
 
   function enterAs(slug: string) {
@@ -191,26 +222,61 @@ export function AllCompaniesPanel() {
                     </button>
                   )}
                   {c.status !== "pending_approval" && (
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={c.status === "active"}
-                      disabled={busy === c.id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleActive(c.id, c.status !== "active");
-                      }}
-                      className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
-                        c.status === "active" ? "bg-(--brand-500)" : "bg-(--border-default)"
-                      }`}
-                      title={t("allCompaniesDeactivate")}
-                    >
-                      <span
-                        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                          c.status === "active" ? "translate-x-[18px]" : "translate-x-[3px]"
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRunVaasCheck(c.id);
+                        }}
+                        disabled={vaasBusy === c.id}
+                        className="inline-flex h-9 items-center rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-50"
+                      >
+                        {vaasBusy === c.id ? t("allCompaniesVaasRunning") : t("allCompaniesRunVaas")}
+                      </button>
+                      <span className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={c.vaasEnabled}
+                          disabled={busy === c.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleVaasEnabled(c.id, !c.vaasEnabled);
+                          }}
+                          className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+                            c.vaasEnabled ? "bg-(--brand-500)" : "bg-(--border-default)"
+                          }`}
+                          title={t("allCompaniesEnableVaasForTenant")}
+                        >
+                          <span
+                            className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                              c.vaasEnabled ? "translate-x-[18px]" : "translate-x-[3px]"
+                            }`}
+                          />
+                        </button>
+                      </span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={c.status === "active"}
+                        disabled={busy === c.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleActive(c.id, c.status !== "active");
+                        }}
+                        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+                          c.status === "active" ? "bg-(--brand-500)" : "bg-(--border-default)"
                         }`}
-                      />
-                    </button>
+                        title={t("allCompaniesDeactivate")}
+                      >
+                        <span
+                          className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                            c.status === "active" ? "translate-x-[18px]" : "translate-x-[3px]"
+                          }`}
+                        />
+                      </button>
+                    </>
                   )}
                   {confirmDeleteId === c.id ? (
                     <div className="flex items-center gap-2">
@@ -257,6 +323,29 @@ export function AllCompaniesPanel() {
                 )}
               </div>
             </div>
+
+            {vaasResult[c.id] && (
+              <div
+                className={`rounded-md border px-3 py-2 text-[12px] ${
+                  vaasResult[c.id].ok
+                    ? "border-(--success-500)/30 bg-(--success-500)/10 text-(--success-500)"
+                    : "border-(--danger-500)/30 bg-(--danger-500)/10 text-(--danger-500)"
+                }`}
+              >
+                <p className="font-semibold">
+                  {vaasResult[c.id].ok ? t("allCompaniesVaasOk") : t("allCompaniesVaasError")}
+                </p>
+                <pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-all font-mono text-[11px] opacity-90">
+                  {JSON.stringify(
+                    vaasResult[c.id].ok
+                      ? vaasResult[c.id].data
+                      : (vaasResult[c.id].message ?? vaasResult[c.id].body ?? vaasResult[c.id]),
+                    null,
+                    2
+                  )}
+                </pre>
+              </div>
+            )}
 
             {expanded && (
               <div className="ml-6 flex flex-col gap-4 border-t border-(--border-default) pt-3">
