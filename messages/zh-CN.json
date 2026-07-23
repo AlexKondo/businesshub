@@ -246,7 +246,15 @@
     "pendingCompaniesSectionSubtitle": "等待平台批准的企业创建请求。",
     "pendingCompaniesEmpty": "暂无待处理的请求。",
     "pendingCompaniesRequestedBy": "由{name}（{email}）申请",
-    "pendingCompaniesLoadError": "无法加载申请列表，请重试。"
+    "pendingCompaniesLoadError": "无法加载申请列表，请重试。",
+    "allCompaniesSectionTitle": "所有企业",
+    "allCompaniesSectionSubtitle": "平台上的所有企业，包括已启用和待批准的。",
+    "allCompaniesEmpty": "尚未有企业注册。",
+    "allCompaniesLoadError": "无法加载企业列表，请重试。",
+    "allCompaniesStatusActive": "已启用",
+    "allCompaniesStatusPending": "待批准",
+    "allCompaniesMemberCount": "{count} 名成员",
+    "allCompaniesDeleteWarning": "此操作将删除该企业及其所有数据（供应商、表单、注册记录），且无法撤销。"
   },
   "profilePage": {
     "title": "个人资料",

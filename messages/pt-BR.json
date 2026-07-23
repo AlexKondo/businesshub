@@ -246,7 +246,15 @@
     "pendingCompaniesSectionSubtitle": "Pedidos de criação de empresa aguardando aprovação da plataforma.",
     "pendingCompaniesEmpty": "Nenhum pedido pendente.",
     "pendingCompaniesRequestedBy": "Pedido por {name} ({email})",
-    "pendingCompaniesLoadError": "Não foi possível carregar os pedidos. Tente novamente."
+    "pendingCompaniesLoadError": "Não foi possível carregar os pedidos. Tente novamente.",
+    "allCompaniesSectionTitle": "Todas as Empresas",
+    "allCompaniesSectionSubtitle": "Todas as empresas cadastradas na plataforma, ativas ou aguardando aprovação.",
+    "allCompaniesEmpty": "Nenhuma empresa cadastrada ainda.",
+    "allCompaniesLoadError": "Não foi possível carregar as empresas. Tente novamente.",
+    "allCompaniesStatusActive": "Ativo",
+    "allCompaniesStatusPending": "Aguardando aprovação",
+    "allCompaniesMemberCount": "{count} membros",
+    "allCompaniesDeleteWarning": "Isso apaga a empresa e todos os seus dados (fornecedores, formulários, cadastros). Ação irreversível."
   },
   "profilePage": {
     "title": "Perfil",

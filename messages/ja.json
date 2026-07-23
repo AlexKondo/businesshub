@@ -246,7 +246,15 @@
     "pendingCompaniesSectionSubtitle": "プラットフォームの承認待ちの企業作成リクエスト。",
     "pendingCompaniesEmpty": "保留中のリクエストはありません。",
     "pendingCompaniesRequestedBy": "{name}（{email}）からのリクエスト",
-    "pendingCompaniesLoadError": "リクエストを読み込めませんでした。もう一度お試しください。"
+    "pendingCompaniesLoadError": "リクエストを読み込めませんでした。もう一度お試しください。",
+    "allCompaniesSectionTitle": "すべての企業",
+    "allCompaniesSectionSubtitle": "プラットフォーム上のすべての企業（有効・承認待ち）。",
+    "allCompaniesEmpty": "まだ企業が登録されていません。",
+    "allCompaniesLoadError": "企業を読み込めませんでした。もう一度お試しください。",
+    "allCompaniesStatusActive": "有効",
+    "allCompaniesStatusPending": "承認待ち",
+    "allCompaniesMemberCount": "{count} 人のメンバー",
+    "allCompaniesDeleteWarning": "この企業とすべてのデータ（サプライヤー、フォーム、登録内容）が削除されます。この操作は取り消せません。"
   },
   "profilePage": {
     "title": "プロフィール",

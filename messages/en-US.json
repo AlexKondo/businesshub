@@ -246,7 +246,15 @@
     "pendingCompaniesSectionSubtitle": "Company creation requests awaiting platform approval.",
     "pendingCompaniesEmpty": "No pending requests.",
     "pendingCompaniesRequestedBy": "Requested by {name} ({email})",
-    "pendingCompaniesLoadError": "Couldn't load requests. Please try again."
+    "pendingCompaniesLoadError": "Couldn't load requests. Please try again.",
+    "allCompaniesSectionTitle": "All Companies",
+    "allCompaniesSectionSubtitle": "Every company on the platform, active or awaiting approval.",
+    "allCompaniesEmpty": "No companies yet.",
+    "allCompaniesLoadError": "Couldn't load companies. Please try again.",
+    "allCompaniesStatusActive": "Active",
+    "allCompaniesStatusPending": "Awaiting approval",
+    "allCompaniesMemberCount": "{count} members",
+    "allCompaniesDeleteWarning": "This deletes the company and all its data (suppliers, forms, submissions). This can't be undone."
   },
   "profilePage": {
     "title": "Profile",
