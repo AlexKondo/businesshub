@@ -54,7 +54,7 @@ export default async function AdminPage() {
       {membership?.tenant_id && (
         <div className="mt-8">
           <h2 className="text-[16px] font-semibold text-(--ink)">
-            {t("fornecedorMenuSectionTitle")}
+            {t("fornecedorMenuSectionTitle")} ({t("fornecedorMenuSectionParenthetical")})
           </h2>
           <p className="mt-1 text-[13px] text-(--ink-soft)">
             {t("fornecedorMenuSectionSubtitle")}

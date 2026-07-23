@@ -186,7 +186,7 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
   }
 
   const [{ data: memberships }, { data: platformAdmin }] = await Promise.all([
-    supabase.from("memberships").select("companies(slug)"),
+    supabase.from("memberships").select("companies(slug)").eq("status", "active"),
     supabase.from("platform_admins").select("user_id").eq("user_id", user.id).maybeSingle(),
   ]);
 

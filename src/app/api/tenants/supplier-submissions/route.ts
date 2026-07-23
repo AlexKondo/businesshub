@@ -34,14 +34,17 @@ export async function GET(request: Request) {
   const admin = createAdminClient();
   const { data: submissions } = await admin
     .from("supplier_onboarding_submissions")
-    .select("id, answers, updated_at, memberships(user_id)")
+    .select("id, answers, updated_at, membership_id, memberships(user_id, status)")
     .eq("tenant_id", tenantId)
     .eq("form_id", formId)
     .order("updated_at", { ascending: false });
 
   const enriched = await Promise.all(
     (submissions ?? []).map(async (s) => {
-      const membership = s.memberships as unknown as { user_id: string } | null;
+      const membership = s.memberships as unknown as {
+        user_id: string;
+        status: string;
+      } | null;
       const userId = membership?.user_id;
       const [{ data: authUser }, { data: profile }] = userId
         ? await Promise.all([
@@ -51,6 +54,8 @@ export async function GET(request: Request) {
         : [{ data: null }, { data: null }];
       return {
         id: s.id,
+        membershipId: s.membership_id,
+        status: (membership?.status ?? "active") as "active" | "disabled",
         updatedAt: s.updated_at,
         answers: s.answers,
         email: authUser?.user?.email ?? "",

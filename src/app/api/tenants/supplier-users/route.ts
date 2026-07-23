@@ -59,10 +59,10 @@ export async function GET(request: Request) {
 
   const { data: memberships, error: membershipsError } = await admin
     .from("memberships")
-    .select("id, user_id, created_at")
+    .select("id, user_id, created_at, status")
     .eq("tenant_id", tenantId)
     .eq("role_id", fornecedorRole!.id)
-    .eq("status", "active")
+    .in("status", ["active", "disabled"])
     .order("created_at", { ascending: true });
 
   if (membershipsError) {
@@ -103,6 +103,7 @@ export async function GET(request: Request) {
       return {
         membershipId: m.id,
         createdAt: m.created_at,
+        status: m.status as "active" | "disabled",
         email: authUser?.user?.email ?? "",
         fullName: profile?.full_name ?? authUser?.user?.email ?? "",
         submittedFormIds: Array.from(submittedFormsByMembership.get(m.id) ?? []),

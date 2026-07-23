@@ -27,6 +27,7 @@ export default async function AppLayout({
       .from("memberships")
       .select("id, tenant_id, roles(name), companies(name)")
       .eq("user_id", user!.id)
+      .eq("status", "active")
       .maybeSingle<{
         id: string;
         tenant_id: string;
