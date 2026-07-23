@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { ROOT_DOMAIN, resolveTenantSlug } from "@/lib/tenant";
 import {
   LayoutDashboard,
   ShieldCheck,
@@ -15,6 +16,7 @@ import {
   Users,
   Lock,
   AlertTriangle,
+  Building2,
 } from "lucide-react";
 
 const MAIN_ITEMS = [
@@ -181,9 +183,12 @@ function FornecedorSidebar({ tenantId }: { tenantId: string }) {
   );
 }
 
-function StaffSidebar() {
+function StaffSidebar({ isPlatformAdmin }: { isPlatformAdmin: boolean }) {
   const t = useTranslations("app");
   const pathname = usePathname();
+  const locale = useLocale();
+  const onRootDomain =
+    typeof window !== "undefined" && resolveTenantSlug(window.location.host) === null;
 
   return (
     <nav className="flex flex-1 flex-col gap-6 px-3 py-4">
@@ -193,6 +198,22 @@ function StaffSidebar() {
             <NavLink href={href} active={pathname === href} icon={Icon} label={t(key)} />
           </li>
         ))}
+
+        {isPlatformAdmin && (
+          <li>
+            <a
+              href={`https://${ROOT_DOMAIN}/${locale}/platform-admin`}
+              className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium transition-colors ${
+                onRootDomain && pathname === "/platform-admin"
+                  ? "bg-(--accent-soft) text-(--brand-500)"
+                  : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
+              }`}
+            >
+              <Building2 size={16} strokeWidth={1.5} />
+              <span className="truncate">{t("platformAdmin")}</span>
+            </a>
+          </li>
+        )}
 
         <li>
           <div
@@ -242,12 +263,14 @@ function StaffSidebar() {
 export function SidebarNav({
   roleName,
   tenantId,
+  isPlatformAdmin,
 }: {
   roleName: string | null;
   tenantId: string | null;
+  isPlatformAdmin: boolean;
 }) {
   if (roleName === "Fornecedor" && tenantId) {
     return <FornecedorSidebar tenantId={tenantId} />;
   }
-  return <StaffSidebar />;
+  return <StaffSidebar isPlatformAdmin={isPlatformAdmin} />;
 }

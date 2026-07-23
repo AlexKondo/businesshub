@@ -55,7 +55,8 @@
       "contracts": "合同",
       "documents": "文档",
       "purchaseOrders": "采购订单"
-    }
+    },
+    "platformAdmin": "超级管理员"
   },
   "dashboardPage": {
     "greeting": "欢迎回来，{name}",
@@ -273,7 +274,9 @@
     "allCompaniesVaasRunning": "运行中…",
     "allCompaniesEnableVaasForTenant": "为该租户启用 VaaS 核查",
     "allCompaniesVaasOk": "VaaS 响应",
-    "allCompaniesVaasError": "调用 VaaS 出错"
+    "allCompaniesVaasError": "调用 VaaS 出错",
+    "platformAdminTitle": "超级管理员",
+    "platformAdminSubtitle": "平台范围内的企业管理 — 仅平台管理员可见。"
   },
   "profilePage": {
     "title": "个人资料",

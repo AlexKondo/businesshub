@@ -83,6 +83,19 @@ function matchLoginPath(pathname: string): boolean {
   );
 }
 
+// /platform-admin is platform-wide (not tenant data), so it must always be
+// reached from the root domain — never from whichever tenant subdomain the
+// super admin happened to be browsing. See matchLoginPath above for the
+// analogous "this path is special, resolve it before the generic app gate"
+// pattern.
+function matchPlatformAdminPath(pathname: string): boolean {
+  if (pathname === "/platform-admin") return true;
+  return routing.locales.some(
+    (locale) =>
+      pathname === `/${locale}/platform-admin` || pathname.startsWith(`/${locale}/platform-admin/`)
+  );
+}
+
 // Pulls the locale prefix out of a path that already has one (e.g.
 // "/pt-BR/profile" -> "pt-BR"), so redirecting an anonymous visitor to
 // /login preserves whatever language they were already browsing in.
@@ -180,6 +193,11 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
   const ownsSlug = (memberships ?? []).some(
     (m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug === tenantSlug
   );
+
+  if (platformAdmin && matchPlatformAdminPath(request.nextUrl.pathname)) {
+    const locale = extractLocale(request.nextUrl.pathname) ?? initialLocale(request);
+    return NextResponse.redirect(`https://${ROOT_DOMAIN}/${locale}/platform-admin`);
+  }
 
   if (!ownsSlug && !platformAdmin) {
     if (bareRoot) {

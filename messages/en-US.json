@@ -55,7 +55,8 @@
       "contracts": "Contracts",
       "documents": "Documents",
       "purchaseOrders": "Purchase Orders"
-    }
+    },
+    "platformAdmin": "Super Admin"
   },
   "dashboardPage": {
     "greeting": "Welcome back, {name}",
@@ -273,7 +274,9 @@
     "allCompaniesVaasRunning": "Running…",
     "allCompaniesEnableVaasForTenant": "Enable VaaS check for this tenant",
     "allCompaniesVaasOk": "VaaS response",
-    "allCompaniesVaasError": "Error calling VaaS"
+    "allCompaniesVaasError": "Error calling VaaS",
+    "platformAdminTitle": "Super Admin",
+    "platformAdminSubtitle": "Platform-wide company management — visible only to platform administrators."
   },
   "profilePage": {
     "title": "Profile",

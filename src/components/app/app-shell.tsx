@@ -19,12 +19,14 @@ export function AppShell({
   companyName,
   roleName,
   tenantId,
+  isPlatformAdmin,
   children,
 }: {
   user: User;
   companyName: string | null;
   roleName: string | null;
   tenantId: string | null;
+  isPlatformAdmin: boolean;
   children: React.ReactNode;
 }) {
   const firstName =
@@ -101,7 +103,7 @@ export function AppShell({
           style={{ width: `${width}px` }}
           className="relative hidden shrink-0 border-r border-(--border-default) bg-(--bg-surface) md:flex md:flex-col"
         >
-          <SidebarNav roleName={roleName} tenantId={tenantId} />
+          <SidebarNav roleName={roleName} tenantId={tenantId} isPlatformAdmin={isPlatformAdmin} />
           <div
             onMouseDown={startDrag}
             role="separator"

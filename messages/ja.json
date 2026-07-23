@@ -55,7 +55,8 @@
       "contracts": "契約",
       "documents": "ドキュメント",
       "purchaseOrders": "発注"
-    }
+    },
+    "platformAdmin": "スーパー管理者"
   },
   "dashboardPage": {
     "greeting": "おかえりなさい、{name} さん",
@@ -273,7 +274,9 @@
     "allCompaniesVaasRunning": "実行中…",
     "allCompaniesEnableVaasForTenant": "このテナントのVaaSチェックを有効にする",
     "allCompaniesVaasOk": "VaaSからの応答",
-    "allCompaniesVaasError": "VaaS呼び出しエラー"
+    "allCompaniesVaasError": "VaaS呼び出しエラー",
+    "platformAdminTitle": "スーパー管理者",
+    "platformAdminSubtitle": "プラットフォーム全体の企業管理 — プラットフォーム管理者のみ閲覧可能。"
   },
   "profilePage": {
     "title": "プロフィール",

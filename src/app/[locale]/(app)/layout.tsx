@@ -46,6 +46,7 @@ export default async function AppLayout({
       companyName={membership?.companies?.name ?? null}
       roleName={membership?.roles?.name ?? null}
       tenantId={membership?.tenant_id ?? null}
+      isPlatformAdmin={!!platformAdmin}
     >
       {children}
     </AppShell>
