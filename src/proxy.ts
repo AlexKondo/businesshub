@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { routing } from "./i18n/routing";
 import { getCookieDomain } from "./lib/supabase/cookie-domain";
 import { getGeo, localeFromCountry } from "./lib/geo";
-import { ROOT_DOMAIN, resolveTenantSlug } from "./lib/tenant";
+import { resolveTenantSlug } from "./lib/tenant";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -188,8 +188,12 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
       }
       return serveTenantLanding(bareRoot.locale);
     }
-    // any other path (dashboard, admin, etc.) — bounce to their own space
-    return NextResponse.redirect(`https://${ROOT_DOMAIN}/en-US/dashboard`);
+    // Any other path (dashboard, admin, etc.) for someone who doesn't
+    // belong to THIS tenant — never bounce to the root domain either, just
+    // send them to this same subdomain's own bare root, which resolves to
+    // its public landing page.
+    const locale = extractLocale(request.nextUrl.pathname) ?? initialLocale(request);
+    return NextResponse.redirect(new URL(`/${locale}`, request.url));
   }
 
   if (bareRoot) {
