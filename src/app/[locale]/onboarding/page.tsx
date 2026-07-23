@@ -24,6 +24,10 @@ export default async function OnboardingPage({
 
   const appRootDomain =
     process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, "") ?? "businesshub.app.br";
+  const userFirstName =
+    (user!.user_metadata?.full_name as string | undefined)?.split(" ")[0] ??
+    user!.email?.split("@")[0] ??
+    "";
 
   // A previous "create a new company" request from this same account is
   // still awaiting platform-admin approval — show that status instead of
@@ -49,7 +53,7 @@ export default async function OnboardingPage({
     const t = await getTranslations("onboarding");
     const isNewCompany = pendingMembership.companies.status === "pending_approval";
     return (
-      <AuthShell maxWidthClassName="max-w-[640px]">
+      <AuthShell maxWidthClassName="max-w-[640px]" userFirstName={userFirstName}>
         <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
           <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">
             {t("pendingTitle")}
