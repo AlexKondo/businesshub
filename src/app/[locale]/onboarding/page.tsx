@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { AuthShell } from "@/components/auth-shell";
 import { OnboardingForm } from "@/components/app/onboarding-form";
 
@@ -27,8 +28,14 @@ export default async function OnboardingPage({
   // A previous "create a new company" request from this same account is
   // still awaiting platform-admin approval — show that status instead of
   // re-rendering the empty create-org form (which would make them retype
-  // everything, and could even create a second pending company).
-  const { data: pendingMembership } = await supabase
+  // everything, and could even create a second pending company). Uses the
+  // admin client because companies_select's RLS requires an ACTIVE
+  // membership to read a company row — exactly what this user doesn't have
+  // yet (their membership is still 'pending'), so the caller's own client
+  // would silently return companies: null on the join and defeat this
+  // check. Scoped safely by the explicit user_id filter below.
+  const admin = createAdminClient();
+  const { data: pendingMembership } = await admin
     .from("memberships")
     .select("tenant_id, companies(name, slug, status)")
     .eq("user_id", user!.id)
