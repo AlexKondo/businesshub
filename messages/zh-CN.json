@@ -295,7 +295,14 @@
     "supplierSubmissionsMessagePlaceholder": "输入您的消息…",
     "supplierSubmissionsMessageSend": "发送",
     "supplierSubmissionsMessageSending": "发送中…",
-    "supplierSubmissionsMessageSentTitle": "消息已通过邮件发送。"
+    "supplierSubmissionsMessageSentTitle": "消息已通过邮件发送。",
+    "pendingCompaniesApprovingTitle": "正在批准 {name}",
+    "pendingCompaniesApprovingEstimate": "通常需要1到3分钟。",
+    "pendingCompaniesApprovingStep1": "正在激活企业",
+    "pendingCompaniesApprovingStep2": "正在注册子域名",
+    "pendingCompaniesApprovingStep3": "正在部署工作区",
+    "pendingCompaniesApprovingDone": "完成！{name} 现已可用。",
+    "pendingCompaniesApprovingError": "批准时出现问题，请重试。"
   },
   "profilePage": {
     "title": "个人资料",

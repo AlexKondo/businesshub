@@ -295,7 +295,14 @@
     "supplierSubmissionsMessagePlaceholder": "メッセージを入力…",
     "supplierSubmissionsMessageSend": "送信",
     "supplierSubmissionsMessageSending": "送信中…",
-    "supplierSubmissionsMessageSentTitle": "メールでメッセージを送信しました。"
+    "supplierSubmissionsMessageSentTitle": "メールでメッセージを送信しました。",
+    "pendingCompaniesApprovingTitle": "{name} を承認中",
+    "pendingCompaniesApprovingEstimate": "通常1〜3分かかります。",
+    "pendingCompaniesApprovingStep1": "企業を有効化しています",
+    "pendingCompaniesApprovingStep2": "サブドメインを登録しています",
+    "pendingCompaniesApprovingStep3": "ワークスペースをデプロイしています",
+    "pendingCompaniesApprovingDone": "完了しました！{name} が利用可能になりました。",
+    "pendingCompaniesApprovingError": "承認中に問題が発生しました。もう一度お試しください。"
   },
   "profilePage": {
     "title": "プロフィール",

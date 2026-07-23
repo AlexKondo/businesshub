@@ -295,7 +295,14 @@
     "supplierSubmissionsMessagePlaceholder": "Write your message…",
     "supplierSubmissionsMessageSend": "Send",
     "supplierSubmissionsMessageSending": "Sending…",
-    "supplierSubmissionsMessageSentTitle": "Message sent by email."
+    "supplierSubmissionsMessageSentTitle": "Message sent by email.",
+    "pendingCompaniesApprovingTitle": "Approving {name}",
+    "pendingCompaniesApprovingEstimate": "This takes 1 to 3 minutes.",
+    "pendingCompaniesApprovingStep1": "Activating company",
+    "pendingCompaniesApprovingStep2": "Registering subdomain",
+    "pendingCompaniesApprovingStep3": "Deploying workspace",
+    "pendingCompaniesApprovingDone": "Done! {name} is now available.",
+    "pendingCompaniesApprovingError": "Something went wrong approving it. Try again."
   },
   "profilePage": {
     "title": "Profile",

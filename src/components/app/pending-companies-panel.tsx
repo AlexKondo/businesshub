@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Check, Loader2 } from "lucide-react";
 
 type PendingCompany = {
   id: string;
@@ -14,11 +15,23 @@ type PendingCompany = {
   requesterEmail: string;
 };
 
+const APPROVING_STEP_KEYS = [
+  "pendingCompaniesApprovingStep1",
+  "pendingCompaniesApprovingStep2",
+  "pendingCompaniesApprovingStep3",
+] as const;
+const APPROVING_STEP_THRESHOLDS = [1, 4]; // seconds at which steps 0-1 tick; last step spins until the request resolves
+
 export function PendingCompaniesPanel() {
   const t = useTranslations("adminPage");
   const [companies, setCompanies] = useState<PendingCompany[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [loadError, setLoadError] = useState(false);
+  const [approving, setApproving] = useState<PendingCompany | null>(null);
+  const [approvingDone, setApprovingDone] = useState(false);
+  const [approvingError, setApprovingError] = useState(false);
+  const [approvingSeconds, setApprovingSeconds] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function load() {
     const res = await fetch("/api/tenants/pending-companies");
@@ -35,14 +48,42 @@ export function PendingCompaniesPanel() {
     load();
   }, []);
 
-  async function review(companyId: string, action: "approve" | "reject") {
-    setBusy(companyId);
-    await fetch("/api/tenants/review-company-request", {
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
+  async function review(company: PendingCompany, action: "approve" | "reject") {
+    setBusy(company.id);
+
+    if (action === "approve") {
+      setApproving(company);
+      setApprovingDone(false);
+      setApprovingError(false);
+      setApprovingSeconds(0);
+      timerRef.current = setInterval(() => {
+        setApprovingSeconds((s) => s + 1);
+      }, 1000);
+    }
+
+    const res = await fetch("/api/tenants/review-company-request", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ companyId, action }),
+      body: JSON.stringify({ companyId: company.id, action }),
     });
     setBusy(null);
+
+    if (action === "approve") {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (res.ok) {
+        setApprovingDone(true);
+        setTimeout(() => setApproving(null), 1200);
+      } else {
+        setApprovingError(true);
+      }
+    }
+
     load();
   }
 
@@ -54,8 +95,89 @@ export function PendingCompaniesPanel() {
     return <p className="text-[13.5px] text-(--ink-soft)">{t("loading")}</p>;
   }
 
+  const approvingModal = approving && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="w-full max-w-sm rounded-[10px] border border-(--border-default) bg-(--bg-surface) p-6 text-center">
+        <p className="text-[15px] font-semibold text-(--ink)">
+          {t("pendingCompaniesApprovingTitle", { name: approving.name })}
+        </p>
+        {approvingError ? (
+          <>
+            <p className="mt-3 text-[13px] text-(--danger-500)">
+              {t("pendingCompaniesApprovingError")}
+            </p>
+            <button
+              type="button"
+              onClick={() => setApproving(null)}
+              className="mt-4 inline-flex h-9 w-full items-center justify-center rounded-md border border-(--border-default) text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
+            >
+              {t("onboardingFieldCancel")}
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="mt-1 text-[12.5px] text-(--ink-soft)">
+              {t("pendingCompaniesApprovingEstimate")}
+            </p>
+            <ul className="mt-5 flex flex-col gap-2.5 text-left">
+              {APPROVING_STEP_KEYS.map((key, i) => {
+                const isLast = i === APPROVING_STEP_KEYS.length - 1;
+                const done = approvingDone || (!isLast && approvingSeconds >= APPROVING_STEP_THRESHOLDS[i]);
+                const active =
+                  !done &&
+                  ((isLast && approvingSeconds >= (APPROVING_STEP_THRESHOLDS[i - 1] ?? 0)) ||
+                    (!isLast && approvingSeconds >= (APPROVING_STEP_THRESHOLDS[i - 1] ?? 0)));
+                return (
+                  <li
+                    key={key}
+                    style={{ animationDelay: `${i * 120}ms` }}
+                    className="flex animate-provisioning-step-in items-center gap-2.5 opacity-0 [animation-fill-mode:forwards]"
+                  >
+                    <span
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${
+                        done
+                          ? "border-(--brand-500) bg-(--brand-500)"
+                          : "border-(--border-default) bg-(--bg-canvas)"
+                      }`}
+                    >
+                      {done ? (
+                        <Check
+                          className="h-3 w-3 animate-provisioning-check-pop text-white"
+                          strokeWidth={3}
+                        />
+                      ) : active ? (
+                        <Loader2 className="h-3 w-3 animate-spin text-(--brand-500)" />
+                      ) : null}
+                    </span>
+                    <span
+                      className={`text-[13px] transition-colors duration-300 ${
+                        done || active ? "text-(--ink)" : "text-(--ink-soft)"
+                      }`}
+                    >
+                      {t(key)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+            {approvingDone && (
+              <p className="mt-5 text-[13px] font-medium text-(--success-500)">
+                {t("pendingCompaniesApprovingDone", { name: approving.name })}
+              </p>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+
   if (companies.length === 0) {
-    return <p className="text-[13.5px] text-(--ink-soft)">{t("pendingCompaniesEmpty")}</p>;
+    return (
+      <>
+        <p className="text-[13.5px] text-(--ink-soft)">{t("pendingCompaniesEmpty")}</p>
+        {approvingModal}
+      </>
+    );
   }
 
   return (
@@ -80,7 +202,7 @@ export function PendingCompaniesPanel() {
             <button
               type="button"
               disabled={busy === c.id}
-              onClick={() => review(c.id, "approve")}
+              onClick={() => review(c, "approve")}
               className="inline-flex h-9 items-center rounded-md bg-(--brand-500) px-3 text-[13px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {t("approve")}
@@ -88,7 +210,7 @@ export function PendingCompaniesPanel() {
             <button
               type="button"
               disabled={busy === c.id}
-              onClick={() => review(c.id, "reject")}
+              onClick={() => review(c, "reject")}
               className="inline-flex h-9 items-center rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
             >
               {t("reject")}
@@ -96,6 +218,7 @@ export function PendingCompaniesPanel() {
           </div>
         </div>
       ))}
+      {approvingModal}
     </div>
   );
 }
