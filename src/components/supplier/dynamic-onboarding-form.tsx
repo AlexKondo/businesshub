@@ -10,7 +10,17 @@ import { createClient } from "@/lib/supabase/client";
 import { MultiSelectWithOther } from "@/components/supplier/multiselect-with-other";
 import { applyMask, isCnpjShapedMask } from "@/lib/mask";
 import { isValidCnpj } from "@/lib/cnpj";
+import { formatCep, isValidCep, lookupCep } from "@/lib/cep";
 import type { OnboardingField, OnboardingAnswers } from "@/lib/onboarding-fields";
+
+// Strips accents/case so admin-typed labels like "Endereço"/"Cidade"/"UF"
+// match regardless of exact casing/accenting.
+function normalizeLabel(s: string) {
+  return s
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase();
+}
 
 const inputClass =
   "h-10 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)";
@@ -144,14 +154,13 @@ export function DynamicOnboardingForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  // After a successful save, show the confirmation for a beat, then return
-  // to the form picker (which, if this tenant only has one form, redirects
-  // straight back into it).
+  // After a successful save, show the confirmation for a beat, then land
+  // back on this same form (re-fetched with the just-saved answers).
   useEffect(() => {
     if (!saved) return;
-    const timer = setTimeout(() => router.push("/supplier-onboarding"), 3000);
+    const timer = setTimeout(() => router.push(`/supplier-onboarding/${formId}`), 3000);
     return () => clearTimeout(timer);
-  }, [saved, router]);
+  }, [saved, router, formId]);
 
   const orderedFields = useMemo(
     () => [...fields].sort((a, b) => a.position - b.position),
@@ -177,8 +186,31 @@ export function DynamicOnboardingForm({
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema), defaultValues });
+
+  // Mirrors the CEP autofill on the root company-creation form: a field
+  // literally labeled "CEP" (slugifies to key "cep") looks up the address
+  // via ViaCEP on blur and fills in any sibling field whose label matches
+  // endereço/rua/logradouro, cidade, or estado/UF — matched by label text
+  // since these are admin-defined fields, not fixed ones.
+  async function handleCepLookup(rawValue: string) {
+    if (!isValidCep(rawValue)) return;
+    const found = await lookupCep(rawValue);
+    if (!found) return;
+    for (const f of orderedFields) {
+      if (f.field_type !== "text" || f.key === "cep") continue;
+      const norm = normalizeLabel(f.label);
+      if (found.street && (norm.includes("endereco") || norm.includes("rua") || norm.includes("logradouro"))) {
+        setValue(f.key, found.street, { shouldValidate: true });
+      } else if (found.city && norm.includes("cidade")) {
+        setValue(f.key, found.city, { shouldValidate: true });
+      } else if (found.state && (norm.includes("estado") || norm === "uf")) {
+        setValue(f.key, found.state, { shouldValidate: true });
+      }
+    }
+  }
 
   async function onSubmit(values: Record<string, unknown>) {
     setServerError(null);
@@ -212,13 +244,13 @@ export function DynamicOnboardingForm({
   }
 
   return (
-    <div className="mx-auto max-w-[1140px]">
+    <div className="mx-auto max-w-[1140px] rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6 shadow-sm sm:p-8">
       <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{formName}</h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">{t("subtitle", { name: companyName })}</p>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mt-8 grid grid-cols-[repeat(50,minmax(0,1fr))] gap-y-5 rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6 sm:p-8"
+        className="mt-8 grid grid-cols-[repeat(50,minmax(0,1fr))] gap-y-5"
       >
         {orderedFields.map((field) => {
           const error = errors[field.key];
@@ -258,11 +290,18 @@ export function DynamicOnboardingForm({
                   }
                   {...register(field.key, {
                     onChange: (e) => {
-                      if (
+                      if (field.field_type === "text" && field.key === "cep") {
+                        e.target.value = formatCep(e.target.value);
+                      } else if (
                         (field.field_type === "text" || field.field_type === "date") &&
                         field.mask
                       ) {
                         e.target.value = applyMask(e.target.value, field.mask);
+                      }
+                    },
+                    onBlur: (e) => {
+                      if (field.field_type === "text" && field.key === "cep") {
+                        handleCepLookup(e.target.value);
                       }
                     },
                   })}
