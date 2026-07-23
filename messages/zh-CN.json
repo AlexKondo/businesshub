@@ -100,20 +100,9 @@
     "errorGeneric": "出现问题，请重试。",
     "submit": "创建组织",
     "submitting": "正在创建…",
-    "provisioningTitle": "正在设置您的工作区",
-    "provisioningBody": "首次设置最长可能需要三分钟，完成后将自动跳转。",
-    "provisioningStepAccount": "正在确认您的账户",
-    "provisioningStepCompany": "正在创建您的企业",
-    "provisioningStepDatabase": "正在配置数据库和权限",
-    "provisioningStepSecurity": "正在配置安全域名",
-    "provisioningErrorTitle": "这比预期花费更长时间",
-    "provisioningErrorBody": "我们无法自动确认是否已完成。请尝试下方的链接——如果尚未就绪，请稍等片刻后重试。",
-    "provisioningErrorRetry": "前往我的工作区",
-    "successTitle": "组织创建成功！",
-    "successBody": "您的工作区已就绪，地址为 {domain}。",
-    "successOk": "前往我的工作区",
     "pendingTitle": "申请已发送",
-    "pendingBody": "您的企业已经在 BusinessHub 上。我们已通知管理员——获得批准后您将拥有访问权限。"
+    "pendingBody": "您的企业已经在 BusinessHub 上。我们已通知管理员——获得批准后您将拥有访问权限。",
+    "pendingNewCompanyBody": "我们已收到在 BusinessHub 创建 {name} 的请求。平台批准后，您的工作区将在 {domain} 上线。"
   },
   "tenantLanding": {
     "subtitle": "{name} 在 BusinessHub 上的工作区。",
@@ -252,7 +241,12 @@
     "supplierUsersSignedUpAt": "注册于{date}",
     "supplierUsersFormSubmitted": "已提交",
     "supplierUsersFormPending": "待提交",
-    "supplierUsersLoadError": "无法加载供应商列表，请重试。"
+    "supplierUsersLoadError": "无法加载供应商列表，请重试。",
+    "pendingCompaniesSectionTitle": "新企业",
+    "pendingCompaniesSectionSubtitle": "等待平台批准的企业创建请求。",
+    "pendingCompaniesEmpty": "暂无待处理的请求。",
+    "pendingCompaniesRequestedBy": "由{name}（{email}）申请",
+    "pendingCompaniesLoadError": "无法加载申请列表，请重试。"
   },
   "profilePage": {
     "title": "个人资料",

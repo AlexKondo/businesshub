@@ -10,18 +10,9 @@ import { isValidPhoneBR, formatPhoneBR } from "@/lib/phone";
 import { formatCep, isValidCep, lookupCep } from "@/lib/cep";
 import { createClient } from "@/lib/supabase/client";
 import { Link } from "@/i18n/navigation";
-import { Check, Loader2 } from "lucide-react";
 import { slugify } from "@/lib/slug";
 
 const DRAFT_STORAGE_KEY = "businesshub:onboarding-draft";
-
-const PROVISIONING_STEP_KEYS = [
-  "provisioningStepAccount",
-  "provisioningStepCompany",
-  "provisioningStepDatabase",
-  "provisioningStepSecurity",
-] as const;
-const PROVISIONING_STEP_THRESHOLDS = [1, 4, 9]; // seconds at which steps 0-2 tick; last step spins until done
 
 async function checkTaxIdExists(digits: string): Promise<boolean | null> {
   try {
@@ -33,34 +24,17 @@ async function checkTaxIdExists(digits: string): Promise<boolean | null> {
   }
 }
 
-async function waitForDeployment(deploymentUuid: string, timeoutMs = 5 * 60 * 1000) {
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    const res = await fetch(`/api/tenants/deployment-status?uuid=${deploymentUuid}`);
-    const { status } = await res.json();
-    if (status === "finished" || status === "failed") return status;
-    await new Promise((r) => setTimeout(r, 5000));
-  }
-  return "timeout";
-}
-
 export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
   const t = useTranslations("onboarding");
   const [serverError, setServerError] = useState<string | null>(null);
-  const [stage, setStage] = useState<
-    "form" | "provisioning" | "provisioning-error" | "success" | "pending"
-  >("form");
+  const [stage, setStage] = useState<"form" | "pending">("form");
   const [account, setAccount] = useState<{ name: string; email: string } | null>(null);
   const [companyExists, setCompanyExists] = useState<boolean | null>(null);
-  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
-  const [provisioningSeconds, setProvisioningSeconds] = useState(0);
-
-  useEffect(() => {
-    if (stage !== "provisioning") return;
-    setProvisioningSeconds(0);
-    const interval = setInterval(() => setProvisioningSeconds((s) => s + 1), 1000);
-    return () => clearInterval(interval);
-  }, [stage]);
+  const [pendingInfo, setPendingInfo] = useState<{
+    reason: "existing_company" | "new_company";
+    companyName: string;
+    domain: string;
+  } | null>(null);
 
   useEffect(() => {
     createClient()
@@ -169,144 +143,36 @@ export function OnboardingForm({ appRootDomain }: { appRootDomain: string }) {
         slug_or_tax_id_taken: "slugTaken",
       };
       setServerError(t(key[data.error] ?? "errorGeneric"));
-      setStage("form");
       return;
     }
 
     sessionStorage.removeItem(DRAFT_STORAGE_KEY);
-
-    if (data.status === "pending") {
-      setStage("pending");
-      return;
-    }
-
-    setStage("provisioning");
-    if (data.deploymentUuid) {
-      const status = await waitForDeployment(data.deploymentUuid);
-      if (status !== "finished") {
-        setCreatedSlug(values.slug);
-        setStage("provisioning-error");
-        return;
-      }
-    }
-    setCreatedSlug(values.slug);
-    setStage("success");
-  }
-
-  function handleGoToWorkspace() {
-    if (!createdSlug) return;
-    window.location.href = `https://${createdSlug}.${appRootDomain}/en-US/dashboard`;
+    setPendingInfo({
+      reason: data.reason === "new_company" ? "new_company" : "existing_company",
+      companyName: values.name,
+      domain: `${values.slug}.${appRootDomain}`,
+    });
+    setStage("pending");
   }
 
   async function onValidated(values: FormValues) {
     await submitOrganization(values);
   }
 
-  if (stage === "pending") {
+  if (stage === "pending" && pendingInfo) {
     return (
       <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
         <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">
           {t("pendingTitle")}
         </h1>
         <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
-          {t("pendingBody")}
+          {pendingInfo.reason === "new_company"
+            ? t("pendingNewCompanyBody", {
+                name: pendingInfo.companyName,
+                domain: pendingInfo.domain,
+              })
+            : t("pendingBody")}
         </p>
-      </div>
-    );
-  }
-
-  if (stage === "provisioning") {
-    const mm = String(Math.floor(provisioningSeconds / 60)).padStart(2, "0");
-    const ss = String(provisioningSeconds % 60).padStart(2, "0");
-    return (
-      <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
-        <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">
-          {t("provisioningTitle")}
-        </h1>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
-          {t("provisioningBody")}
-        </p>
-        <p className="mt-5 font-mono text-[26px] font-bold tabular-nums text-(--brand-500)">
-          {mm}:{ss}
-        </p>
-
-        <ul className="mt-6 flex flex-col gap-2.5 text-left">
-          {PROVISIONING_STEP_KEYS.map((key, i) => {
-            const isLast = i === PROVISIONING_STEP_KEYS.length - 1;
-            const done = !isLast && provisioningSeconds >= PROVISIONING_STEP_THRESHOLDS[i];
-            const active =
-              (isLast && provisioningSeconds >= (PROVISIONING_STEP_THRESHOLDS[i - 1] ?? 0)) ||
-              (!isLast && !done && provisioningSeconds >= (PROVISIONING_STEP_THRESHOLDS[i - 1] ?? 0));
-            return (
-              <li
-                key={key}
-                style={{ animationDelay: `${i * 120}ms` }}
-                className="flex animate-provisioning-step-in items-center gap-2.5 opacity-0"
-              >
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${
-                    done
-                      ? "border-(--brand-500) bg-(--brand-500)"
-                      : "border-(--border-default) bg-(--bg-canvas)"
-                  }`}
-                >
-                  {done ? (
-                    <Check className="h-3 w-3 animate-provisioning-check-pop text-white" strokeWidth={3} />
-                  ) : active ? (
-                    <Loader2 className="h-3 w-3 animate-spin text-(--brand-500)" />
-                  ) : null}
-                </span>
-                <span
-                  className={`text-[13px] transition-colors duration-300 ${
-                    done || active ? "text-(--ink)" : "text-(--ink-soft)"
-                  }`}
-                >
-                  {t(key)}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    );
-  }
-
-  if (stage === "provisioning-error" && createdSlug) {
-    return (
-      <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
-        <h1 className="text-[18px] font-bold tracking-tight text-(--ink)">
-          {t("provisioningErrorTitle")}
-        </h1>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
-          {t("provisioningErrorBody")}
-        </p>
-        <button
-          type="button"
-          onClick={handleGoToWorkspace}
-          className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          {t("provisioningErrorRetry")}
-        </button>
-      </div>
-    );
-  }
-
-  if (stage === "success" && createdSlug) {
-    return (
-      <div className="w-full max-w-[420px] rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
-        <h1 className="text-[18px] font-bold tracking-tight text-(--ink)">
-          {t("successTitle")}
-        </h1>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
-          {t("successBody", { domain: `${createdSlug}.${appRootDomain}` })}
-        </p>
-        <button
-          type="button"
-          onClick={handleGoToWorkspace}
-          className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-(--brand-500) px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          {t("successOk")}
-        </button>
       </div>
     );
   }

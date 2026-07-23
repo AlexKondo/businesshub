@@ -100,20 +100,9 @@
     "errorGeneric": "Algo deu errado. Tente novamente.",
     "submit": "Criar organização",
     "submitting": "Criando…",
-    "provisioningTitle": "Preparando seu workspace",
-    "provisioningBody": "Isso pode levar até três minutos na primeira vez. Você será redirecionado automaticamente.",
-    "provisioningStepAccount": "Confirmando sua conta",
-    "provisioningStepCompany": "Criando sua empresa",
-    "provisioningStepDatabase": "Configurando banco de dados e permissões",
-    "provisioningStepSecurity": "Provisionando domínio seguro",
-    "provisioningErrorTitle": "Está demorando mais que o esperado",
-    "provisioningErrorBody": "Não conseguimos confirmar automaticamente se terminou. Tente acessar pelo link abaixo — se ainda não estiver pronto, aguarde mais um instante e tente novamente.",
-    "provisioningErrorRetry": "Acessar meu workspace",
-    "successTitle": "Organização criada com sucesso!",
-    "successBody": "Seu workspace está pronto em {domain}.",
-    "successOk": "Acessar meu workspace",
     "pendingTitle": "Solicitação enviada",
-    "pendingBody": "Sua empresa já está no BusinessHub. Avisamos os administradores — você terá acesso assim que alguém aprovar seu pedido."
+    "pendingBody": "Sua empresa já está no BusinessHub. Avisamos os administradores — você terá acesso assim que alguém aprovar seu pedido.",
+    "pendingNewCompanyBody": "Recebemos o pedido para criar {name} no BusinessHub. Assim que for aprovado pela plataforma, seu workspace ficará disponível em {domain}."
   },
   "tenantLanding": {
     "subtitle": "Workspace da {name} no BusinessHub.",
@@ -252,7 +241,12 @@
     "supplierUsersSignedUpAt": "Cadastrado em {date}",
     "supplierUsersFormSubmitted": "Enviado",
     "supplierUsersFormPending": "Pendente",
-    "supplierUsersLoadError": "Não foi possível carregar os fornecedores. Tente novamente."
+    "supplierUsersLoadError": "Não foi possível carregar os fornecedores. Tente novamente.",
+    "pendingCompaniesSectionTitle": "Novas Empresas",
+    "pendingCompaniesSectionSubtitle": "Pedidos de criação de empresa aguardando aprovação da plataforma.",
+    "pendingCompaniesEmpty": "Nenhum pedido pendente.",
+    "pendingCompaniesRequestedBy": "Pedido por {name} ({email})",
+    "pendingCompaniesLoadError": "Não foi possível carregar os pedidos. Tente novamente."
   },
   "profilePage": {
     "title": "Perfil",

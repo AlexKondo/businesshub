@@ -100,20 +100,9 @@
     "errorGeneric": "Something went wrong. Please try again.",
     "submit": "Create organization",
     "submitting": "Creating…",
-    "provisioningTitle": "Setting up your workspace",
-    "provisioningBody": "This can take up to three minutes the first time. You'll be redirected automatically.",
-    "provisioningStepAccount": "Confirming your account",
-    "provisioningStepCompany": "Creating your company",
-    "provisioningStepDatabase": "Setting up database and permissions",
-    "provisioningStepSecurity": "Provisioning secure domain",
-    "provisioningErrorTitle": "This is taking longer than expected",
-    "provisioningErrorBody": "We couldn't automatically confirm it finished. Try the link below — if it's not ready yet, wait a bit and try again.",
-    "provisioningErrorRetry": "Go to my workspace",
-    "successTitle": "Organization created successfully!",
-    "successBody": "Your workspace is ready at {domain}.",
-    "successOk": "Go to my workspace",
     "pendingTitle": "Request sent",
-    "pendingBody": "Your company is already on BusinessHub. We notified the admins — you'll get access once someone approves your request."
+    "pendingBody": "Your company is already on BusinessHub. We notified the admins — you'll get access once someone approves your request.",
+    "pendingNewCompanyBody": "We received the request to create {name} on BusinessHub. Once the platform approves it, your workspace will be available at {domain}."
   },
   "tenantLanding": {
     "subtitle": "{name}'s workspace on BusinessHub.",
@@ -252,7 +241,12 @@
     "supplierUsersSignedUpAt": "Signed up on {date}",
     "supplierUsersFormSubmitted": "Submitted",
     "supplierUsersFormPending": "Pending",
-    "supplierUsersLoadError": "Couldn't load suppliers. Please try again."
+    "supplierUsersLoadError": "Couldn't load suppliers. Please try again.",
+    "pendingCompaniesSectionTitle": "New Companies",
+    "pendingCompaniesSectionSubtitle": "Company creation requests awaiting platform approval.",
+    "pendingCompaniesEmpty": "No pending requests.",
+    "pendingCompaniesRequestedBy": "Requested by {name} ({email})",
+    "pendingCompaniesLoadError": "Couldn't load requests. Please try again."
   },
   "profilePage": {
     "title": "Profile",

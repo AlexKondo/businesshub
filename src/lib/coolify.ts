@@ -21,7 +21,8 @@ async function reconcileTenantDomains(
   const { data: companies } = await admin
     .from("companies")
     .select("slug")
-    .is("deleted_at", null);
+    .is("deleted_at", null)
+    .eq("status", "active");
 
   const slugs = new Set((companies ?? []).map((c) => c.slug as string));
   // Belt-and-suspenders for the create path: include the just-inserted slug

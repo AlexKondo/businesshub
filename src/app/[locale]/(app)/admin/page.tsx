@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { PendingApprovals } from "@/components/app/pending-approvals";
+import { PendingCompaniesPanel } from "@/components/app/pending-companies-panel";
 import { CompanyLogoCard } from "@/components/app/company-logo-card";
 
 export default async function AdminPage() {
@@ -50,6 +51,17 @@ export default async function AdminPage() {
         />
       )}
       <PendingApprovals />
+      {!!platformAdmin && (
+        <div className="mt-8">
+          <h2 className="text-[16px] font-semibold text-(--ink)">
+            {t("pendingCompaniesSectionTitle")}
+          </h2>
+          <p className="mt-1 text-[13px] text-(--ink-soft)">
+            {t("pendingCompaniesSectionSubtitle")}
+          </p>
+          <PendingCompaniesPanel />
+        </div>
+      )}
     </div>
   );
 }

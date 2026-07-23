@@ -100,20 +100,9 @@
     "errorGeneric": "問題が発生しました。もう一度お試しください。",
     "submit": "組織を作成",
     "submitting": "作成中…",
-    "provisioningTitle": "ワークスペースを準備しています",
-    "provisioningBody": "初回は最大で3分ほどかかることがあります。完了すると自動的に移動します。",
-    "provisioningStepAccount": "アカウントを確認中",
-    "provisioningStepCompany": "会社を作成中",
-    "provisioningStepDatabase": "データベースと権限を設定中",
-    "provisioningStepSecurity": "セキュアなドメインを準備中",
-    "provisioningErrorTitle": "予想より時間がかかっています",
-    "provisioningErrorBody": "完了したかどうかを自動的に確認できませんでした。下のリンクをお試しください — まだ準備できていない場合は、少し待ってから再度お試しください。",
-    "provisioningErrorRetry": "ワークスペースへ移動",
-    "successTitle": "組織が作成されました！",
-    "successBody": "ワークスペースの準備ができました：{domain}。",
-    "successOk": "ワークスペースへ移動",
     "pendingTitle": "リクエストを送信しました",
-    "pendingBody": "あなたの会社は既にBusinessHubに登録されています。管理者に通知しました。承認され次第アクセスできます。"
+    "pendingBody": "あなたの会社は既にBusinessHubに登録されています。管理者に通知しました。承認され次第アクセスできます。",
+    "pendingNewCompanyBody": "{name}のBusinessHubでの作成リクエストを受け付けました。プラットフォームが承認し次第、ワークスペースは{domain}で利用できるようになります。"
   },
   "tenantLanding": {
     "subtitle": "{name} の BusinessHub ワークスペース。",
@@ -252,7 +241,12 @@
     "supplierUsersSignedUpAt": "{date}に登録",
     "supplierUsersFormSubmitted": "送信済み",
     "supplierUsersFormPending": "未送信",
-    "supplierUsersLoadError": "サプライヤーを読み込めませんでした。もう一度お試しください。"
+    "supplierUsersLoadError": "サプライヤーを読み込めませんでした。もう一度お試しください。",
+    "pendingCompaniesSectionTitle": "新規企業",
+    "pendingCompaniesSectionSubtitle": "プラットフォームの承認待ちの企業作成リクエスト。",
+    "pendingCompaniesEmpty": "保留中のリクエストはありません。",
+    "pendingCompaniesRequestedBy": "{name}（{email}）からのリクエスト",
+    "pendingCompaniesLoadError": "リクエストを読み込めませんでした。もう一度お試しください。"
   },
   "profilePage": {
     "title": "プロフィール",
