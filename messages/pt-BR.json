@@ -269,9 +269,9 @@
     "fornecedorMenuDashboard": "Painel",
     "fornecedorMenuOnboardingForm": "Formulário de Onboarding",
     "fornecedorMenuUsers": "Usuários",
-    "allCompaniesRunVaas": "Executar o VaaS",
+    "allCompaniesRunVaas": "Executar o VaaS nesse Tenant",
     "allCompaniesVaasRunning": "Executando…",
-    "allCompaniesEnableVaasForTenant": "Avaliar com VaaS (fornecedores)",
+    "allCompaniesEnableVaasForTenant": "Ativar a consulta VaaS para esse Tenant",
     "allCompaniesVaasOk": "Resposta da VaaS",
     "allCompaniesVaasError": "Erro ao chamar a VaaS"
   },

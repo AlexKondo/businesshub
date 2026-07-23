@@ -235,6 +235,9 @@ export function AllCompaniesPanel() {
                         {vaasBusy === c.id ? t("allCompaniesVaasRunning") : t("allCompaniesRunVaas")}
                       </button>
                       <span className="flex items-center gap-1.5">
+                        <span className="text-[12px] text-(--ink-soft)">
+                          {t("allCompaniesEnableVaasForTenant")}
+                        </span>
                         <button
                           type="button"
                           role="switch"

@@ -269,9 +269,9 @@
     "fornecedorMenuDashboard": "Dashboard",
     "fornecedorMenuOnboardingForm": "Onboarding Form",
     "fornecedorMenuUsers": "Users",
-    "allCompaniesRunVaas": "Run VaaS",
+    "allCompaniesRunVaas": "Run VaaS for this tenant",
     "allCompaniesVaasRunning": "Running…",
-    "allCompaniesEnableVaasForTenant": "Evaluate with VaaS (suppliers)",
+    "allCompaniesEnableVaasForTenant": "Enable VaaS check for this tenant",
     "allCompaniesVaasOk": "VaaS response",
     "allCompaniesVaasError": "Error calling VaaS"
   },

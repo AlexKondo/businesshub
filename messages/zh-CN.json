@@ -269,9 +269,9 @@
     "fornecedorMenuDashboard": "面板",
     "fornecedorMenuOnboardingForm": "入驻表单",
     "fornecedorMenuUsers": "用户",
-    "allCompaniesRunVaas": "运行 VaaS",
+    "allCompaniesRunVaas": "在该租户中运行 VaaS",
     "allCompaniesVaasRunning": "运行中…",
-    "allCompaniesEnableVaasForTenant": "使用 VaaS 评估（供应商）",
+    "allCompaniesEnableVaasForTenant": "为该租户启用 VaaS 核查",
     "allCompaniesVaasOk": "VaaS 响应",
     "allCompaniesVaasError": "调用 VaaS 出错"
   },

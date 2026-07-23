@@ -269,9 +269,9 @@
     "fornecedorMenuDashboard": "ダッシュボード",
     "fornecedorMenuOnboardingForm": "オンボーディングフォーム",
     "fornecedorMenuUsers": "ユーザー",
-    "allCompaniesRunVaas": "VaaSを実行",
+    "allCompaniesRunVaas": "このテナントでVaaSを実行",
     "allCompaniesVaasRunning": "実行中…",
-    "allCompaniesEnableVaasForTenant": "VaaSで評価する（サプライヤー）",
+    "allCompaniesEnableVaasForTenant": "このテナントのVaaSチェックを有効にする",
     "allCompaniesVaasOk": "VaaSからの応答",
     "allCompaniesVaasError": "VaaS呼び出しエラー"
   },
