@@ -5,6 +5,7 @@ import { routing } from "./i18n/routing";
 import { getCookieDomain } from "./lib/supabase/cookie-domain";
 import { getGeo, localeFromCountry } from "./lib/geo";
 import { ROOT_DOMAIN, resolveTenantSlug } from "./lib/tenant";
+import { ensureSupplierMembership } from "./lib/supplier-membership";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -192,10 +193,7 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
     // belong to THIS tenant. If they belong somewhere else, send them
     // straight there instead of bouncing them back to this tenant's own
     // landing page (which would just loop — they have no way to reach
-    // their real workspace from there). If they belong nowhere at all,
-    // /onboarding (create or join a company) is the one page that
-    // genuinely only exists on the root domain — there is no tenant
-    // subdomain to send them to instead.
+    // their real workspace from there).
     const locale = extractLocale(request.nextUrl.pathname) ?? initialLocale(request);
     const ownSlug = (memberships ?? [])
       .map((m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug)
@@ -203,6 +201,28 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
     if (ownSlug) {
       return NextResponse.redirect(`https://${ownSlug}.${ROOT_DOMAIN}/${locale}/dashboard`);
     }
+
+    // No membership anywhere yet — but if they signed up as a supplier here
+    // and their membership just never got finalized (e.g. the email
+    // confirmation reached Supabase but never our own /auth/callback, which
+    // is the only place that used to create it), self-heal it right here
+    // instead of dead-ending at "create a company," which is not what they
+    // were trying to do.
+    const pendingSupplierTenantId = user.user_metadata?.pending_supplier_tenant_id as
+      | string
+      | undefined;
+    if (pendingSupplierTenantId) {
+      const supplierSlug = await ensureSupplierMembership(user.id, pendingSupplierTenantId);
+      if (supplierSlug) {
+        return NextResponse.redirect(
+          `https://${supplierSlug}.${ROOT_DOMAIN}/${locale}/supplier-onboarding`
+        );
+      }
+    }
+
+    // /onboarding (create or join a company) is the one page that
+    // genuinely only exists on the root domain — there is no tenant
+    // subdomain to send them to instead.
     return NextResponse.redirect(`https://${ROOT_DOMAIN}/${locale}/onboarding`);
   }
 
