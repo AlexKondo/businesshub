@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isValidCnpj } from "@/lib/cnpj";
 import { sendMail } from "@/lib/mail";
+import { registerTenantDomain } from "@/lib/coolify";
 
 export async function POST(request: Request) {
   try {
@@ -115,8 +116,9 @@ async function handleOnboard(request: Request) {
   }
 
   // no company with this tax_id yet — reserve it, pending platform-admin
-  // approval. Nothing is provisioned (no subdomain, no active access) until
-  // an admin reviews the request in Administração.
+  // approval. No membership is active yet, so there's no real access — but
+  // the subdomain itself IS registered right below so Traefik can route to
+  // us and show a proper "awaiting approval" page instead of erroring out.
   if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
     return NextResponse.json({ error: "invalid_slug" }, { status: 400 });
   }
@@ -156,6 +158,13 @@ async function handleOnboard(request: Request) {
     console.error("[tenants/onboard] membership_failed (pending, new company):", membershipError);
     return NextResponse.json({ error: "membership_failed" }, { status: 500 });
   }
+
+  await registerTenantDomain(slug).catch((err) => {
+    // best-effort — the requester still sees the correct "pending" state
+    // via the root domain; a platform admin can retry by approving (which
+    // also reconciles domains) if this happened to fail transiently.
+    console.error("[tenants/onboard] registerTenantDomain failed:", err);
+  });
 
   const { data: platformAdmins } = await admin.from("platform_admins").select("user_id");
   for (const pa of platformAdmins ?? []) {

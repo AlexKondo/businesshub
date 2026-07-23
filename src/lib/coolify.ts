@@ -17,12 +17,18 @@ async function reconcileTenantDomains(
   const appUuid = process.env.COOLIFY_APP_UUID;
   const rootDomain = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
 
+  // pending_approval is included on purpose: the subdomain needs to be
+  // reachable (routed by Traefik to this app) the moment a self-service
+  // signup is submitted, so an anonymous visitor hitting it before approval
+  // gets our own "awaiting approval" page instead of Traefik's raw
+  // "no available server" error. Only "inactive" (paused) and deleted
+  // companies are excluded.
   const admin = createAdminClient();
   const { data: companies } = await admin
     .from("companies")
     .select("slug")
     .is("deleted_at", null)
-    .eq("status", "active");
+    .in("status", ["active", "pending_approval"]);
 
   const slugs = new Set((companies ?? []).map((c) => c.slug as string));
   // Belt-and-suspenders for the create path: include the just-inserted slug
