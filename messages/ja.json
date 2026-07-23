@@ -363,6 +363,15 @@
       "emailInvalid": "有効なメールアドレスを入力してください。",
       "passwordMin": "パスワードは8文字以上で入力してください。",
       "nameRequired": "氏名を入力してください。"
+    },
+    "setPassword": {
+      "title": "パスワードを設定",
+      "subtitle": "アカウントにアクセスするためのパスワードを作成してください。",
+      "passwordLabel": "パスワード",
+      "passwordHint": "8文字以上で入力してください。",
+      "submit": "保存して続ける",
+      "submitting": "保存中…",
+      "errorGeneric": "問題が発生しました。もう一度お試しください。"
     }
   },
   "legal": {

@@ -363,6 +363,15 @@
       "emailInvalid": "Enter a valid email address.",
       "passwordMin": "Password must be at least 8 characters.",
       "nameRequired": "Enter your full name."
+    },
+    "setPassword": {
+      "title": "Set your password",
+      "subtitle": "Create a password to access your account.",
+      "passwordLabel": "Password",
+      "passwordHint": "At least 8 characters.",
+      "submit": "Save and continue",
+      "submitting": "Saving…",
+      "errorGeneric": "Something went wrong. Please try again."
     }
   },
   "legal": {

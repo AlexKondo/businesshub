@@ -363,6 +363,15 @@
       "emailInvalid": "Digite um e-mail válido.",
       "passwordMin": "A senha deve ter pelo menos 8 caracteres.",
       "nameRequired": "Digite seu nome completo."
+    },
+    "setPassword": {
+      "title": "Defina sua senha",
+      "subtitle": "Crie uma senha para acessar sua conta.",
+      "passwordLabel": "Senha",
+      "passwordHint": "Pelo menos 8 caracteres.",
+      "submit": "Salvar e continuar",
+      "submitting": "Salvando…",
+      "errorGeneric": "Algo deu errado. Tente novamente."
     }
   },
   "legal": {

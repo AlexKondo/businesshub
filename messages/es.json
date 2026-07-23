@@ -363,6 +363,15 @@
       "emailInvalid": "Ingresa un correo electrónico válido.",
       "passwordMin": "La contraseña debe tener al menos 8 caracteres.",
       "nameRequired": "Ingresa tu nombre completo."
+    },
+    "setPassword": {
+      "title": "Define tu contraseña",
+      "subtitle": "Crea una contraseña para acceder a tu cuenta.",
+      "passwordLabel": "Contraseña",
+      "passwordHint": "Al menos 8 caracteres.",
+      "submit": "Guardar y continuar",
+      "submitting": "Guardando…",
+      "errorGeneric": "Algo salió mal. Intenta de nuevo."
     }
   },
   "legal": {

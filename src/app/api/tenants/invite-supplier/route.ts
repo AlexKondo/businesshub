@@ -8,7 +8,9 @@ import { logAudit } from "@/lib/audit-log";
 // its own "invite" email — same confirmation-code redirect mechanism as the
 // public signup form, so /auth/callback's existing pending_supplier_tenant_id
 // handling (see ensureSupplierMembership) creates the Fornecedor membership
-// the moment the invitee clicks the link, no separate code path needed here.
+// the moment the invitee clicks the link. From there they land on
+// /set-password (still no password on invited accounts otherwise) before
+// finally reaching /supplier-onboarding.
 export async function POST(request: Request) {
   try {
     return await handleInvite(request);
@@ -54,7 +56,7 @@ async function handleInvite(request: Request) {
   const safeLocale = typeof locale === "string" && locale ? locale : "pt-BR";
 
   const { error } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${appUrl}/auth/callback?next=/${safeLocale}/supplier-onboarding`,
+    redirectTo: `${appUrl}/auth/callback?next=/${safeLocale}/set-password`,
     data: {
       locale: safeLocale,
       pending_supplier_tenant_id: tenantId,
