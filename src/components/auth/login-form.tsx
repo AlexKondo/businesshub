@@ -16,6 +16,7 @@ export function LoginForm() {
   const locale = useLocale();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [redirecting, setRedirecting] = useState<string | null>(null);
 
   const schema = z.object({
     email: z.string().email(tv("emailInvalid")),
@@ -75,14 +76,31 @@ export function LoginForm() {
     }
 
     if (slugs[0]) {
+      // Logging in from the root domain with an account that belongs to a
+      // tenant: auto-redirect to that workspace (same convenience pattern as
+      // Slack/Notion — no need to remember the exact subdomain), but show a
+      // brief transition message first so the jump isn't jarring/silent.
+      setRedirecting(slugs[0]);
       const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
-      // eslint-disable-next-line react-hooks/immutability -- window.location is a browser global, not React-tracked state
-      window.location.href = `https://${slugs[0]}.${root}/${locale}/dashboard`;
+      setTimeout(() => {
+        window.location.href = `https://${slugs[0]}.${root}/${locale}/dashboard`;
+      }, 1200);
       return;
     }
 
     router.push("/dashboard");
     router.refresh();
+  }
+
+  if (redirecting) {
+    return (
+      <div className="rounded-xl border border-(--border-default) bg-(--bg-surface) p-7 text-center">
+        <div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-(--border-default) border-t-(--brand-500)" />
+        <p className="mt-4 text-[14px] font-medium text-(--ink)">
+          {t("redirectingToWorkspace", { slug: redirecting })}
+        </p>
+      </div>
+    );
   }
 
   return (

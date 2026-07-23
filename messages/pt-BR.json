@@ -340,7 +340,8 @@
       "errorInvalid": "E-mail ou senha inválidos.",
       "errorEmailNotConfirmed": "Confirme seu e-mail antes de entrar — veja o link que enviamos na sua caixa de entrada.",
       "errorNoAccountHere": "Essa conta não tem cadastro nesta empresa. Volte à página inicial para se cadastrar.",
-      "errorGeneric": "Algo deu errado. Tente novamente."
+      "errorGeneric": "Algo deu errado. Tente novamente.",
+      "redirectingToWorkspace": "Encontramos seu workspace — redirecionando para {slug}..."
     },
     "signup": {
       "title": "Crie sua conta",
