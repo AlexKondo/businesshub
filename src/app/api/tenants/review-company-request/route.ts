@@ -92,7 +92,7 @@ async function handleReview(request: Request) {
   if (membership) {
     await admin.from("memberships").update({ status: "active" }).eq("id", membership.id);
   }
-  await registerTenantDomain(company.slug);
+  const { deploymentUuid } = await registerTenantDomain(company.slug);
   await logAudit({
     tenantId: companyId,
     actorId: user.id,
@@ -112,5 +112,5 @@ async function handleReview(request: Request) {
     }).catch(() => null); // best-effort — a mail failure shouldn't fail the request
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, deploymentUuid });
 }

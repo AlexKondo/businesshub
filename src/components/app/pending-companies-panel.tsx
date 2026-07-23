@@ -54,6 +54,22 @@ export function PendingCompaniesPanel() {
     };
   }, []);
 
+  // Coolify's deploy endpoint only QUEUES the redeploy — the subdomain
+  // isn't actually reachable until Traefik picks up the new domain, which
+  // takes 1-3min. Poll deploymentUuid's real status instead of closing the
+  // popup as soon as review-company-request itself resolves.
+  async function waitForDeployment(deploymentUuid: string) {
+    for (let i = 0; i < 90; i++) {
+      await new Promise((r) => setTimeout(r, 4000));
+      const res = await fetch(
+        `/api/tenants/deployment-status?deploymentUuid=${deploymentUuid}`
+      );
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (data.status === "finished" || data.status === "failed") return;
+    }
+  }
+
   async function review(company: PendingCompany, action: "approve" | "reject") {
     setBusy(company.id);
 
@@ -75,11 +91,16 @@ export function PendingCompaniesPanel() {
     setBusy(null);
 
     if (action === "approve") {
-      if (timerRef.current) clearInterval(timerRef.current);
       if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (data.deploymentUuid) {
+          await waitForDeployment(data.deploymentUuid);
+        }
+        if (timerRef.current) clearInterval(timerRef.current);
         setApprovingDone(true);
         setTimeout(() => setApproving(null), 1200);
       } else {
+        if (timerRef.current) clearInterval(timerRef.current);
         setApprovingError(true);
       }
     }
