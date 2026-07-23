@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { getCookieDomain } from "./cookie-domain";
+import { toSessionScopedCookie } from "./session-cookie";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -17,7 +18,7 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, toSessionScopedCookie(options))
             );
           } catch {
             // called from a Server Component without a mutable cookie store — safe to ignore

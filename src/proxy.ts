@@ -3,6 +3,7 @@ import createMiddleware from "next-intl/middleware";
 import { createServerClient } from "@supabase/ssr";
 import { routing } from "./i18n/routing";
 import { getCookieDomain } from "./lib/supabase/cookie-domain";
+import { toSessionScopedCookie } from "./lib/supabase/session-cookie";
 import { getGeo, localeFromCountry } from "./lib/geo";
 import { ROOT_DOMAIN, resolveTenantSlug } from "./lib/tenant";
 import { ensureSupplierMembership } from "./lib/supplier-membership";
@@ -129,7 +130,7 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
         getAll: () => request.cookies.getAll(),
         setAll: (cookiesToSet) => {
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, toSessionScopedCookie(options))
           );
         },
       },
