@@ -254,7 +254,14 @@
     "allCompaniesStatusActive": "Active",
     "allCompaniesStatusPending": "Awaiting approval",
     "allCompaniesMemberCount": "{count} members",
-    "allCompaniesDeleteWarning": "This deletes the company and all its data (suppliers, forms, submissions). This can't be undone."
+    "allCompaniesDeleteWarning": "This deletes the company and all its data (suppliers, forms, submissions). This can't be undone.",
+    "allCompaniesStatusInactive": "Inactive",
+    "allCompaniesEnterAs": "Enter as",
+    "allCompaniesDeactivate": "Active / Inactive",
+    "allCompaniesMembersTitle": "Users",
+    "allCompaniesNoMembers": "No users in this company.",
+    "allCompaniesAuditLogTitle": "Operations log",
+    "allCompaniesNoAuditLog": "No operations logged yet."
   },
   "profilePage": {
     "title": "Profile",

@@ -254,7 +254,14 @@
     "allCompaniesStatusActive": "Ativo",
     "allCompaniesStatusPending": "Aguardando aprovação",
     "allCompaniesMemberCount": "{count} membros",
-    "allCompaniesDeleteWarning": "Isso apaga a empresa e todos os seus dados (fornecedores, formulários, cadastros). Ação irreversível."
+    "allCompaniesDeleteWarning": "Isso apaga a empresa e todos os seus dados (fornecedores, formulários, cadastros). Ação irreversível.",
+    "allCompaniesStatusInactive": "Inativo",
+    "allCompaniesEnterAs": "Entrar como",
+    "allCompaniesDeactivate": "Ativo / Inativo",
+    "allCompaniesMembersTitle": "Usuários",
+    "allCompaniesNoMembers": "Nenhum usuário nesta empresa.",
+    "allCompaniesAuditLogTitle": "Log de operações",
+    "allCompaniesNoAuditLog": "Nenhuma operação registrada ainda."
   },
   "profilePage": {
     "title": "Perfil",

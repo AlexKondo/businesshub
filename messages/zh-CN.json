@@ -254,7 +254,14 @@
     "allCompaniesStatusActive": "已启用",
     "allCompaniesStatusPending": "待批准",
     "allCompaniesMemberCount": "{count} 名成员",
-    "allCompaniesDeleteWarning": "此操作将删除该企业及其所有数据（供应商、表单、注册记录），且无法撤销。"
+    "allCompaniesDeleteWarning": "此操作将删除该企业及其所有数据（供应商、表单、注册记录），且无法撤销。",
+    "allCompaniesStatusInactive": "已停用",
+    "allCompaniesEnterAs": "以此身份进入",
+    "allCompaniesDeactivate": "启用 / 停用",
+    "allCompaniesMembersTitle": "用户",
+    "allCompaniesNoMembers": "该企业暂无用户。",
+    "allCompaniesAuditLogTitle": "操作日志",
+    "allCompaniesNoAuditLog": "尚无操作记录。"
   },
   "profilePage": {
     "title": "个人资料",

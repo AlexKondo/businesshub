@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { registerTenantDomain } from "@/lib/coolify";
 import { sendMail } from "@/lib/mail";
+import { logAudit } from "@/lib/audit-log";
 
 // Platform-admin-only approve/reject for a pending "create a new company"
 // request (see /api/tenants/onboard). Approving is the ONLY place a
@@ -66,6 +67,17 @@ async function handleReview(request: Request) {
 
   if (action === "reject") {
     await admin.from("companies").delete().eq("id", companyId);
+    // tenant_id is null on purpose: audit_logs.tenant_id cascades on
+    // companies delete, so a log tied to the just-deleted row would vanish
+    // with it — the identifying info lives in metadata instead.
+    await logAudit({
+      tenantId: null,
+      actorId: user.id,
+      action: "company.rejected",
+      entityType: "company",
+      entityId: companyId,
+      metadata: { name: company.name, slug: company.slug },
+    });
     if (requesterEmail) {
       await sendMail({
         to: requesterEmail,
@@ -81,6 +93,14 @@ async function handleReview(request: Request) {
     await admin.from("memberships").update({ status: "active" }).eq("id", membership.id);
   }
   await registerTenantDomain(company.slug);
+  await logAudit({
+    tenantId: companyId,
+    actorId: user.id,
+    action: "company.approved",
+    entityType: "company",
+    entityId: companyId,
+    metadata: { name: company.name, slug: company.slug },
+  });
 
   if (requesterEmail) {
     const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");

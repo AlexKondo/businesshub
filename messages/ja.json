@@ -254,7 +254,14 @@
     "allCompaniesStatusActive": "有効",
     "allCompaniesStatusPending": "承認待ち",
     "allCompaniesMemberCount": "{count} 人のメンバー",
-    "allCompaniesDeleteWarning": "この企業とすべてのデータ（サプライヤー、フォーム、登録内容）が削除されます。この操作は取り消せません。"
+    "allCompaniesDeleteWarning": "この企業とすべてのデータ（サプライヤー、フォーム、登録内容）が削除されます。この操作は取り消せません。",
+    "allCompaniesStatusInactive": "無効",
+    "allCompaniesEnterAs": "このアカウントとして入る",
+    "allCompaniesDeactivate": "有効 / 無効",
+    "allCompaniesMembersTitle": "ユーザー",
+    "allCompaniesNoMembers": "この企業にはユーザーがいません。",
+    "allCompaniesAuditLogTitle": "操作ログ",
+    "allCompaniesNoAuditLog": "まだ操作の記録がありません。"
   },
   "profilePage": {
     "title": "プロフィール",

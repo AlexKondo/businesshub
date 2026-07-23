@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { logAudit } from "@/lib/audit-log";
 
 // Permanently deletes a company (any status) — platform-admin only. Cascades
 // every tenant-scoped row (memberships, onboarding forms/submissions, etc.
@@ -40,11 +41,29 @@ async function handleDelete(request: Request) {
   }
 
   const admin = createAdminClient();
+  const { data: company } = await admin
+    .from("companies")
+    .select("id, name, slug")
+    .eq("id", companyId)
+    .maybeSingle();
+
   const { error } = await admin.from("companies").delete().eq("id", companyId);
   if (error) {
     console.error("[tenants/delete-company] delete failed:", error);
     return NextResponse.json({ error: "delete_failed" }, { status: 500 });
   }
+
+  // tenant_id is null on purpose: audit_logs.tenant_id cascades on
+  // companies delete, so a log tied to the just-deleted row would vanish
+  // with it — the identifying info lives in metadata instead.
+  await logAudit({
+    tenantId: null,
+    actorId: user.id,
+    action: "company.deleted",
+    entityType: "company",
+    entityId: companyId,
+    metadata: { name: company?.name ?? null, slug: company?.slug ?? null },
+  });
 
   return NextResponse.json({ ok: true });
 }

@@ -254,7 +254,14 @@
     "allCompaniesStatusActive": "Activo",
     "allCompaniesStatusPending": "Esperando aprobación",
     "allCompaniesMemberCount": "{count} miembros",
-    "allCompaniesDeleteWarning": "Esto elimina la empresa y todos sus datos (proveedores, formularios, registros). Esta acción no se puede deshacer."
+    "allCompaniesDeleteWarning": "Esto elimina la empresa y todos sus datos (proveedores, formularios, registros). Esta acción no se puede deshacer.",
+    "allCompaniesStatusInactive": "Inactivo",
+    "allCompaniesEnterAs": "Entrar como",
+    "allCompaniesDeactivate": "Activo / Inactivo",
+    "allCompaniesMembersTitle": "Usuarios",
+    "allCompaniesNoMembers": "No hay usuarios en esta empresa.",
+    "allCompaniesAuditLogTitle": "Registro de operaciones",
+    "allCompaniesNoAuditLog": "Aún no hay operaciones registradas."
   },
   "profilePage": {
     "title": "Perfil",
