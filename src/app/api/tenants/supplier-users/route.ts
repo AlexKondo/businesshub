@@ -26,11 +26,25 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const { data: allowed } = await supabase.rpc("user_has_permission", {
-    target_tenant_id: tenantId,
-    permission_key: "suppliers.read",
-  });
-  if (!allowed) {
+  // Either a real admin permission, or the caller is themselves an active
+  // Fornecedor of this tenant — suppliers are allowed to see their peers
+  // (name/email/signup date/form status only, never other suppliers'
+  // submitted answers) via this same list.
+  const [{ data: allowed }, { data: ownMembership }] = await Promise.all([
+    supabase.rpc("user_has_permission", {
+      target_tenant_id: tenantId,
+      permission_key: "suppliers.read",
+    }),
+    supabase
+      .from("memberships")
+      .select("id, roles(name)")
+      .eq("user_id", user.id)
+      .eq("tenant_id", tenantId)
+      .eq("status", "active")
+      .maybeSingle<{ id: string; roles: { name: string } | null }>(),
+  ]);
+  const isFornecedorHere = ownMembership?.roles?.name === "Fornecedor";
+  if (!allowed && !isFornecedorHere) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 

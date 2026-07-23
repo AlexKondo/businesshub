@@ -202,7 +202,7 @@ export function DynamicOnboardingForm({
 
   if (orderedFields.length === 0) {
     return (
-      <div className="rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
+      <div className="mx-auto max-w-[1140px] rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
         <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">{t("emptyTitle")}</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
           {t("emptyBody", { name: companyName })}
@@ -212,7 +212,7 @@ export function DynamicOnboardingForm({
   }
 
   return (
-    <div>
+    <div className="mx-auto max-w-[1140px]">
       <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{formName}</h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">{t("subtitle", { name: companyName })}</p>
 

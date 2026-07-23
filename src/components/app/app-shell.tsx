@@ -6,6 +6,7 @@ import { Wordmark } from "@/components/wordmark";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { UserMenu } from "@/components/auth/user-menu";
+import { ProfileAvatarButton } from "@/components/app/profile-avatar-button";
 import { SidebarNav } from "@/components/app/sidebar-nav";
 import { createClient } from "@/lib/supabase/client";
 
@@ -15,9 +16,15 @@ const DEFAULT_SIDEBAR_WIDTH = 240;
 
 export function AppShell({
   user,
+  companyName,
+  roleName,
+  tenantId,
   children,
 }: {
   user: User;
+  companyName: string | null;
+  roleName: string | null;
+  tenantId: string | null;
   children: React.ReactNode;
 }) {
   const firstName =
@@ -70,30 +77,40 @@ export function AppShell({
   }
 
   return (
-    <div className="flex min-h-screen bg-(--bg-canvas)">
-      <aside
-        style={{ width: `${width}px` }}
-        className="relative hidden shrink-0 border-r border-(--border-default) bg-(--bg-surface) md:flex md:flex-col"
-      >
-        <div className="border-b border-(--border-default) px-5 py-4">
+    <div className="flex min-h-screen flex-col bg-(--bg-canvas)">
+      <header className="flex items-center justify-between border-b border-(--border-default) px-5 py-3">
+        <div className="flex items-center gap-3">
           <Wordmark />
+          {companyName && (
+            <>
+              <span className="text-(--border-default)">|</span>
+              <span className="text-[14px] font-semibold text-(--ink)">{companyName}</span>
+            </>
+          )}
         </div>
-        <SidebarNav />
-        <div
-          onMouseDown={startDrag}
-          role="separator"
-          aria-orientation="vertical"
-          className="absolute right-0 top-0 h-full w-1.5 cursor-col-resize hover:bg-(--brand-500)/40"
-        />
-      </aside>
-
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-end gap-2 border-b border-(--border-default) px-6 py-3">
+        <div className="flex items-center gap-2">
           <ThemeToggle />
           <LanguageToggle />
+          <ProfileAvatarButton userId={user.id} />
           <UserMenu firstName={firstName} />
-        </header>
-        <main className="flex-1 px-6 py-8 sm:px-10">{children}</main>
+        </div>
+      </header>
+
+      <div className="flex flex-1">
+        <aside
+          style={{ width: `${width}px` }}
+          className="relative hidden shrink-0 border-r border-(--border-default) bg-(--bg-surface) md:flex md:flex-col"
+        >
+          <SidebarNav roleName={roleName} tenantId={tenantId} />
+          <div
+            onMouseDown={startDrag}
+            role="separator"
+            aria-orientation="vertical"
+            className="absolute right-0 top-0 h-full w-1.5 cursor-col-resize hover:bg-(--brand-500)/40"
+          />
+        </aside>
+
+        <main className="min-w-0 flex-1 px-6 py-8 sm:px-10">{children}</main>
       </div>
     </div>
   );

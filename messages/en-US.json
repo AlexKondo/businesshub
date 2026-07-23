@@ -61,7 +61,9 @@
     "greeting": "Welcome back, {name}",
     "subtitle": "Here's a quick overview of your workspace.",
     "tenantLabel": "Organization",
-    "roleLabel": "Your role"
+    "roleLabel": "Your role",
+    "onboardingAlertTitle": "Complete your supplier registration",
+    "onboardingAlertBody": "You still need to fill out the onboarding form — click here to continue."
   },
   "onboarding": {
     "title": "Create your organization",
@@ -261,7 +263,12 @@
     "allCompaniesMembersTitle": "Users",
     "allCompaniesNoMembers": "No users in this company.",
     "allCompaniesAuditLogTitle": "Operations log",
-    "allCompaniesNoAuditLog": "No operations logged yet."
+    "allCompaniesNoAuditLog": "No operations logged yet.",
+    "fornecedorMenuSectionTitle": "Supplier Menu",
+    "fornecedorMenuSectionSubtitle": "Choose which sidebar items this company's suppliers can see.",
+    "fornecedorMenuDashboard": "Dashboard",
+    "fornecedorMenuOnboardingForm": "Onboarding Form",
+    "fornecedorMenuUsers": "Users"
   },
   "profilePage": {
     "title": "Profile",

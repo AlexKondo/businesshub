@@ -1,30 +1,30 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
+import { createClient } from "@/lib/supabase/client";
 import {
   LayoutDashboard,
-  UserRound,
   ShieldCheck,
   Truck,
   FileText,
   FolderOpen,
   ShoppingCart,
   ClipboardList,
-  UsersRound,
   Users,
   Lock,
+  AlertTriangle,
 } from "lucide-react";
 
 const MAIN_ITEMS = [
   { href: "/dashboard", key: "dashboard", icon: LayoutDashboard },
-  { href: "/profile", key: "profile", icon: UserRound },
   { href: "/admin", key: "admin", icon: ShieldCheck },
 ] as const;
 
 const SUPPLIERS_CHILDREN = [
   { href: "/suppliers/onboarding-form", key: "suppliersOnboardingForm", icon: ClipboardList },
-  { href: "/suppliers/users", key: "suppliersUsers", icon: UsersRound },
+  { href: "/suppliers/users", key: "suppliersUsers", icon: Users },
   { href: "/suppliers/submissions", key: "suppliersSubmissions", icon: Users },
 ] as const;
 
@@ -34,31 +34,165 @@ const FUTURE_MODULES = [
   { key: "purchaseOrders", icon: ShoppingCart },
 ] as const;
 
-export function SidebarNav() {
+type FornecedorMenuSettings = {
+  showDashboard: boolean;
+  showOnboardingForm: boolean;
+  showUsers: boolean;
+};
+
+const DEFAULT_FORNECEDOR_MENU: FornecedorMenuSettings = {
+  showDashboard: true,
+  showOnboardingForm: true,
+  showUsers: false,
+};
+
+function NavLink({
+  href,
+  active,
+  icon: Icon,
+  label,
+  badge,
+  small,
+}: {
+  href: string;
+  active: boolean;
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+  label: string;
+  badge?: boolean;
+  small?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`flex items-center gap-2 rounded-md px-3 text-[13.5px] font-medium transition-colors ${
+        small ? "gap-2 py-1.5 text-[13px]" : "gap-2.5 py-2"
+      } ${
+        active
+          ? "bg-(--accent-soft) text-(--brand-500)"
+          : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
+      }`}
+    >
+      <Icon size={small ? 14 : 16} strokeWidth={1.5} />
+      <span className="truncate">{label}</span>
+      {badge && (
+        <AlertTriangle
+          size={14}
+          strokeWidth={2}
+          className="ml-auto shrink-0 animate-pulse text-(--warning-500)"
+        />
+      )}
+    </Link>
+  );
+}
+
+// A Fornecedor's sidebar is deliberately tiny and admin-configured (see
+// FornecedorMenuSettingsPanel in Administração) — never the internal staff
+// nav (Administração/Contratos/etc). Only Painel + whichever of Formulário
+// de Onboarding / Usuários the tenant's admin turned on.
+function FornecedorSidebar({ tenantId }: { tenantId: string }) {
+  const t = useTranslations("app");
+  const pathname = usePathname();
+  const [settings, setSettings] = useState<FornecedorMenuSettings>(DEFAULT_FORNECEDOR_MENU);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      const supabase = createClient();
+      const [{ data: settingsRow }, { data: forms }, { data: submissions }] = await Promise.all([
+        supabase
+          .from("fornecedor_menu_settings")
+          .select("show_dashboard, show_onboarding_form, show_users")
+          .eq("tenant_id", tenantId)
+          .maybeSingle(),
+        supabase
+          .from("onboarding_forms")
+          .select("id")
+          .eq("tenant_id", tenantId)
+          .eq("active", true),
+        supabase.from("supplier_onboarding_submissions").select("form_id").eq("tenant_id", tenantId),
+      ]);
+
+      if (settingsRow) {
+        setSettings({
+          showDashboard: settingsRow.show_dashboard,
+          showOnboardingForm: settingsRow.show_onboarding_form,
+          showUsers: settingsRow.show_users,
+        });
+      }
+
+      const submittedIds = new Set((submissions ?? []).map((s) => s.form_id));
+      const pending = (forms ?? []).some((f) => !submittedIds.has(f.id));
+      setNeedsOnboarding((forms ?? []).length > 0 && pending);
+    }
+    load();
+  }, [tenantId]);
+
+  const hasSuppliersSection = settings.showOnboardingForm || settings.showUsers;
+
+  return (
+    <nav className="flex flex-1 flex-col gap-6 px-3 py-4">
+      <ul className="flex flex-col gap-0.5">
+        {settings.showDashboard && (
+          <li>
+            <NavLink
+              href="/dashboard"
+              active={pathname === "/dashboard"}
+              icon={LayoutDashboard}
+              label={t("dashboard")}
+            />
+          </li>
+        )}
+
+        {hasSuppliersSection && (
+          <li>
+            <div className="flex items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium text-(--ink-soft)">
+              <Truck size={16} strokeWidth={1.5} />
+              {t("modules.suppliers")}
+            </div>
+            <ul className="ml-[19px] mt-0.5 flex flex-col gap-0.5 border-l border-(--border-default) pl-3.5">
+              {settings.showOnboardingForm && (
+                <li>
+                  <NavLink
+                    href="/supplier-onboarding"
+                    active={pathname.startsWith("/supplier-onboarding")}
+                    icon={ClipboardList}
+                    label={t("modules.suppliersOnboardingForm")}
+                    badge={needsOnboarding}
+                    small
+                  />
+                </li>
+              )}
+              {settings.showUsers && (
+                <li>
+                  <NavLink
+                    href="/suppliers/users"
+                    active={pathname === "/suppliers/users"}
+                    icon={Users}
+                    label={t("modules.suppliersUsers")}
+                    small
+                  />
+                </li>
+              )}
+            </ul>
+          </li>
+        )}
+      </ul>
+    </nav>
+  );
+}
+
+function StaffSidebar() {
   const t = useTranslations("app");
   const pathname = usePathname();
 
   return (
     <nav className="flex flex-1 flex-col gap-6 px-3 py-4">
       <ul className="flex flex-col gap-0.5">
-        {MAIN_ITEMS.map(({ href, key, icon: Icon }) => {
-          const active = pathname === href;
-          return (
-            <li key={href}>
-              <Link
-                href={href}
-                className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium transition-colors ${
-                  active
-                    ? "bg-(--accent-soft) text-(--brand-500)"
-                    : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
-                }`}
-              >
-                <Icon size={16} strokeWidth={1.5} />
-                {t(key)}
-              </Link>
-            </li>
-          );
-        })}
+        {MAIN_ITEMS.map(({ href, key, icon: Icon }) => (
+          <li key={href}>
+            <NavLink href={href} active={pathname === href} icon={Icon} label={t(key)} />
+          </li>
+        ))}
 
         <li>
           <div
@@ -70,24 +204,17 @@ export function SidebarNav() {
             {t("modules.suppliers")}
           </div>
           <ul className="ml-[19px] mt-0.5 flex flex-col gap-0.5 border-l border-(--border-default) pl-3.5">
-            {SUPPLIERS_CHILDREN.map(({ href, key, icon: Icon }) => {
-              const active = pathname.startsWith(href);
-              return (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-                      active
-                        ? "bg-(--accent-soft) text-(--brand-500)"
-                        : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
-                    }`}
-                  >
-                    <Icon size={14} strokeWidth={1.5} />
-                    {t(`modules.${key}`)}
-                  </Link>
-                </li>
-              );
-            })}
+            {SUPPLIERS_CHILDREN.map(({ href, key, icon: Icon }) => (
+              <li key={href}>
+                <NavLink
+                  href={href}
+                  active={pathname.startsWith(href)}
+                  icon={Icon}
+                  label={t(`modules.${key}`)}
+                  small
+                />
+              </li>
+            ))}
           </ul>
         </li>
       </ul>
@@ -110,4 +237,17 @@ export function SidebarNav() {
       </div>
     </nav>
   );
+}
+
+export function SidebarNav({
+  roleName,
+  tenantId,
+}: {
+  roleName: string | null;
+  tenantId: string | null;
+}) {
+  if (roleName === "Fornecedor" && tenantId) {
+    return <FornecedorSidebar tenantId={tenantId} />;
+  }
+  return <StaffSidebar />;
 }

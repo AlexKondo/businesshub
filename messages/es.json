@@ -61,7 +61,9 @@
     "greeting": "Bienvenido de nuevo, {name}",
     "subtitle": "Un resumen rápido de tu espacio de trabajo.",
     "tenantLabel": "Organización",
-    "roleLabel": "Tu rol"
+    "roleLabel": "Tu rol",
+    "onboardingAlertTitle": "Completa tu registro de proveedor",
+    "onboardingAlertBody": "Todavía falta completar el formulario de onboarding — haz clic aquí para continuar."
   },
   "onboarding": {
     "title": "Crea tu organización",
@@ -261,7 +263,12 @@
     "allCompaniesMembersTitle": "Usuarios",
     "allCompaniesNoMembers": "No hay usuarios en esta empresa.",
     "allCompaniesAuditLogTitle": "Registro de operaciones",
-    "allCompaniesNoAuditLog": "Aún no hay operaciones registradas."
+    "allCompaniesNoAuditLog": "Aún no hay operaciones registradas.",
+    "fornecedorMenuSectionTitle": "Menú del Proveedor",
+    "fornecedorMenuSectionSubtitle": "Elige qué elementos del menú lateral pueden ver los proveedores de esta empresa.",
+    "fornecedorMenuDashboard": "Panel",
+    "fornecedorMenuOnboardingForm": "Formulario de Onboarding",
+    "fornecedorMenuUsers": "Usuarios"
   },
   "profilePage": {
     "title": "Perfil",

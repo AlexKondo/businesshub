@@ -1,12 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link, redirect } from "@/i18n/navigation";
-import { requireSupplierMembership } from "@/lib/supplier-onboarding-gate";
-import { SupplierOnboardingShell } from "@/components/supplier/supplier-onboarding-shell";
+import { createClient } from "@/lib/supabase/server";
 
-// Outside (app) on purpose, same precedent as /onboarding: a Fornecedor
-// member has no use for the internal staff shell (Suppliers/Contracts/
-// Documents/Purchase Orders), so this page manages its own gate + shell
-// instead of going through (app)/layout.tsx.
 export default async function SupplierOnboardingIndexPage({
   params,
 }: {
@@ -14,20 +9,28 @@ export default async function SupplierOnboardingIndexPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations("supplierOnboarding");
-  const { user, membership, supabase } = await requireSupplierMembership(locale);
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: membership } = await supabase
+    .from("memberships")
+    .select("id, tenant_id, companies(name)")
+    .eq("user_id", user!.id)
+    .eq("status", "active")
+    .maybeSingle<{ id: string; tenant_id: string; companies: { name: string } | null }>();
 
   if (!membership) {
     return (
-      <SupplierOnboardingShell user={user}>
-        <div className="rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
-          <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">
-            {t("notMemberTitle")}
-          </h1>
-          <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
-            {t("notMemberBody")}
-          </p>
-        </div>
-      </SupplierOnboardingShell>
+      <div className="mx-auto max-w-[1140px] rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
+        <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">
+          {t("notMemberTitle")}
+        </h1>
+        <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
+          {t("notMemberBody")}
+        </p>
+      </div>
     );
   }
 
@@ -40,16 +43,12 @@ export default async function SupplierOnboardingIndexPage({
 
   if (!forms || forms.length === 0) {
     return (
-      <SupplierOnboardingShell user={user}>
-        <div className="rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
-          <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">
-            {t("emptyTitle")}
-          </h1>
-          <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
-            {t("emptyBody", { name: membership.companies?.name ?? "" })}
-          </p>
-        </div>
-      </SupplierOnboardingShell>
+      <div className="mx-auto max-w-[1140px] rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
+        <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">{t("emptyTitle")}</h1>
+        <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
+          {t("emptyBody", { name: membership.companies?.name ?? "" })}
+        </p>
+      </div>
     );
   }
 
@@ -66,7 +65,7 @@ export default async function SupplierOnboardingIndexPage({
   const completedFormIds = new Set((submissions ?? []).map((s) => s.form_id));
 
   return (
-    <SupplierOnboardingShell user={user}>
+    <div className="mx-auto max-w-[1140px]">
       <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{t("formsMenuTitle")}</h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">
         {t("formsMenuSubtitle", { name: membership.companies?.name ?? "" })}
@@ -94,6 +93,6 @@ export default async function SupplierOnboardingIndexPage({
           );
         })}
       </div>
-    </SupplierOnboardingShell>
+    </div>
   );
 }

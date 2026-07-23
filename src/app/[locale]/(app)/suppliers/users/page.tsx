@@ -22,9 +22,12 @@ export default async function SuppliersUsersPage() {
     .eq("user_id", user!.id)
     .maybeSingle();
 
-  const canManage = !!platformAdmin || membership?.roles?.name === "Administrador da Empresa";
+  const canView =
+    !!platformAdmin ||
+    membership?.roles?.name === "Administrador da Empresa" ||
+    membership?.roles?.name === "Fornecedor";
 
-  if (!canManage || !membership?.tenant_id) {
+  if (!canView || !membership?.tenant_id) {
     return (
       <div>
         <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">

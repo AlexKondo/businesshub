@@ -4,6 +4,7 @@ import { PendingApprovals } from "@/components/app/pending-approvals";
 import { PendingCompaniesPanel } from "@/components/app/pending-companies-panel";
 import { AllCompaniesPanel } from "@/components/app/all-companies-panel";
 import { CompanyLogoCard } from "@/components/app/company-logo-card";
+import { FornecedorMenuSettingsPanel } from "@/components/app/fornecedor-menu-settings-panel";
 
 export default async function AdminPage() {
   const t = await getTranslations("adminPage");
@@ -52,6 +53,17 @@ export default async function AdminPage() {
         />
       )}
       <PendingApprovals />
+      {membership?.tenant_id && (
+        <div className="mt-8">
+          <h2 className="text-[16px] font-semibold text-(--ink)">
+            {t("fornecedorMenuSectionTitle")}
+          </h2>
+          <p className="mt-1 text-[13px] text-(--ink-soft)">
+            {t("fornecedorMenuSectionSubtitle")}
+          </p>
+          <FornecedorMenuSettingsPanel tenantId={membership.tenant_id} />
+        </div>
+      )}
       {!!platformAdmin && (
         <div className="mt-8">
           <h2 className="text-[16px] font-semibold text-(--ink)">

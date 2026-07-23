@@ -61,7 +61,9 @@
     "greeting": "欢迎回来，{name}",
     "subtitle": "这是您工作区的快速概览。",
     "tenantLabel": "组织",
-    "roleLabel": "您的角色"
+    "roleLabel": "您的角色",
+    "onboardingAlertTitle": "请完成供应商注册",
+    "onboardingAlertBody": "您尚未完成入驻表单的填写 — 点击此处继续。"
   },
   "onboarding": {
     "title": "创建您的组织",
@@ -261,7 +263,12 @@
     "allCompaniesMembersTitle": "用户",
     "allCompaniesNoMembers": "该企业暂无用户。",
     "allCompaniesAuditLogTitle": "操作日志",
-    "allCompaniesNoAuditLog": "尚无操作记录。"
+    "allCompaniesNoAuditLog": "尚无操作记录。",
+    "fornecedorMenuSectionTitle": "供应商菜单",
+    "fornecedorMenuSectionSubtitle": "选择该企业的供应商可以看到的侧边栏项目。",
+    "fornecedorMenuDashboard": "面板",
+    "fornecedorMenuOnboardingForm": "入驻表单",
+    "fornecedorMenuUsers": "用户"
   },
   "profilePage": {
     "title": "个人资料",

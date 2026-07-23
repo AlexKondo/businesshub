@@ -139,4 +139,8 @@ input[type="password"]::-ms-clear {
     opacity: 1;
     transform: none;
   }
+
+  .animate-pulse {
+    animation: none;
+  }
 }

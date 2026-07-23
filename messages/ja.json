@@ -61,7 +61,9 @@
     "greeting": "おかえりなさい、{name} さん",
     "subtitle": "ワークスペースの概要です。",
     "tenantLabel": "組織",
-    "roleLabel": "あなたの役割"
+    "roleLabel": "あなたの役割",
+    "onboardingAlertTitle": "サプライヤー登録を完了してください",
+    "onboardingAlertBody": "オンボーディングフォームの入力がまだ完了していません — クリックして続けてください。"
   },
   "onboarding": {
     "title": "組織を作成",
@@ -261,7 +263,12 @@
     "allCompaniesMembersTitle": "ユーザー",
     "allCompaniesNoMembers": "この企業にはユーザーがいません。",
     "allCompaniesAuditLogTitle": "操作ログ",
-    "allCompaniesNoAuditLog": "まだ操作の記録がありません。"
+    "allCompaniesNoAuditLog": "まだ操作の記録がありません。",
+    "fornecedorMenuSectionTitle": "サプライヤーメニュー",
+    "fornecedorMenuSectionSubtitle": "この企業のサプライヤーが見られるサイドバー項目を選択します。",
+    "fornecedorMenuDashboard": "ダッシュボード",
+    "fornecedorMenuOnboardingForm": "オンボーディングフォーム",
+    "fornecedorMenuUsers": "ユーザー"
   },
   "profilePage": {
     "title": "プロフィール",

@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
-import { requireSupplierMembership } from "@/lib/supplier-onboarding-gate";
-import { SupplierOnboardingShell } from "@/components/supplier/supplier-onboarding-shell";
+import { createClient } from "@/lib/supabase/server";
 import { DynamicOnboardingForm } from "@/components/supplier/dynamic-onboarding-form";
 import type { OnboardingField, OnboardingAnswers } from "@/lib/onboarding-fields";
 
@@ -12,20 +11,28 @@ export default async function SupplierOnboardingFormPage({
 }) {
   const { locale, formId } = await params;
   const t = await getTranslations("supplierOnboarding");
-  const { user, membership, supabase } = await requireSupplierMembership(locale);
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: membership } = await supabase
+    .from("memberships")
+    .select("id, tenant_id, companies(name)")
+    .eq("user_id", user!.id)
+    .eq("status", "active")
+    .maybeSingle<{ id: string; tenant_id: string; companies: { name: string } | null }>();
 
   if (!membership) {
     return (
-      <SupplierOnboardingShell user={user}>
-        <div className="rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
-          <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">
-            {t("notMemberTitle")}
-          </h1>
-          <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
-            {t("notMemberBody")}
-          </p>
-        </div>
-      </SupplierOnboardingShell>
+      <div className="mx-auto max-w-[1140px] rounded-2xl border border-(--border-default) bg-(--bg-surface) p-8 text-center">
+        <h1 className="text-[19px] font-bold tracking-tight text-(--ink)">
+          {t("notMemberTitle")}
+        </h1>
+        <p className="mt-2 text-[14px] leading-relaxed text-(--ink-soft)">
+          {t("notMemberBody")}
+        </p>
+      </div>
     );
   }
 
@@ -57,16 +64,14 @@ export default async function SupplierOnboardingFormPage({
   }
 
   return (
-    <SupplierOnboardingShell user={user}>
-      <DynamicOnboardingForm
-        tenantId={membership.tenant_id}
-        membershipId={membership.id}
-        formId={form!.id}
-        formName={form!.name}
-        companyName={membership.companies?.name ?? ""}
-        fields={(fields as OnboardingField[] | null) ?? []}
-        initialAnswers={submission?.answers ?? {}}
-      />
-    </SupplierOnboardingShell>
+    <DynamicOnboardingForm
+      tenantId={membership.tenant_id}
+      membershipId={membership.id}
+      formId={form!.id}
+      formName={form!.name}
+      companyName={membership.companies?.name ?? ""}
+      fields={(fields as OnboardingField[] | null) ?? []}
+      initialAnswers={submission?.answers ?? {}}
+    />
   );
 }
