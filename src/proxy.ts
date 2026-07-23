@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { routing } from "./i18n/routing";
 import { getCookieDomain } from "./lib/supabase/cookie-domain";
 import { getGeo, localeFromCountry } from "./lib/geo";
-import { resolveTenantSlug } from "./lib/tenant";
+import { ROOT_DOMAIN, resolveTenantSlug } from "./lib/tenant";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -189,11 +189,21 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
       return serveTenantLanding(bareRoot.locale);
     }
     // Any other path (dashboard, admin, etc.) for someone who doesn't
-    // belong to THIS tenant — never bounce to the root domain either, just
-    // send them to this same subdomain's own bare root, which resolves to
-    // its public landing page.
+    // belong to THIS tenant. If they belong somewhere else, send them
+    // straight there instead of bouncing them back to this tenant's own
+    // landing page (which would just loop — they have no way to reach
+    // their real workspace from there). If they belong nowhere at all,
+    // /onboarding (create or join a company) is the one page that
+    // genuinely only exists on the root domain — there is no tenant
+    // subdomain to send them to instead.
     const locale = extractLocale(request.nextUrl.pathname) ?? initialLocale(request);
-    return NextResponse.redirect(new URL(`/${locale}`, request.url));
+    const ownSlug = (memberships ?? [])
+      .map((m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug)
+      .find((s): s is string => !!s);
+    if (ownSlug) {
+      return NextResponse.redirect(`https://${ownSlug}.${ROOT_DOMAIN}/${locale}/dashboard`);
+    }
+    return NextResponse.redirect(`https://${ROOT_DOMAIN}/${locale}/onboarding`);
   }
 
   if (bareRoot) {
