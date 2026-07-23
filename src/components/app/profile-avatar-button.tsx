@@ -22,6 +22,15 @@ export function ProfileAvatarButton({ userId }: { userId: string }) {
       setInitial((data?.full_name ?? "").trim().charAt(0).toUpperCase());
     }
     load();
+
+    // Kept in sync with ProfileForm's upload flow, which lives in a
+    // different part of the tree and can't reach this component's own
+    // fetched state via router.refresh() alone.
+    function onAvatarUpdated(e: Event) {
+      setAvatarUrl((e as CustomEvent<string>).detail);
+    }
+    window.addEventListener("profile-avatar-updated", onAvatarUpdated);
+    return () => window.removeEventListener("profile-avatar-updated", onAvatarUpdated);
   }, [userId]);
 
   return (

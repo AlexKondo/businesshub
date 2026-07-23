@@ -92,6 +92,10 @@ export function ProfileForm({
     setAvatar(bustedUrl);
     setUploading(false);
     router.refresh();
+    // The header avatar button is a separate component instance with its
+    // own fetched state (not server props), so router.refresh() alone
+    // doesn't reach it — nudge it directly.
+    window.dispatchEvent(new CustomEvent("profile-avatar-updated", { detail: bustedUrl }));
   }
 
   return (
