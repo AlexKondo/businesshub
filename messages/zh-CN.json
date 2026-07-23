@@ -302,7 +302,8 @@
     "pendingCompaniesApprovingStep2": "正在注册子域名",
     "pendingCompaniesApprovingStep3": "正在部署工作区",
     "pendingCompaniesApprovingDone": "完成！{name} 现已可用。",
-    "pendingCompaniesApprovingError": "批准时出现问题，请重试。"
+    "pendingCompaniesApprovingError": "批准时出现问题，请重试。",
+    "allCompaniesActiveLabel": "启用"
   },
   "profilePage": {
     "title": "个人资料",

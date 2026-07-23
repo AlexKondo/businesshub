@@ -302,7 +302,8 @@
     "pendingCompaniesApprovingStep2": "Registrando subdomínio",
     "pendingCompaniesApprovingStep3": "Implantando workspace",
     "pendingCompaniesApprovingDone": "Pronto! {name} já está disponível.",
-    "pendingCompaniesApprovingError": "Algo deu errado ao aprovar. Tente novamente."
+    "pendingCompaniesApprovingError": "Algo deu errado ao aprovar. Tente novamente.",
+    "allCompaniesActiveLabel": "Ativo"
   },
   "profilePage": {
     "title": "Perfil",

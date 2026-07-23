@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 
 // Only this account gets the "enter as" navigation shortcut for now — not
 // every platform admin. Platform admins already have full access to any
@@ -259,26 +259,31 @@ export function AllCompaniesPanel() {
                           />
                         </button>
                       </span>
-                      <button
-                        type="button"
-                        role="switch"
-                        aria-checked={c.status === "active"}
-                        disabled={busy === c.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleToggleActive(c.id, c.status !== "active");
-                        }}
-                        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
-                          c.status === "active" ? "bg-(--brand-500)" : "bg-(--border-default)"
-                        }`}
-                        title={t("allCompaniesDeactivate")}
-                      >
-                        <span
-                          className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                            c.status === "active" ? "translate-x-[18px]" : "translate-x-[3px]"
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-[12px] text-(--ink-soft)">
+                          {t("allCompaniesActiveLabel")}
+                        </span>
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={c.status === "active"}
+                          disabled={busy === c.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleActive(c.id, c.status !== "active");
+                          }}
+                          className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+                            c.status === "active" ? "bg-(--brand-500)" : "bg-(--border-default)"
                           }`}
-                        />
-                      </button>
+                          title={t("allCompaniesDeactivate")}
+                        >
+                          <span
+                            className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                              c.status === "active" ? "translate-x-[18px]" : "translate-x-[3px]"
+                            }`}
+                          />
+                        </button>
+                      </span>
                     </>
                   )}
                   {confirmDeleteId === c.id ? (
@@ -313,9 +318,10 @@ export function AllCompaniesPanel() {
                         e.stopPropagation();
                         setConfirmDeleteId(c.id);
                       }}
-                      className="inline-flex h-9 items-center rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--danger-500) transition-colors hover:bg-(--danger-500)/10"
+                      title={t("onboardingFormDelete")}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-(--border-default) text-(--danger-500) transition-colors hover:bg-(--danger-500)/10"
                     >
-                      {t("onboardingFormDelete")}
+                      <Trash2 size={15} strokeWidth={1.75} />
                     </button>
                   )}
                 </div>
