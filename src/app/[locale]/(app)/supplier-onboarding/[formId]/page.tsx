@@ -46,7 +46,9 @@ export default async function SupplierOnboardingFormPage({
       .maybeSingle<{ id: string; name: string }>(),
     supabase
       .from("onboarding_form_fields")
-      .select("id, key, label, field_type, options, allow_other, required, position, mask, width")
+      .select(
+        "id, key, label, field_type, options, allow_other, required, position, mask, width, rows"
+      )
       .eq("form_id", formId)
       .order("position", { ascending: true }),
     supabase

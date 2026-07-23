@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Wordmark } from "@/components/wordmark";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -40,42 +40,52 @@ export function AppShell({
       ? savedWidth
       : DEFAULT_SIDEBAR_WIDTH;
   const [width, setWidth] = useState(initialWidth);
-  const widthRef = useRef(initialWidth);
-  const dragStartRef = useRef<{ x: number; width: number } | null>(null);
 
   // Persists the chosen width on the user's own account (user_metadata, same
   // mechanism already used for full_name/avatar_url) so it follows them
   // across devices — not just this browser's localStorage.
-  useEffect(() => {
-    function onMouseMove(e: MouseEvent) {
-      if (!dragStartRef.current) return;
-      const next = Math.min(
-        MAX_SIDEBAR_WIDTH,
-        Math.max(MIN_SIDEBAR_WIDTH, dragStartRef.current.width + (e.clientX - dragStartRef.current.x))
-      );
-      widthRef.current = next;
-      setWidth(next);
-    }
-    async function onMouseUp() {
-      if (!dragStartRef.current) return;
-      dragStartRef.current = null;
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-      const supabase = createClient();
-      await supabase.auth.updateUser({ data: { sidebar_width: widthRef.current } });
-    }
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
-    return () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-  }, []);
-
-  function startDrag(e: React.MouseEvent) {
-    dragStartRef.current = { x: e.clientX, width };
+  //
+  // Uses Pointer Capture (not document-level mousemove/mouseup) so the
+  // handle keeps receiving move/up events even if the pointer leaves the
+  // handle — or the browser viewport entirely — mid-drag. Without capture,
+  // releasing the button outside the handle's bounds never fires our
+  // mouseup listener, and the resize keeps following the pointer forever
+  // until some later stray mouseup elsewhere on the page.
+  function startDrag(e: React.PointerEvent<HTMLDivElement>) {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    e.currentTarget.dataset.dragStartX = String(e.clientX);
+    e.currentTarget.dataset.dragStartWidth = String(width);
     document.body.style.cursor = "col-resize";
     document.body.style.userSelect = "none";
+  }
+
+  function computeNextWidth(e: React.PointerEvent<HTMLDivElement>): number | null {
+    const { dragStartX, dragStartWidth } = e.currentTarget.dataset;
+    if (dragStartX === undefined || dragStartWidth === undefined) return null;
+    return Math.min(
+      MAX_SIDEBAR_WIDTH,
+      Math.max(MIN_SIDEBAR_WIDTH, Number(dragStartWidth) + (e.clientX - Number(dragStartX)))
+    );
+  }
+
+  function onDrag(e: React.PointerEvent<HTMLDivElement>) {
+    const next = computeNextWidth(e);
+    if (next !== null) setWidth(next);
+  }
+
+  async function endDrag(e: React.PointerEvent<HTMLDivElement>) {
+    const next = computeNextWidth(e);
+    delete e.currentTarget.dataset.dragStartX;
+    delete e.currentTarget.dataset.dragStartWidth;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+    if (next === null) return;
+    setWidth(next);
+    const supabase = createClient();
+    await supabase.auth.updateUser({ data: { sidebar_width: next } });
   }
 
   return (
@@ -105,10 +115,13 @@ export function AppShell({
         >
           <SidebarNav roleName={roleName} tenantId={tenantId} isPlatformAdmin={isPlatformAdmin} />
           <div
-            onMouseDown={startDrag}
+            onPointerDown={startDrag}
+            onPointerMove={onDrag}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
             role="separator"
             aria-orientation="vertical"
-            className="absolute right-0 top-0 h-full w-1.5 cursor-col-resize hover:bg-(--brand-500)/40"
+            className="absolute right-0 top-0 h-full w-1.5 touch-none cursor-col-resize hover:bg-(--brand-500)/40"
           />
         </aside>
 

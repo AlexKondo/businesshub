@@ -28,6 +28,7 @@ export type OnboardingField = {
   position: number;
   mask: string | null;
   width: number;
+  rows: number;
 };
 
 export type OnboardingAnswers = Record<string, string | string[] | number | boolean | undefined>;

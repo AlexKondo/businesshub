@@ -302,7 +302,12 @@ export function DynamicOnboardingForm({
               )}
 
               {field.field_type === "textarea" && (
-                <textarea id={field.key} rows={4} {...register(field.key)} className={inputClass} />
+                <textarea
+                  id={field.key}
+                  rows={field.rows}
+                  {...register(field.key)}
+                  className={inputClass}
+                />
               )}
 
               {field.field_type === "boolean" && (

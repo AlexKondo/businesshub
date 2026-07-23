@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -10,12 +10,92 @@ import type { OnboardingField } from "@/lib/onboarding-fields";
 const previewInputClass =
   "h-10 w-full rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink-soft) outline-none disabled:cursor-not-allowed";
 
-function FieldPreview({ field }: { field: OnboardingField }) {
+const MIN_TEXTAREA_ROWS = 2;
+const MAX_TEXTAREA_ROWS = 12;
+const PX_PER_ROW = 22; // approximate line-height of the preview textarea's text size
+
+// Drag the bottom edge to change how many rows the real supplier-facing
+// textarea renders with. Same Pointer Capture technique as
+// GridResizableCell/ResizableBox (see those for why) — this handle is its
+// own small implementation rather than reusing GridResizableCell because it
+// resizes vertically, on a fixed-size element, not a horizontal grid span.
+function ResizableTextareaPreview({
+  rows,
+  onCommitRows,
+}: {
+  rows: number;
+  onCommitRows: (rows: number) => void;
+}) {
+  const [liveRows, setLiveRows] = useState(rows);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resets local drag state when the persisted `rows` prop changes from outside this component (e.g. another render of the fields list)
+    setLiveRows(rows);
+  }, [rows]);
+
+  function onPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    e.currentTarget.dataset.dragStartY = String(e.clientY);
+    e.currentTarget.dataset.dragStartRows = String(liveRows);
+    document.body.style.cursor = "row-resize";
+    document.body.style.userSelect = "none";
+  }
+
+  function computeNextRows(e: React.PointerEvent<HTMLDivElement>): number | null {
+    const { dragStartY, dragStartRows } = e.currentTarget.dataset;
+    if (dragStartY === undefined || dragStartRows === undefined) return null;
+    const deltaRows = Math.round((e.clientY - Number(dragStartY)) / PX_PER_ROW);
+    return Math.min(
+      MAX_TEXTAREA_ROWS,
+      Math.max(MIN_TEXTAREA_ROWS, Number(dragStartRows) + deltaRows)
+    );
+  }
+
+  function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    const next = computeNextRows(e);
+    if (next !== null) setLiveRows(next);
+  }
+
+  function endDrag(e: React.PointerEvent<HTMLDivElement>) {
+    const next = computeNextRows(e);
+    delete e.currentTarget.dataset.dragStartY;
+    delete e.currentTarget.dataset.dragStartRows;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+    if (next !== null) onCommitRows(next);
+  }
+
+  return (
+    <div className="relative">
+      <textarea disabled rows={liveRows} className={previewInputClass} />
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        role="separator"
+        aria-orientation="horizontal"
+        className="absolute bottom-0 left-0 h-1.5 w-full touch-none cursor-row-resize hover:bg-(--brand-500)/40"
+      />
+    </div>
+  );
+}
+
+function FieldPreview({
+  field,
+  onCommitRows,
+}: {
+  field: OnboardingField;
+  onCommitRows: (rows: number) => void;
+}) {
   const t = useTranslations("supplierOnboarding");
   const tAdmin = useTranslations("adminPage");
 
   if (field.field_type === "textarea") {
-    return <textarea disabled rows={3} className={previewInputClass} />;
+    return <ResizableTextareaPreview rows={field.rows} onCommitRows={onCommitRows} />;
   }
   if (field.field_type === "boolean") {
     return (
@@ -78,6 +158,12 @@ export function OnboardingFormLayoutEditor({
     await supabase.from("onboarding_form_fields").update({ width: span }).eq("id", id);
   }
 
+  async function commitRows(id: string, rows: number) {
+    setFields((prev) => prev.map((f) => (f.id === id ? { ...f, rows } : f)));
+    const supabase = createClient();
+    await supabase.from("onboarding_form_fields").update({ rows }).eq("id", id);
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -119,7 +205,7 @@ export function OnboardingFormLayoutEditor({
                   {field.label}
                   {field.required && <span className="text-(--danger-500)"> *</span>}
                 </label>
-                <FieldPreview field={field} />
+                <FieldPreview field={field} onCommitRows={(rows) => commitRows(field.id, rows)} />
               </div>
             </GridResizableCell>
           ))}

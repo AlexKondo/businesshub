@@ -433,7 +433,9 @@ export function OnboardingFormBuilder({
     const supabase = createClient();
     const { data } = await supabase
       .from("onboarding_form_fields")
-      .select("id, key, label, field_type, options, allow_other, required, position, mask, width")
+      .select(
+        "id, key, label, field_type, options, allow_other, required, position, mask, width, rows"
+      )
       .eq("form_id", formId)
       .order("position", { ascending: true });
     setFields((data as OnboardingField[] | null) ?? []);
