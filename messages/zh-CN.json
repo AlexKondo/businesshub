@@ -302,7 +302,8 @@
     "pendingCompaniesApprovingStep3": "正在部署工作区",
     "pendingCompaniesApprovingDone": "完成！{name} 现已可用。",
     "pendingCompaniesApprovingError": "批准时出现问题，请重试。",
-    "allCompaniesActiveLabel": "启用"
+    "allCompaniesActiveLabel": "启用",
+    "ok": "好的"
   },
   "profilePage": {
     "title": "个人资料",

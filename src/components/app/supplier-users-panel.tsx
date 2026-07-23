@@ -127,7 +127,7 @@ export function SupplierUsersPanel({ tenantId }: { tenantId: string }) {
               onClick={closeInvite}
               className="mt-4 inline-flex h-9 w-full items-center justify-center rounded-md border border-(--border-default) text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
             >
-              {t("onboardingFieldCancel")}
+              {t("ok")}
             </button>
           </>
         ) : (

@@ -302,7 +302,8 @@
     "pendingCompaniesApprovingStep3": "Deploying workspace",
     "pendingCompaniesApprovingDone": "Done! {name} is now available.",
     "pendingCompaniesApprovingError": "Something went wrong approving it. Try again.",
-    "allCompaniesActiveLabel": "Active"
+    "allCompaniesActiveLabel": "Active",
+    "ok": "OK"
   },
   "profilePage": {
     "title": "Profile",
