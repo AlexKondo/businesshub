@@ -72,7 +72,7 @@ export default async function OnboardingPage({
   }
 
   return (
-    <AuthShell maxWidthClassName="max-w-[640px]">
+    <AuthShell maxWidthClassName="max-w-[640px]" userFirstName={userFirstName}>
       <OnboardingForm appRootDomain={appRootDomain} />
     </AuthShell>
   );

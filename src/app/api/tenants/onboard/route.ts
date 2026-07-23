@@ -14,6 +14,9 @@ export async function POST(request: Request) {
 }
 
 async function handleOnboard(request: Request) {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://businesshub.app.br";
+  const rootDomain = appUrl.replace(/^https?:\/\//, "");
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -107,7 +110,7 @@ async function handleOnboard(request: Request) {
         to: email,
         subject: `Novo pedido de acesso — ${requesterName}`,
         html: `<p><strong>${requesterName}</strong> (${user.email}) pediu acesso ao seu workspace no BusinessHub.</p>
-               <p>Entre no painel de Administração para aprovar e definir o papel dessa pessoa.</p>`,
+               <p><a href="https://${existingCompany.slug}.${rootDomain}/pt-BR/admin">Entre no painel de Administração</a> para aprovar e definir o papel dessa pessoa.</p>`,
       }).catch(() => null); // best-effort — a mail failure shouldn't fail the request
     }
 
@@ -168,7 +171,7 @@ async function handleOnboard(request: Request) {
       to: email,
       subject: `Nova empresa aguardando aprovação — ${name.trim()}`,
       html: `<p><strong>${requesterName}</strong> (${user.email}) pediu para criar <strong>${name.trim()}</strong> (${legalName.trim()}) no BusinessHub.</p>
-             <p>Entre na Administração para aprovar ou rejeitar o pedido.</p>`,
+             <p><a href="https://${rootDomain}/pt-BR/platform-admin">Entre no Super Admin</a> para aprovar ou rejeitar o pedido.</p>`,
     }).catch(() => null); // best-effort — a mail failure shouldn't fail the request
   }
 
