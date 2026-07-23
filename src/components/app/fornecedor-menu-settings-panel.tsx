@@ -61,6 +61,10 @@ export function FornecedorMenuSettingsPanel({ tenantId }: { tenantId: string }) 
     return <p className="text-[13.5px] text-(--ink-soft)">{t("loading")}</p>;
   }
 
+  // "Usuários" shows a supplier only their peers from the same supplier
+  // company (grouped by matching CNPJ across submitted onboarding answers —
+  // see /api/tenants/supplier-users), never suppliers from a different
+  // company at the same tenant.
   const items: { key: keyof Settings; label: string }[] = [
     { key: "showDashboard", label: t("fornecedorMenuDashboard") },
     { key: "showOnboardingForm", label: t("fornecedorMenuOnboardingForm") },

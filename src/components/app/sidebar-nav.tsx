@@ -90,7 +90,10 @@ function NavLink({
 // A Fornecedor's sidebar is deliberately tiny and admin-configured (see
 // FornecedorMenuSettingsPanel in Administração) — never the internal staff
 // nav (Administração/Contratos/etc). Only Painel + whichever of Formulário
-// de Onboarding / Usuários the tenant's admin turned on.
+// de Onboarding / Usuários the tenant's admin turned on. "Usuários" here
+// only ever shows peers from the SAME supplier company (grouped by matching
+// CNPJ in /api/tenants/supplier-users) — never suppliers from a different
+// company at this tenant.
 function FornecedorSidebar({ tenantId }: { tenantId: string }) {
   const t = useTranslations("app");
   const pathname = usePathname();

@@ -1,16 +1,23 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { normalizeLabel } from "@/lib/text";
 
-// Lists every active "Fornecedor" account for a tenant — i.e. everyone who
-// signed up via the public landing page, whether or not they've submitted
-// any onboarding form yet. supplier_onboarding_submissions alone can't
-// answer "who signed up" (a person with zero submissions is invisible
-// there), which is exactly the admin-visibility gap this route closes.
-// Same authorization/enrichment shape as /api/tenants/supplier-submissions:
-// re-checks suppliers.read here (RLS alone can't gate cross-user
-// profiles/auth.users reads), then uses the admin client only for that
-// enrichment.
+function digitsOnly(v: unknown): string {
+  return typeof v === "string" ? v.replace(/\D/g, "") : "";
+}
+
+// Lists "Fornecedor" accounts for a tenant. Two very different audiences
+// hit this route:
+// - Staff with suppliers.read: see every supplier at the tenant, full
+//   management controls (the admin's "Cadastros de Fornecedores" screen).
+// - A supplier themselves: see ONLY the peers who submitted the same CNPJ
+//   as they did (i.e. people from their own supplier company) — never
+//   suppliers from a different company at the same tenant. No management
+//   controls. Peer grouping happens here in application code, not RLS,
+//   because "which field is the CNPJ" is admin-configurable per tenant
+//   (matched by label, same normalizeLabel approach as the CEP-autofill
+//   logic in dynamic-onboarding-form.tsx) rather than a fixed column.
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const tenantId = searchParams.get("tenantId");
@@ -26,10 +33,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  // Either a real admin permission, or the caller is themselves an active
-  // Fornecedor of this tenant — suppliers are allowed to see their peers
-  // (name/email/signup date/form status only, never other suppliers'
-  // submitted answers) via this same list.
   const [{ data: allowed }, { data: ownMembership }] = await Promise.all([
     supabase.rpc("user_has_permission", {
       target_tenant_id: tenantId,
@@ -47,6 +50,7 @@ export async function GET(request: Request) {
   if (!allowed && !isFornecedorHere) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
+  const canManage = !!allowed;
 
   const admin = createAdminClient();
 
@@ -72,18 +76,19 @@ export async function GET(request: Request) {
 
   const membershipIds = (memberships ?? []).map((m) => m.id);
 
-  const [{ data: submissions }, { data: forms }] = await Promise.all([
+  const [{ data: submissions }, { data: forms }, { data: fields }] = await Promise.all([
     membershipIds.length
       ? admin
           .from("supplier_onboarding_submissions")
-          .select("membership_id, form_id")
+          .select("membership_id, form_id, answers")
           .in("membership_id", membershipIds)
-      : Promise.resolve({ data: [] as { membership_id: string; form_id: string }[] }),
+      : Promise.resolve({ data: [] as { membership_id: string; form_id: string; answers: Record<string, unknown> }[] }),
     admin
       .from("onboarding_forms")
       .select("id, name")
       .eq("tenant_id", tenantId)
       .order("position", { ascending: true }),
+    admin.from("onboarding_form_fields").select("form_id, key, label").eq("tenant_id", tenantId),
   ]);
 
   const submittedFormsByMembership = new Map<string, Set<string>>();
@@ -94,8 +99,44 @@ export async function GET(request: Request) {
     submittedFormsByMembership.get(s.membership_id)!.add(s.form_id);
   }
 
+  let visibleMembershipIds: Set<string> | null = null; // null = everyone (staff)
+
+  if (!canManage) {
+    const cnpjKeysByForm = new Map<string, Set<string>>();
+    for (const f of fields ?? []) {
+      if (!normalizeLabel(f.label).includes("cnpj")) continue;
+      if (!cnpjKeysByForm.has(f.form_id)) cnpjKeysByForm.set(f.form_id, new Set());
+      cnpjKeysByForm.get(f.form_id)!.add(f.key);
+    }
+
+    const cnpjByMembership = new Map<string, string>();
+    for (const s of submissions ?? []) {
+      const keys = cnpjKeysByForm.get(s.form_id);
+      if (!keys) continue;
+      for (const key of keys) {
+        const digits = digitsOnly((s.answers as Record<string, unknown>)?.[key]);
+        if (digits) {
+          cnpjByMembership.set(s.membership_id, digits);
+          break;
+        }
+      }
+    }
+
+    const ownCnpj = ownMembership ? cnpjByMembership.get(ownMembership.id) : undefined;
+    visibleMembershipIds = new Set(ownMembership ? [ownMembership.id] : []);
+    if (ownCnpj) {
+      for (const [membershipId, cnpj] of cnpjByMembership) {
+        if (cnpj === ownCnpj) visibleMembershipIds.add(membershipId);
+      }
+    }
+  }
+
+  const visibleMemberships = (memberships ?? []).filter(
+    (m) => visibleMembershipIds === null || visibleMembershipIds.has(m.id)
+  );
+
   const users = await Promise.all(
-    (memberships ?? []).map(async (m) => {
+    visibleMemberships.map(async (m) => {
       const [{ data: authUser }, { data: profile }] = await Promise.all([
         admin.auth.admin.getUserById(m.user_id),
         admin.from("profiles").select("full_name").eq("id", m.user_id).maybeSingle(),
@@ -111,5 +152,5 @@ export async function GET(request: Request) {
     })
   );
 
-  return NextResponse.json({ users, forms: forms ?? [] });
+  return NextResponse.json({ users, forms: forms ?? [], canManage });
 }

@@ -20,6 +20,7 @@ export function SupplierUsersPanel({ tenantId }: { tenantId: string }) {
   const locale = useLocale();
   const [users, setUsers] = useState<SupplierUser[] | null>(null);
   const [forms, setForms] = useState<SupplierForm[]>([]);
+  const [canManage, setCanManage] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -38,6 +39,7 @@ export function SupplierUsersPanel({ tenantId }: { tenantId: string }) {
     const data = await res.json();
     setUsers(data.users ?? []);
     setForms(data.forms ?? []);
+    setCanManage(!!data.canManage);
   }
 
   useEffect(() => {
@@ -179,7 +181,7 @@ export function SupplierUsersPanel({ tenantId }: { tenantId: string }) {
 
   return (
     <div>
-      <div className="mt-4 flex justify-end">{addButton}</div>
+      {canManage && <div className="mt-4 flex justify-end">{addButton}</div>}
       {users.length === 0 ? (
         <p className="mt-4 text-[13.5px] text-(--ink-soft)">{t("supplierUsersEmpty")}</p>
       ) : (
@@ -221,54 +223,58 @@ export function SupplierUsersPanel({ tenantId }: { tenantId: string }) {
                     })}
                   </div>
                 )}
-                <span className="flex items-center gap-1.5">
-                  <span className="text-[11.5px] text-(--ink-soft)">
-                    {t("supplierUsersActiveLabel")}
-                  </span>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={u.status === "active"}
-                    disabled={busyId === u.membershipId}
-                    onClick={() => handleToggleActive(u.membershipId, u.status !== "active")}
-                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
-                      u.status === "active" ? "bg-(--brand-500)" : "bg-(--border-default)"
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                        u.status === "active" ? "translate-x-[18px]" : "translate-x-[3px]"
-                      }`}
-                    />
-                  </button>
-                </span>
-                {confirmDeleteId === u.membershipId ? (
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      disabled={busyId === u.membershipId}
-                      onClick={() => handleDelete(u.membershipId)}
-                      className="inline-flex h-8 items-center rounded-md bg-(--danger-500) px-2.5 text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
-                    >
-                      {t("onboardingFormDeleteConfirm")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setConfirmDeleteId(null)}
-                      className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-2.5 text-[12px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
-                    >
-                      {t("onboardingFieldCancel")}
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setConfirmDeleteId(u.membershipId)}
-                    title={t("onboardingFormDelete")}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--danger-500) transition-colors hover:bg-(--danger-500)/10"
-                  >
-                    <Trash2 size={14} strokeWidth={1.75} />
-                  </button>
+                {canManage && (
+                  <>
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-[11.5px] text-(--ink-soft)">
+                        {t("supplierUsersActiveLabel")}
+                      </span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={u.status === "active"}
+                        disabled={busyId === u.membershipId}
+                        onClick={() => handleToggleActive(u.membershipId, u.status !== "active")}
+                        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+                          u.status === "active" ? "bg-(--brand-500)" : "bg-(--border-default)"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                            u.status === "active" ? "translate-x-[18px]" : "translate-x-[3px]"
+                          }`}
+                        />
+                      </button>
+                    </span>
+                    {confirmDeleteId === u.membershipId ? (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          disabled={busyId === u.membershipId}
+                          onClick={() => handleDelete(u.membershipId)}
+                          className="inline-flex h-8 items-center rounded-md bg-(--danger-500) px-2.5 text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                        >
+                          {t("onboardingFormDeleteConfirm")}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmDeleteId(null)}
+                          className="inline-flex h-8 items-center rounded-md border border-(--border-default) px-2.5 text-[12px] font-medium text-(--ink) transition-colors hover:bg-(--accent-soft)"
+                        >
+                          {t("onboardingFieldCancel")}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmDeleteId(u.membershipId)}
+                        title={t("onboardingFormDelete")}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--danger-500) transition-colors hover:bg-(--danger-500)/10"
+                      >
+                        <Trash2 size={14} strokeWidth={1.75} />
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>

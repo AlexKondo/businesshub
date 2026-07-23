@@ -12,15 +12,7 @@ import { applyMask, isCnpjShapedMask } from "@/lib/mask";
 import { isValidCnpj } from "@/lib/cnpj";
 import { formatCep, isValidCep, lookupCep } from "@/lib/cep";
 import type { OnboardingField, OnboardingAnswers } from "@/lib/onboarding-fields";
-
-// Strips accents/case so admin-typed labels like "Endereço"/"Cidade"/"UF"
-// match regardless of exact casing/accenting.
-function normalizeLabel(s: string) {
-  return s
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase();
-}
+import { normalizeLabel } from "@/lib/text";
 
 const inputClass =
   "h-10 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink) outline-none focus:border-(--brand-500) focus:ring-1 focus:ring-(--brand-500)";
