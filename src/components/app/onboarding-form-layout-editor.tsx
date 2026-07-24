@@ -114,6 +114,12 @@ function FieldPreview({
           <input type="radio" disabled className="h-4 w-4" />
           {t("booleanNo")}
         </label>
+        {field.allow_other && (
+          <label className="flex items-center gap-2 text-[13px] text-(--ink-soft)">
+            <input type="radio" disabled className="h-4 w-4" />
+            {t("otherOptionLabel")}
+          </label>
+        )}
       </div>
     );
   }

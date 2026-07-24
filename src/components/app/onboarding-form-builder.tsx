@@ -90,6 +90,10 @@ function FieldEditor({
   );
 
   const isChoiceType = fieldType === "select" || fieldType === "multiselect";
+  // Boolean (Sim/Não) can also offer an "Outro" free-text escape hatch, even
+  // though it has no admin-defined options list — so allow_other is offered
+  // for it too, just without the options editor.
+  const supportsAllowOther = isChoiceType || fieldType === "boolean";
   const showMaskSection = fieldType === "text" || fieldType === "date";
   const displayKey = initial?.key ?? slugify(label);
 
@@ -123,7 +127,7 @@ function FieldEditor({
       label: label.trim(),
       field_type: fieldType,
       required,
-      allow_other: isChoiceType && allowOther,
+      allow_other: supportsAllowOther && allowOther,
       options: isChoiceType
         ? optionDrafts.map((o) => ({ value: slugify(o.label), label: o.label, category: o.category }))
         : [],
@@ -289,7 +293,7 @@ function FieldEditor({
           />
           {t("onboardingFieldRequiredLabel")}
         </label>
-        {isChoiceType && (
+        {supportsAllowOther && (
           <label className="flex h-9 items-center gap-2 text-[13px] text-(--ink)">
             <input
               type="checkbox"

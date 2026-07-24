@@ -32,6 +32,18 @@ function fieldToZod(field: OnboardingField, requiredMessage: string): z.ZodTypeA
       return field.required ? base : base.optional();
     }
     case "boolean": {
+      // With allow_other, the answer is true/false OR a free-text string
+      // (the "Outro" choice). A just-selected-but-empty "Outro" is a string
+      // "" that must still fail the required check.
+      if (field.allow_other) {
+        const base = z.union([z.boolean(), z.string()]).optional();
+        return field.required
+          ? base.refine(
+              (v) => v === true || v === false || (typeof v === "string" && v.trim() !== ""),
+              requiredMessage
+            )
+          : base;
+      }
       const base = z.boolean().optional();
       return field.required ? base.refine((v) => v !== undefined, requiredMessage) : base;
     }
@@ -53,7 +65,12 @@ function fieldToZod(field: OnboardingField, requiredMessage: string): z.ZodTypeA
 function defaultValueFor(field: OnboardingField, initialAnswers: OnboardingAnswers) {
   const saved = initialAnswers[field.key];
   if (field.field_type === "multiselect") return Array.isArray(saved) ? saved : [];
-  if (field.field_type === "boolean") return typeof saved === "boolean" ? saved : undefined;
+  if (field.field_type === "boolean") {
+    if (field.allow_other) {
+      return typeof saved === "boolean" || typeof saved === "string" ? saved : undefined;
+    }
+    return typeof saved === "boolean" ? saved : undefined;
+  }
   return saved ?? "";
 }
 
@@ -121,6 +138,79 @@ function SelectWithOther({
         <input
           type="text"
           value={value}
+          placeholder={otherPlaceholder}
+          onChange={(e) => onChange(e.target.value)}
+          className={inputClass}
+        />
+      )}
+    </div>
+  );
+}
+
+// Yes/No radios, plus (when allowOther) a third "Outro" radio that reveals a
+// free-text input. The stored value is `true`/`false` for the first two and
+// the typed string for "Outro" — an empty string means "Outro" is selected
+// but nothing typed yet (still fails a required check, see fieldToZod).
+function BooleanWithOther({
+  value,
+  onChange,
+  fieldKey,
+  yesLabel,
+  noLabel,
+  allowOther,
+  otherLabel,
+  otherPlaceholder,
+}: {
+  value: boolean | string | undefined;
+  onChange: (v: boolean | string) => void;
+  fieldKey: string;
+  yesLabel: string;
+  noLabel: string;
+  allowOther: boolean;
+  otherLabel: string;
+  otherPlaceholder: string;
+}) {
+  const otherMode = typeof value === "string";
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap items-center gap-4">
+        <label className="flex items-center gap-2 text-[13px] text-(--ink)">
+          <input
+            type="radio"
+            name={fieldKey}
+            checked={value === true}
+            onChange={() => onChange(true)}
+            className="h-4 w-4 accent-(--brand-500)"
+          />
+          {yesLabel}
+        </label>
+        <label className="flex items-center gap-2 text-[13px] text-(--ink)">
+          <input
+            type="radio"
+            name={fieldKey}
+            checked={value === false}
+            onChange={() => onChange(false)}
+            className="h-4 w-4 accent-(--brand-500)"
+          />
+          {noLabel}
+        </label>
+        {allowOther && (
+          <label className="flex items-center gap-2 text-[13px] text-(--ink)">
+            <input
+              type="radio"
+              name={fieldKey}
+              checked={otherMode}
+              onChange={() => onChange("")}
+              className="h-4 w-4 accent-(--brand-500)"
+            />
+            {otherLabel}
+          </label>
+        )}
+      </div>
+      {otherMode && (
+        <input
+          type="text"
+          value={value as string}
           placeholder={otherPlaceholder}
           onChange={(e) => onChange(e.target.value)}
           className={inputClass}
@@ -321,28 +411,16 @@ export function DynamicOnboardingForm({
                   control={control}
                   name={field.key}
                   render={({ field: controllerField }) => (
-                    <div className="flex items-center gap-4">
-                      <label className="flex items-center gap-2 text-[13px] text-(--ink)">
-                        <input
-                          type="radio"
-                          name={field.key}
-                          checked={controllerField.value === true}
-                          onChange={() => controllerField.onChange(true)}
-                          className="h-4 w-4 accent-(--brand-500)"
-                        />
-                        {t("booleanYes")}
-                      </label>
-                      <label className="flex items-center gap-2 text-[13px] text-(--ink)">
-                        <input
-                          type="radio"
-                          name={field.key}
-                          checked={controllerField.value === false}
-                          onChange={() => controllerField.onChange(false)}
-                          className="h-4 w-4 accent-(--brand-500)"
-                        />
-                        {t("booleanNo")}
-                      </label>
-                    </div>
+                    <BooleanWithOther
+                      value={controllerField.value as boolean | string | undefined}
+                      onChange={controllerField.onChange}
+                      fieldKey={field.key}
+                      yesLabel={t("booleanYes")}
+                      noLabel={t("booleanNo")}
+                      allowOther={field.allow_other}
+                      otherLabel={t("otherOptionLabel")}
+                      otherPlaceholder={t("otherOptionPlaceholder")}
+                    />
                   )}
                 />
               )}
