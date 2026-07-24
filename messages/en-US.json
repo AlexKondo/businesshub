@@ -54,9 +54,12 @@
       "suppliersSubmissions": "Submissions",
       "contracts": "Contracts",
       "documents": "Documents",
-      "purchaseOrders": "Purchase Orders"
+      "purchaseOrders": "Purchase Orders",
+      "suppliersManagement": "Supplier Management",
+      "companies": "Companies"
     },
-    "platformAdmin": "Super Admin"
+    "platformAdmin": "Super Admin",
+    "operationsLog": "Operations Log"
   },
   "dashboardPage": {
     "greeting": "Welcome back, {name}",
@@ -64,7 +67,17 @@
     "tenantLabel": "Organization",
     "roleLabel": "Your role",
     "onboardingAlertTitle": "Complete your supplier registration",
-    "onboardingAlertBody": "You still need to fill out the onboarding form — click here to continue."
+    "onboardingAlertBody": "You still need to fill out the onboarding form — click here to continue.",
+    "suppliersCountLabel": "Suppliers",
+    "suppliersCountHint": "completed registrations",
+    "usersCountLabel": "Users",
+    "usersCountHint": "supplier accounts",
+    "diskTitle": "VPS Disk",
+    "diskRefresh": "Refresh",
+    "diskLoading": "Loading…",
+    "diskError": "Couldn't read disk usage.",
+    "diskUsedPercent": "{percent}% used",
+    "diskFree": "{gb} GB free"
   },
   "onboarding": {
     "title": "Create your organization",
@@ -393,5 +406,18 @@
       "title": "Privacy Policy",
       "placeholder": "This content will be published soon."
     }
+  },
+  "operationsLogPage": {
+    "title": "Operations Log",
+    "subtitleTenant": "Actions recorded in this workspace.",
+    "subtitleGlobal": "Actions recorded across all workspaces.",
+    "noAccess": "You don't have permission to view this.",
+    "loading": "Loading…",
+    "loadError": "Couldn't load the log.",
+    "empty": "No operations recorded yet.",
+    "colAction": "Action",
+    "colCompany": "Company",
+    "colActor": "Actor",
+    "colWhen": "When"
   }
 }

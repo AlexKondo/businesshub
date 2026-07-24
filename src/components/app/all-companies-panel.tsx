@@ -40,15 +40,6 @@ type CompanyMember = {
   fullName: string;
 };
 
-type AuditEntry = {
-  id: string;
-  action: string;
-  entityType: string;
-  actorName: string | null;
-  metadata: Record<string, unknown>;
-  createdAt: string;
-};
-
 export function AllCompaniesPanel() {
   const t = useTranslations("adminPage");
   const locale = useLocale();
@@ -59,7 +50,6 @@ export function AllCompaniesPanel() {
   const [currentEmail, setCurrentEmail] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [members, setMembers] = useState<CompanyMember[] | null>(null);
-  const [auditLog, setAuditLog] = useState<AuditEntry[] | null>(null);
   const [vaasBusy, setVaasBusy] = useState<string | null>(null);
   const [vaasResult, setVaasResult] = useState<Record<string, VaasResult>>({});
 
@@ -88,12 +78,10 @@ export function AllCompaniesPanel() {
     }
     setExpandedId(companyId);
     setMembers(null);
-    setAuditLog(null);
     const res = await fetch(`/api/tenants/company-detail?companyId=${companyId}`);
     if (!res.ok) return;
     const data = await res.json();
     setMembers(data.members ?? []);
-    setAuditLog(data.auditLog ?? []);
   }
 
   async function handleDelete(companyId: string) {
@@ -373,29 +361,6 @@ export function AllCompaniesPanel() {
                           <span className="font-medium">{m.fullName}</span>{" "}
                           <span className="text-(--ink-soft)">
                             ({m.email}) · {m.roleName ?? "—"} · {m.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <p className="text-[12px] font-semibold uppercase tracking-wide text-(--ink-soft)">
-                    {t("allCompaniesAuditLogTitle")}
-                  </p>
-                  {auditLog === null ? (
-                    <p className="mt-2 text-[13px] text-(--ink-soft)">{t("loading")}</p>
-                  ) : auditLog.length === 0 ? (
-                    <p className="mt-2 text-[13px] text-(--ink-soft)">{t("allCompaniesNoAuditLog")}</p>
-                  ) : (
-                    <div className="mt-2 flex flex-col gap-1.5">
-                      {auditLog.map((entry) => (
-                        <div key={entry.id} className="text-[12.5px] text-(--ink)">
-                          <span className="font-medium">{entry.action}</span>{" "}
-                          <span className="text-(--ink-soft)">
-                            · {entry.actorName ?? "—"} ·{" "}
-                            {new Date(entry.createdAt).toLocaleString()}
                           </span>
                         </div>
                       ))}

@@ -8,15 +8,22 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // Formulário de Onboarding) while browsing a tenant's subdomain, where those
 // pages would otherwise read the tenant id off a membership they don't have.
 export async function resolveSubdomainTenantId(): Promise<string | null> {
+  return (await resolveSubdomainCompany())?.id ?? null;
+}
+
+// Same idea as resolveSubdomainTenantId, but also returns the company name so
+// a platform admin browsing a tenant subdomain can see WHICH workspace they're
+// managing (header, dashboard) without a membership row to read it from.
+export async function resolveSubdomainCompany(): Promise<{ id: string; name: string } | null> {
   const host = (await headers()).get("host") ?? "";
   const slug = resolveTenantSlug(host);
   if (!slug) return null;
   const admin = createAdminClient();
   const { data } = await admin
     .from("companies")
-    .select("id")
+    .select("id, name")
     .eq("slug", slug)
     .is("deleted_at", null)
     .maybeSingle();
-  return data?.id ?? null;
+  return data ? { id: data.id as string, name: data.name as string } : null;
 }

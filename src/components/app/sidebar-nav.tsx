@@ -17,6 +17,7 @@ import {
   Lock,
   AlertTriangle,
   Building2,
+  ScrollText,
 } from "lucide-react";
 
 const MAIN_ITEMS = [
@@ -199,6 +200,11 @@ function StaffSidebar({
   const onRootDomain =
     typeof window !== "undefined" && resolveTenantSlug(window.location.host) === null;
   const canManageUsers = isPlatformAdmin || roleName === "Administrador da Empresa";
+  // The tenant-scoped supplier pages need a workspace in context. A platform
+  // admin on the ROOT domain has none (no membership, no subdomain), so only
+  // "Empresas" is shown there — they reach a tenant's supplier pages by
+  // entering that workspace's subdomain first.
+  const showTenantSuppliers = !(isPlatformAdmin && onRootDomain);
   const suppliersChildren = SUPPLIERS_CHILDREN.filter(
     (item) => !("adminOnly" in item) || canManageUsers
   );
@@ -212,22 +218,12 @@ function StaffSidebar({
           </li>
         ))}
 
-        {isPlatformAdmin && (
-          <li>
-            <a
-              href={`https://${ROOT_DOMAIN}/${locale}/platform-admin`}
-              className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium transition-colors ${
-                onRootDomain && pathname === "/platform-admin"
-                  ? "bg-(--accent-soft) text-(--brand-500)"
-                  : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
-              }`}
-            >
-              <Building2 size={16} strokeWidth={1.5} />
-              <span className="truncate">{t("platformAdmin")}</span>
-            </a>
-          </li>
-        )}
-
+        {/* "Gerenciamento de Fornecedores" — was the standalone "Super Admin"
+            link. It now absorbs the platform-wide company management ("Empresas",
+            platform admin only, still served from the root domain since
+            /platform-admin is forced there by proxy.ts) plus the tenant-scoped
+            supplier pages. The audit trail moved OUT to its own top-level "Log
+            de Operações" item below. */}
         <li>
           <div
             className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium ${
@@ -235,22 +231,49 @@ function StaffSidebar({
             }`}
           >
             <Truck size={16} strokeWidth={1.5} />
-            {t("modules.suppliers")}
+            {t("modules.suppliersManagement")}
           </div>
           <ul className="ml-[19px] mt-0.5 flex flex-col gap-0.5 border-l border-(--border-default) pl-3.5">
-            {suppliersChildren.map(({ href, key, icon: Icon }) => (
-              <li key={href}>
-                <NavLink
-                  href={href}
-                  active={pathname.startsWith(href)}
-                  icon={Icon}
-                  label={t(`modules.${key}`)}
-                  small
-                />
+            {isPlatformAdmin && (
+              <li>
+                <a
+                  href={`https://${ROOT_DOMAIN}/${locale}/platform-admin`}
+                  className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
+                    onRootDomain && pathname === "/platform-admin"
+                      ? "bg-(--accent-soft) text-(--brand-500)"
+                      : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
+                  }`}
+                >
+                  <Building2 size={14} strokeWidth={1.5} />
+                  <span className="truncate">{t("modules.companies")}</span>
+                </a>
               </li>
-            ))}
+            )}
+            {showTenantSuppliers &&
+              suppliersChildren.map(({ href, key, icon: Icon }) => (
+                <li key={href}>
+                  <NavLink
+                    href={href}
+                    active={pathname.startsWith(href)}
+                    icon={Icon}
+                    label={t(`modules.${key}`)}
+                    small
+                  />
+                </li>
+              ))}
           </ul>
         </li>
+
+        {canManageUsers && (
+          <li>
+            <NavLink
+              href="/operations-log"
+              active={pathname === "/operations-log"}
+              icon={ScrollText}
+              label={t("operationsLog")}
+            />
+          </li>
+        )}
       </ul>
 
       <div>

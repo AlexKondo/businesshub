@@ -54,9 +54,12 @@
       "suppliersSubmissions": "登録内容",
       "contracts": "契約",
       "documents": "ドキュメント",
-      "purchaseOrders": "発注"
+      "purchaseOrders": "発注",
+      "suppliersManagement": "サプライヤー管理",
+      "companies": "企業"
     },
-    "platformAdmin": "スーパー管理者"
+    "platformAdmin": "スーパー管理者",
+    "operationsLog": "操作ログ"
   },
   "dashboardPage": {
     "greeting": "おかえりなさい、{name} さん",
@@ -64,7 +67,17 @@
     "tenantLabel": "組織",
     "roleLabel": "あなたの役割",
     "onboardingAlertTitle": "サプライヤー登録を完了してください",
-    "onboardingAlertBody": "オンボーディングフォームの入力がまだ完了していません — クリックして続けてください。"
+    "onboardingAlertBody": "オンボーディングフォームの入力がまだ完了していません — クリックして続けてください。",
+    "suppliersCountLabel": "サプライヤー",
+    "suppliersCountHint": "登録完了",
+    "usersCountLabel": "ユーザー",
+    "usersCountHint": "サプライヤーアカウント",
+    "diskTitle": "VPSディスク",
+    "diskRefresh": "更新",
+    "diskLoading": "読み込み中…",
+    "diskError": "ディスク使用量を取得できませんでした。",
+    "diskUsedPercent": "{percent}% 使用",
+    "diskFree": "{gb} GB 空き"
   },
   "onboarding": {
     "title": "組織を作成",
@@ -393,5 +406,18 @@
       "title": "プライバシーポリシー",
       "placeholder": "このコンテンツは近日公開予定です。"
     }
+  },
+  "operationsLogPage": {
+    "title": "操作ログ",
+    "subtitleTenant": "このワークスペースで記録されたアクション。",
+    "subtitleGlobal": "すべてのワークスペースで記録されたアクション。",
+    "noAccess": "これを表示する権限がありません。",
+    "loading": "読み込み中…",
+    "loadError": "ログを読み込めませんでした。",
+    "empty": "まだ操作は記録されていません。",
+    "colAction": "アクション",
+    "colCompany": "企業",
+    "colActor": "実行者",
+    "colWhen": "日時"
   }
 }

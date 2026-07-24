@@ -54,9 +54,12 @@
       "suppliersSubmissions": "注册记录",
       "contracts": "合同",
       "documents": "文档",
-      "purchaseOrders": "采购订单"
+      "purchaseOrders": "采购订单",
+      "suppliersManagement": "供应商管理",
+      "companies": "公司"
     },
-    "platformAdmin": "超级管理员"
+    "platformAdmin": "超级管理员",
+    "operationsLog": "操作日志"
   },
   "dashboardPage": {
     "greeting": "欢迎回来，{name}",
@@ -64,7 +67,17 @@
     "tenantLabel": "组织",
     "roleLabel": "您的角色",
     "onboardingAlertTitle": "请完成供应商注册",
-    "onboardingAlertBody": "您尚未完成入驻表单的填写 — 点击此处继续。"
+    "onboardingAlertBody": "您尚未完成入驻表单的填写 — 点击此处继续。",
+    "suppliersCountLabel": "供应商",
+    "suppliersCountHint": "已完成注册",
+    "usersCountLabel": "用户",
+    "usersCountHint": "供应商账户",
+    "diskTitle": "VPS磁盘",
+    "diskRefresh": "刷新",
+    "diskLoading": "加载中…",
+    "diskError": "无法读取磁盘使用情况。",
+    "diskUsedPercent": "已使用 {percent}%",
+    "diskFree": "剩余 {gb} GB"
   },
   "onboarding": {
     "title": "创建您的组织",
@@ -393,5 +406,18 @@
       "title": "隐私政策",
       "placeholder": "该内容即将发布。"
     }
+  },
+  "operationsLogPage": {
+    "title": "操作日志",
+    "subtitleTenant": "此工作区中记录的操作。",
+    "subtitleGlobal": "所有工作区中记录的操作。",
+    "noAccess": "您无权查看此内容。",
+    "loading": "加载中…",
+    "loadError": "无法加载日志。",
+    "empty": "尚未记录任何操作。",
+    "colAction": "操作",
+    "colCompany": "公司",
+    "colActor": "操作者",
+    "colWhen": "时间"
   }
 }

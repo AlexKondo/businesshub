@@ -54,9 +54,12 @@
       "suppliersSubmissions": "Registros",
       "contracts": "Contratos",
       "documents": "Documentos",
-      "purchaseOrders": "Pedidos"
+      "purchaseOrders": "Pedidos",
+      "suppliersManagement": "Gestión de Proveedores",
+      "companies": "Empresas"
     },
-    "platformAdmin": "Super Admin"
+    "platformAdmin": "Super Admin",
+    "operationsLog": "Registro de Operaciones"
   },
   "dashboardPage": {
     "greeting": "Bienvenido de nuevo, {name}",
@@ -64,7 +67,17 @@
     "tenantLabel": "Organización",
     "roleLabel": "Tu rol",
     "onboardingAlertTitle": "Completa tu registro de proveedor",
-    "onboardingAlertBody": "Todavía falta completar el formulario de onboarding — haz clic aquí para continuar."
+    "onboardingAlertBody": "Todavía falta completar el formulario de onboarding — haz clic aquí para continuar.",
+    "suppliersCountLabel": "Proveedores",
+    "suppliersCountHint": "registros completos",
+    "usersCountLabel": "Usuarios",
+    "usersCountHint": "cuentas de proveedor",
+    "diskTitle": "Disco del VPS",
+    "diskRefresh": "Actualizar",
+    "diskLoading": "Cargando…",
+    "diskError": "No se pudo leer el disco.",
+    "diskUsedPercent": "{percent}% usado",
+    "diskFree": "{gb} GB libres"
   },
   "onboarding": {
     "title": "Crea tu organización",
@@ -393,5 +406,18 @@
       "title": "Política de Privacidad",
       "placeholder": "Este contenido se publicará próximamente."
     }
+  },
+  "operationsLogPage": {
+    "title": "Registro de Operaciones",
+    "subtitleTenant": "Acciones registradas en este espacio de trabajo.",
+    "subtitleGlobal": "Acciones registradas en todos los espacios de trabajo.",
+    "noAccess": "No tienes permiso para ver esto.",
+    "loading": "Cargando…",
+    "loadError": "No se pudo cargar el registro.",
+    "empty": "Aún no hay operaciones registradas.",
+    "colAction": "Acción",
+    "colCompany": "Empresa",
+    "colActor": "Responsable",
+    "colWhen": "Cuándo"
   }
 }
