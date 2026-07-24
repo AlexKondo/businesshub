@@ -23,11 +23,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const { data: allowed } = await supabase.rpc("user_has_permission", {
-    target_tenant_id: tenantId,
-    permission_key: "suppliers.read",
-  });
-  if (!allowed) {
+  const [{ data: allowed }, { data: platformAdmin }] = await Promise.all([
+    supabase.rpc("user_has_permission", {
+      target_tenant_id: tenantId,
+      permission_key: "suppliers.read",
+    }),
+    supabase.from("platform_admins").select("user_id").eq("user_id", user.id).maybeSingle(),
+  ]);
+  if (!allowed && !platformAdmin) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 

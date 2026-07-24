@@ -31,11 +31,14 @@ async function handleToggle(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const { data: allowed } = await supabase.rpc("user_has_permission", {
-    target_tenant_id: tenantId,
-    permission_key: "suppliers.write",
-  });
-  if (!allowed) {
+  const [{ data: allowed }, { data: platformAdmin }] = await Promise.all([
+    supabase.rpc("user_has_permission", {
+      target_tenant_id: tenantId,
+      permission_key: "suppliers.write",
+    }),
+    supabase.from("platform_admins").select("user_id").eq("user_id", user.id).maybeSingle(),
+  ]);
+  if (!allowed && !platformAdmin) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 

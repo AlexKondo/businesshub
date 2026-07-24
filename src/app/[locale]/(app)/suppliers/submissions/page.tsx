@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { resolveSubdomainTenantId } from "@/lib/tenant-context";
 import { SupplierSubmissionsPanel } from "@/components/app/supplier-submissions-panel";
 
 export default async function SuppliersSubmissionsPage() {
@@ -24,7 +25,11 @@ export default async function SuppliersSubmissionsPage() {
 
   const canManage = !!platformAdmin || membership?.roles?.name === "Administrador da Empresa";
 
-  if (!canManage || !membership?.tenant_id) {
+  // A platform admin has no membership at this tenant, so fall back to the
+  // tenant of the subdomain they're browsing.
+  const tenantId = membership?.tenant_id ?? (platformAdmin ? await resolveSubdomainTenantId() : null);
+
+  if (!canManage || !tenantId) {
     return (
       <div>
         <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
@@ -41,7 +46,7 @@ export default async function SuppliersSubmissionsPage() {
         {t("submissionsTitle")}
       </h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">{t("submissionsSubtitle")}</p>
-      <SupplierSubmissionsPanel tenantId={membership.tenant_id} />
+      <SupplierSubmissionsPanel tenantId={tenantId} />
     </div>
   );
 }

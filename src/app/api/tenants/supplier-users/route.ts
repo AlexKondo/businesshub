@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const [{ data: allowed }, { data: ownMembership }] = await Promise.all([
+  const [{ data: allowed }, { data: ownMembership }, { data: platformAdmin }] = await Promise.all([
     supabase.rpc("user_has_permission", {
       target_tenant_id: tenantId,
       permission_key: "suppliers.read",
@@ -45,12 +45,13 @@ export async function GET(request: Request) {
       .eq("tenant_id", tenantId)
       .eq("status", "active")
       .maybeSingle<{ id: string; roles: { name: string } | null }>(),
+    supabase.from("platform_admins").select("user_id").eq("user_id", user.id).maybeSingle(),
   ]);
   const isFornecedorHere = ownMembership?.roles?.name === "Fornecedor";
-  if (!allowed && !isFornecedorHere) {
+  if (!allowed && !isFornecedorHere && !platformAdmin) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
-  const canManage = !!allowed;
+  const canManage = !!allowed || !!platformAdmin;
 
   const admin = createAdminClient();
 

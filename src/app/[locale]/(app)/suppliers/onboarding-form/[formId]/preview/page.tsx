@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { resolveSubdomainTenantId } from "@/lib/tenant-context";
 import { OnboardingFormLayoutEditor } from "@/components/app/onboarding-form-layout-editor";
 import type { OnboardingField } from "@/lib/onboarding-fields";
 
@@ -34,7 +35,9 @@ export default async function SuppliersOnboardingFormPreviewPage({
 
   const canManage = !!platformAdmin || membership?.roles?.name === "Administrador da Empresa";
 
-  if (!canManage || !membership?.tenant_id) {
+  const tenantId = membership?.tenant_id ?? (platformAdmin ? await resolveSubdomainTenantId() : null);
+
+  if (!canManage || !tenantId) {
     return (
       <div>
         <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
@@ -50,7 +53,7 @@ export default async function SuppliersOnboardingFormPreviewPage({
       .from("onboarding_forms")
       .select("id, name")
       .eq("id", formId)
-      .eq("tenant_id", membership.tenant_id)
+      .eq("tenant_id", tenantId)
       .maybeSingle<{ id: string; name: string }>(),
     supabase
       .from("onboarding_form_fields")
@@ -76,7 +79,7 @@ export default async function SuppliersOnboardingFormPreviewPage({
     <OnboardingFormLayoutEditor
       formId={form.id}
       formName={form.name}
-      companyName={membership.companies?.name ?? ""}
+      companyName={membership?.companies?.name ?? ""}
       initialFields={(fields as OnboardingField[] | null) ?? []}
     />
   );

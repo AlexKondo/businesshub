@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { resolveSubdomainTenantId } from "@/lib/tenant-context";
 import { OnboardingFormsList } from "@/components/app/onboarding-forms-list";
 
 export default async function SuppliersOnboardingFormsPage() {
@@ -24,7 +25,9 @@ export default async function SuppliersOnboardingFormsPage() {
 
   const canManage = !!platformAdmin || membership?.roles?.name === "Administrador da Empresa";
 
-  if (!canManage || !membership?.tenant_id) {
+  const tenantId = membership?.tenant_id ?? (platformAdmin ? await resolveSubdomainTenantId() : null);
+
+  if (!canManage || !tenantId) {
     return (
       <div>
         <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
@@ -41,7 +44,7 @@ export default async function SuppliersOnboardingFormsPage() {
         {t("onboardingFormsTitle")}
       </h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">{t("onboardingFormsSubtitle")}</p>
-      <OnboardingFormsList tenantId={membership.tenant_id} />
+      <OnboardingFormsList tenantId={tenantId} />
     </div>
   );
 }

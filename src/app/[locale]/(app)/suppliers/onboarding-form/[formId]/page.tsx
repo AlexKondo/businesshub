@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { resolveSubdomainTenantId } from "@/lib/tenant-context";
 import { Link } from "@/i18n/navigation";
 import { OnboardingFormBuilder } from "@/components/app/onboarding-form-builder";
 import { OnboardingFormHeaderFooterEditor } from "@/components/app/onboarding-form-header-footer-editor";
@@ -31,7 +32,9 @@ export default async function SuppliersOnboardingFormPage({
 
   const canManage = !!platformAdmin || membership?.roles?.name === "Administrador da Empresa";
 
-  if (!canManage || !membership?.tenant_id) {
+  const tenantId = membership?.tenant_id ?? (platformAdmin ? await resolveSubdomainTenantId() : null);
+
+  if (!canManage || !tenantId) {
     return (
       <div>
         <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
@@ -46,7 +49,7 @@ export default async function SuppliersOnboardingFormPage({
     .from("onboarding_forms")
     .select("id, name, header_text, footer_text")
     .eq("id", formId)
-    .eq("tenant_id", membership.tenant_id)
+    .eq("tenant_id", tenantId)
     .maybeSingle<{
       id: string;
       name: string;
@@ -93,7 +96,7 @@ export default async function SuppliersOnboardingFormPage({
         initialHeader={form.header_text ?? ""}
         initialFooter={form.footer_text ?? ""}
       />
-      <OnboardingFormBuilder tenantId={membership.tenant_id} formId={form.id} />
+      <OnboardingFormBuilder tenantId={tenantId} formId={form.id} />
     </div>
   );
 }

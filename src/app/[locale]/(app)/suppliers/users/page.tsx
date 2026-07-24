@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { resolveSubdomainTenantId } from "@/lib/tenant-context";
 import { SupplierUsersPanel } from "@/components/app/supplier-users-panel";
 
 export default async function SuppliersUsersPage() {
@@ -27,7 +28,11 @@ export default async function SuppliersUsersPage() {
     membership?.roles?.name === "Administrador da Empresa" ||
     membership?.roles?.name === "Fornecedor";
 
-  if (!canView || !membership?.tenant_id) {
+  // A platform admin has no membership at this tenant, so fall back to the
+  // tenant of the subdomain they're browsing.
+  const tenantId = membership?.tenant_id ?? (platformAdmin ? await resolveSubdomainTenantId() : null);
+
+  if (!canView || !tenantId) {
     return (
       <div>
         <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
@@ -43,7 +48,7 @@ export default async function SuppliersUsersPage() {
       <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">
         {t("supplierUsersTitle")}
       </h1>
-      <SupplierUsersPanel tenantId={membership.tenant_id} />
+      <SupplierUsersPanel tenantId={tenantId} />
     </div>
   );
 }
