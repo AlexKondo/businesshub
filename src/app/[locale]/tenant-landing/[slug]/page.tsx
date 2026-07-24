@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { SupplierSignupForm } from "@/components/tenant/supplier-signup-form";
+import { HeroCtaButton } from "@/components/tenant/hero-cta-button";
 
 // Public, unauthenticated page — reachable at the bare root of a tenant
 // subdomain (e.g. acme.businesshub.app.br). This is the address shared with
@@ -111,12 +112,7 @@ export default async function TenantLandingPage({
             </p>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="#cadastro"
-                className="inline-flex h-11 items-center rounded-md bg-(--brand-500) px-6 text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98]"
-              >
-                {t("heroCta")}
-              </a>
+              <HeroCtaButton label={t("heroCta")} />
               <Link
                 href="/login"
                 className="inline-flex h-11 items-center rounded-md px-6 text-sm font-semibold text-(--ink-soft) transition-colors hover:text-(--ink)"
