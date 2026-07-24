@@ -1,7 +1,9 @@
 import { getTranslations } from "next-intl/server";
+import { redirect as nextRedirect } from "next/navigation";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { ensureSupplierMembership } from "@/lib/supplier-membership";
 import { AuthShell } from "@/components/auth-shell";
 import { OnboardingForm } from "@/components/app/onboarding-form";
 
@@ -28,6 +30,23 @@ export default async function OnboardingPage({
     (user!.user_metadata?.full_name as string | undefined)?.split(" ")[0] ??
     user!.email?.split("@")[0] ??
     "";
+
+  // Self-heal for a supplier whose Fornecedor membership never got created
+  // by the email-confirmation callback — this happens when Supabase's own
+  // verify endpoint confirms the email and redirects here without a `code`
+  // our /auth/callback could exchange, so its membership-creation step never
+  // runs and the supplier ends up dumped on this create-a-company form.
+  // Detect the leftover pending_supplier_tenant_id, finish creating the
+  // membership, and send them to their tenant's supplier onboarding instead.
+  const pendingSupplierTenantId = user!.user_metadata?.pending_supplier_tenant_id as
+    | string
+    | undefined;
+  if (pendingSupplierTenantId) {
+    const slug = await ensureSupplierMembership(user!.id, pendingSupplierTenantId);
+    if (slug) {
+      nextRedirect(`https://${slug}.${appRootDomain}/${locale}/supplier-onboarding`);
+    }
+  }
 
   // A previous "create a new company" request from this same account is
   // still awaiting platform-admin approval — show that status instead of
