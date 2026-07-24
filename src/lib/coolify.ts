@@ -17,12 +17,17 @@ async function reconcileTenantDomains(
   const appUuid = process.env.COOLIFY_APP_UUID;
   const rootDomain = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
 
+  // "inactive" is included on purpose: a paused (not deleted) tenant keeps
+  // its subdomain routed so proxy.ts can show a real "workspace deactivated"
+  // message instead of Traefik's raw "no available server" — see
+  // /api/tenants/toggle-company-active, which no longer deregisters on
+  // deactivate. Only pending_approval and deleted companies stay excluded.
   const admin = createAdminClient();
   const { data: companies } = await admin
     .from("companies")
     .select("slug")
     .is("deleted_at", null)
-    .eq("status", "active");
+    .in("status", ["active", "inactive"]);
 
   const slugs = new Set((companies ?? []).map((c) => c.slug as string));
   // Belt-and-suspenders for the create path: include the just-inserted slug

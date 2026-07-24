@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { registerTenantDomain, deregisterTenantDomain } from "@/lib/coolify";
+import { registerTenantDomain } from "@/lib/coolify";
 import { logAudit } from "@/lib/audit-log";
 
 // Platform-admin-only pause/resume for an already-approved company.
-// Deactivating deregisters its Coolify subdomain (the reconcile in
-// coolify.ts only includes status='active' companies), which blocks all
-// access without deleting any data; activating re-registers it. Only
-// applies to companies already past approval — pending_approval has its
-// own lifecycle via /api/tenants/review-company-request.
+// Deactivating does NOT deregister its Coolify subdomain — the domain stays
+// routed, and proxy.ts is what actually blocks access (every path renders
+// the tenant-landing "workspace deactivated" message, see proxy.ts for
+// details), so a paused tenant shows a real message instead of Traefik's
+// raw "no available server". Activating re-registers the domain in case it
+// was somehow missing (idempotent no-op otherwise). Only applies to
+// companies already past approval — pending_approval has its own lifecycle
+// via /api/tenants/review-company-request.
 export async function POST(request: Request) {
   try {
     return await handleToggle(request);
@@ -61,8 +64,6 @@ async function handleToggle(request: Request) {
 
   if (active) {
     await registerTenantDomain(company.slug);
-  } else {
-    await deregisterTenantDomain();
   }
 
   await logAudit({

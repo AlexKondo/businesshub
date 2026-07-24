@@ -7,6 +7,7 @@ import { toSessionScopedCookie } from "./lib/supabase/session-cookie";
 import { getGeo, localeFromCountry } from "./lib/geo";
 import { ROOT_DOMAIN, resolveTenantSlug } from "./lib/tenant";
 import { ensureSupplierMembership } from "./lib/supplier-membership";
+import { createAdminClient } from "./lib/supabase/admin";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -167,6 +168,37 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
 
   const bareRoot = matchBareRootPath(request.nextUrl.pathname);
 
+  const [{ data: memberships }, { data: platformAdmin }] = user
+    ? await Promise.all([
+        supabase.from("memberships").select("companies(slug)").eq("status", "active"),
+        supabase.from("platform_admins").select("user_id").eq("user_id", user.id).maybeSingle(),
+      ])
+    : [{ data: null }, { data: null }];
+
+  // A deactivated tenant (super admin paused it) keeps its Coolify domain
+  // registered — deregistering it entirely would make every path 404 at the
+  // Traefik level, including this very check, before our own "workspace
+  // deactivated" page could ever render. So the block happens here instead:
+  // any path on this subdomain, for anyone who isn't a platform admin, gets
+  // the same tenant-landing rewrite that already renders that message for a
+  // non-active company (see tenant-landing/[slug]/page.tsx).
+  if (!platformAdmin) {
+    const admin = createAdminClient();
+    const { data: companyRow } = await admin
+      .from("companies")
+      .select("status")
+      .eq("slug", tenantSlug)
+      .is("deleted_at", null)
+      .maybeSingle();
+    if (companyRow?.status === "inactive") {
+      const locale = bareRoot?.locale ?? extractLocale(request.nextUrl.pathname) ?? initialLocale(request);
+      if (request.nextUrl.pathname === "/") {
+        return NextResponse.redirect(new URL(`/${locale}`, request.url));
+      }
+      return serveTenantLanding(locale);
+    }
+  }
+
   if (!user) {
     if (bareRoot) {
       // anonymous visitor at the tenant's own root — this is the public
@@ -184,11 +216,6 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
     const locale = extractLocale(request.nextUrl.pathname) ?? initialLocale(request);
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
-
-  const [{ data: memberships }, { data: platformAdmin }] = await Promise.all([
-    supabase.from("memberships").select("companies(slug)").eq("status", "active"),
-    supabase.from("platform_admins").select("user_id").eq("user_id", user.id).maybeSingle(),
-  ]);
 
   const ownsSlug = (memberships ?? []).some(
     (m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug === tenantSlug
