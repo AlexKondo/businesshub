@@ -236,13 +236,16 @@ function StaffSidebar({
           <ul className="ml-[19px] mt-0.5 flex flex-col gap-0.5 border-l border-(--border-default) pl-3.5">
             {isPlatformAdmin && (
               <li>
+                {/* Opens in a NEW TAB: "Empresas" lives on the root domain, and
+                    navigating there in-place would swap this workspace tab over
+                    to the root domain — where the tenant-scoped items below have
+                    no workspace and disappear, which read as the menu "breaking".
+                    A new tab keeps this workspace intact. */}
                 <a
                   href={`https://${ROOT_DOMAIN}/${locale}/platform-admin`}
-                  className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-                    onRootDomain && pathname === "/platform-admin"
-                      ? "bg-(--accent-soft) text-(--brand-500)"
-                      : "text-(--ink-soft) hover:bg-(--accent-soft) hover:text-(--ink)"
-                  }`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] font-medium text-(--ink-soft) transition-colors hover:bg-(--accent-soft) hover:text-(--ink)"
                 >
                   <Building2 size={14} strokeWidth={1.5} />
                   <span className="truncate">{t("modules.companies")}</span>
