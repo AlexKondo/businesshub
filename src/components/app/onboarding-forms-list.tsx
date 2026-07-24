@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Settings2, Pencil, Trash2 } from "lucide-react";
+import { Settings2, Pencil, Trash2, GripVertical } from "lucide-react";
+import { reorder, useDragReorder } from "@/lib/use-drag-reorder";
 import type { OnboardingForm } from "@/lib/onboarding-fields";
 
 type FormRow = OnboardingForm & { fieldCount: number };
@@ -91,6 +92,23 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
     load();
   }
 
+  // Drag-and-drop reorder: apply optimistically, then persist only the rows
+  // whose position actually changed.
+  async function handleReorder(from: number, to: number) {
+    if (!forms) return;
+    const oldPos = new Map(forms.map((f) => [f.id, f.position]));
+    const next = reorder(forms, from, to).map((f, i) => ({ ...f, position: i }));
+    setForms(next);
+    const supabase = createClient();
+    await Promise.all(
+      next
+        .filter((f) => oldPos.get(f.id) !== f.position)
+        .map((f) => supabase.from("onboarding_forms").update({ position: f.position }).eq("id", f.id))
+    );
+  }
+
+  const { dragIndex, overIndex, dragProps } = useDragReorder(handleReorder);
+
   if (forms === null) {
     return <p className="text-[13.5px] text-(--ink-soft)">{t("loading")}</p>;
   }
@@ -101,7 +119,7 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
         <p className="text-[13.5px] text-(--ink-soft)">{t("onboardingFormsEmpty")}</p>
       )}
 
-      {forms.map((form) =>
+      {forms.map((form, index) =>
         renamingId === form.id ? (
           <div
             key={form.id}
@@ -134,11 +152,22 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
         ) : (
           <div
             key={form.id}
-            className="flex flex-col gap-3 rounded-[10px] border border-(--border-default) bg-(--bg-surface) p-4 sm:flex-row sm:items-center sm:justify-between"
+            {...dragProps(index)}
+            className={`flex cursor-grab flex-col gap-3 rounded-[10px] border bg-(--bg-surface) p-4 transition-colors active:cursor-grabbing sm:flex-row sm:items-center sm:justify-between ${
+              overIndex === index && dragIndex !== index
+                ? "border-(--brand-500)"
+                : "border-(--border-default)"
+            } ${dragIndex === index ? "opacity-50" : ""}`}
           >
-            <div className="min-w-0 flex-1">
-              <p className="text-[14px] font-semibold text-(--ink)">{form.name}</p>
-              <div className="mt-1.5 flex items-center gap-2">
+            <div className="flex min-w-0 flex-1 items-start gap-2.5">
+              <GripVertical
+                size={16}
+                strokeWidth={1.75}
+                className="mt-0.5 shrink-0 text-(--ink-soft)"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[14px] font-semibold text-(--ink)">{form.name}</p>
+                <div className="mt-1.5 flex items-center gap-2">
                 <button
                   type="button"
                   role="switch"
@@ -160,12 +189,14 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
                   {" · "}
                   {t("onboardingFormFieldsCount", { count: form.fieldCount })}
                 </span>
+                </div>
               </div>
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link
                 href={`/suppliers/onboarding-form/${form.id}`}
                 title={t("onboardingFormOpenButton")}
+                draggable={false}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-(--brand-500) text-white transition-opacity hover:opacity-90"
               >
                 <Settings2 size={15} strokeWidth={1.75} />

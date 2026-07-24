@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { X, Check, ChevronUp, ChevronDown, Pencil, Trash2, Upload, FileText } from "lucide-react";
+import { X, Check, Pencil, Trash2, Upload, FileText, GripVertical } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { slugify } from "@/lib/slug";
+import { reorder, useDragReorder } from "@/lib/use-drag-reorder";
 import { InfoTooltip } from "@/components/app/info-tooltip";
 import { ResizableBox } from "@/components/app/resizable-box";
 import { uploadOnboardingFile } from "@/lib/onboarding-files-client";
@@ -668,22 +669,24 @@ export function OnboardingFormBuilder({
     load();
   }
 
-  async function move(id: string, direction: "up" | "down") {
+  // Drag-and-drop reorder: apply optimistically, then persist only the rows
+  // whose position actually changed.
+  async function handleReorder(from: number, to: number) {
     if (!fields) return;
-    const idx = fields.findIndex((f) => f.id === id);
-    const swapIdx = direction === "up" ? idx - 1 : idx + 1;
-    if (idx < 0 || swapIdx < 0 || swapIdx >= fields.length) return;
-    const a = fields[idx];
-    const b = fields[swapIdx];
-    setBusy(id);
+    const oldPos = new Map(fields.map((f) => [f.id, f.position]));
+    const next = reorder(fields, from, to).map((f, i) => ({ ...f, position: i }));
+    setFields(next);
     const supabase = createClient();
-    await Promise.all([
-      supabase.from("onboarding_form_fields").update({ position: b.position }).eq("id", a.id),
-      supabase.from("onboarding_form_fields").update({ position: a.position }).eq("id", b.id),
-    ]);
-    setBusy(null);
-    load();
+    await Promise.all(
+      next
+        .filter((f) => oldPos.get(f.id) !== f.position)
+        .map((f) =>
+          supabase.from("onboarding_form_fields").update({ position: f.position }).eq("id", f.id)
+        )
+    );
   }
+
+  const { dragIndex, overIndex, dragProps } = useDragReorder(handleReorder);
 
   const typeLabels: Record<OnboardingFieldType, string> = {
     text: t("onboardingFieldTypeText"),
@@ -724,11 +727,22 @@ export function OnboardingFormBuilder({
         ) : (
           <div
             key={field.id}
-            className="flex flex-col gap-3 rounded-[10px] border border-(--border-default) bg-(--bg-surface) p-4 sm:flex-row sm:items-center sm:justify-between"
+            {...dragProps(idx)}
+            className={`flex cursor-grab flex-col gap-3 rounded-[10px] border bg-(--bg-surface) p-4 transition-colors active:cursor-grabbing sm:flex-row sm:items-center sm:justify-between ${
+              overIndex === idx && dragIndex !== idx
+                ? "border-(--brand-500)"
+                : "border-(--border-default)"
+            } ${dragIndex === idx ? "opacity-50" : ""}`}
           >
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="text-[14px] font-semibold text-(--ink)">{field.label}</p>
+            <div className="flex min-w-0 flex-1 items-start gap-2.5">
+              <GripVertical
+                size={16}
+                strokeWidth={1.75}
+                className="mt-0.5 shrink-0 text-(--ink-soft)"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-[14px] font-semibold text-(--ink)">{field.label}</p>
                 <span className="rounded-full bg-(--accent-soft) px-2 py-0.5 text-[11px] font-semibold text-(--brand-500)">
                   {typeLabels[field.field_type]}
                 </span>
@@ -750,26 +764,9 @@ export function OnboardingFormBuilder({
               {field.mask && (
                 <p className="font-mono text-[12px] text-(--ink-soft)">{field.mask}</p>
               )}
+              </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <button
-                type="button"
-                disabled={busy === field.id || idx === 0}
-                onClick={() => move(field.id, "up")}
-                title={t("onboardingFieldMoveUp")}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-40"
-              >
-                <ChevronUp size={15} strokeWidth={1.75} />
-              </button>
-              <button
-                type="button"
-                disabled={busy === field.id || idx === fields.length - 1}
-                onClick={() => move(field.id, "down")}
-                title={t("onboardingFieldMoveDown")}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-(--border-default) text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-40"
-              >
-                <ChevronDown size={15} strokeWidth={1.75} />
-              </button>
               <button
                 type="button"
                 disabled={busy === field.id}
