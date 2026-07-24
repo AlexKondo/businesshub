@@ -89,29 +89,14 @@ export default async function TenantLandingPage({
       </header>
 
       <main className="flex-1">
-        <section className="relative overflow-hidden px-6 pt-16 pb-20 text-center sm:pt-24 sm:pb-28">
+        <section className="relative overflow-hidden px-6 pt-10 pb-20 text-center sm:pt-14 sm:pb-28">
           <div
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[720px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-(--brand-500) opacity-[0.08] blur-3xl"
           />
 
           <div className="relative mx-auto flex max-w-[680px] flex-col items-center">
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border border-(--border-default) bg-(--bg-surface) shadow-sm">
-              {company.logo_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={company.logo_url}
-                  alt={company.name}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-[22px] font-bold text-(--brand-500)">
-                  {company.name.charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
-
-            <span className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-(--accent-soft) px-3 py-1.5 text-xs font-semibold text-(--brand-500)">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-(--accent-soft) px-3 py-1.5 text-xs font-semibold text-(--brand-500)">
               {t("heroEyebrow")}
             </span>
 
