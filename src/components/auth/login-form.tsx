@@ -65,24 +65,42 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
     // block the login that already succeeded.
     await supabase.auth.signOut({ scope: "others" }).catch(() => null);
 
-    const { data: memberships } = await supabase
-      .from("memberships")
-      .select("companies(slug)")
-      .eq("status", "active");
+    const [{ data: memberships }, { data: userData }] = await Promise.all([
+      supabase.from("memberships").select("companies(slug)").eq("status", "active"),
+      supabase.auth.getUser(),
+    ]);
     const slugs = (memberships ?? [])
       .map((m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug)
       .filter((s): s is string => !!s);
+
+    const { data: platformAdmin } = userData.user
+      ? await supabase
+          .from("platform_admins")
+          .select("user_id")
+          .eq("user_id", userData.user.id)
+          .maybeSingle()
+      : { data: null };
 
     if (tenantSlug) {
       // Logging in FROM a specific tenant's subdomain must only succeed for
       // that tenant — never silently swap the visitor over to some other
       // company they happen to belong to, which is confusing and looks
-      // broken from where they started.
-      if (!slugs.includes(tenantSlug)) {
+      // broken from where they started. A platform admin has no membership
+      // anywhere, so exempt them — they can operate any tenant.
+      if (!platformAdmin && !slugs.includes(tenantSlug)) {
         await supabase.auth.signOut().catch(() => null);
         setServerError(t("errorNoAccountHere"));
         return;
       }
+      router.push("/dashboard");
+      router.refresh();
+      return;
+    }
+
+    // A platform admin lives on the ROOT domain (platform-wide company
+    // management). Never auto-jump them into a tenant subdomain just because
+    // they happen to hold a membership somewhere — stay here.
+    if (platformAdmin) {
       router.push("/dashboard");
       router.refresh();
       return;
