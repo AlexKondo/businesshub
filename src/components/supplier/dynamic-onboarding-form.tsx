@@ -428,7 +428,7 @@ export function DynamicOnboardingForm({
                       yesLabel={t("booleanYes")}
                       noLabel={t("booleanNo")}
                       allowOther={field.allow_other}
-                      otherLabel={t("otherOptionLabel")}
+                      otherLabel={field.other_label?.trim() || t("otherOptionLabel")}
                       otherPlaceholder={t("otherOptionPlaceholder")}
                     />
                   )}
@@ -445,7 +445,7 @@ export function DynamicOnboardingForm({
                       allowOther={field.allow_other}
                       value={(controllerField.value as string) ?? ""}
                       onChange={controllerField.onChange}
-                      otherLabel={t("otherOptionLabel")}
+                      otherLabel={field.other_label?.trim() || t("otherOptionLabel")}
                       otherPlaceholder={t("otherOptionPlaceholder")}
                     />
                   )}

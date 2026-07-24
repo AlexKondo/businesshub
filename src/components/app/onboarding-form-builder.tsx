@@ -37,6 +37,7 @@ type FieldDraft = {
   field_type: OnboardingFieldType;
   required: boolean;
   allow_other: boolean;
+  other_label: string | null;
   options: { value: string; label: string; category?: string }[];
   mask: string | null;
 };
@@ -78,6 +79,7 @@ function FieldEditor({
   const [fieldType, setFieldType] = useState<OnboardingFieldType>(initial?.field_type ?? "text");
   const [required, setRequired] = useState(initial?.required ?? false);
   const [allowOther, setAllowOther] = useState(initial?.allow_other ?? false);
+  const [otherLabel, setOtherLabel] = useState(initial?.other_label ?? "");
   const [optionDrafts, setOptionDrafts] = useState<OptionDraft[]>(
     initial?.options.map((o) => ({ label: o.label, category: o.category })) ?? []
   );
@@ -123,11 +125,16 @@ function FieldEditor({
 
   function submit() {
     if (!label.trim()) return;
+    const usesOther = supportsAllowOther && allowOther;
     onSave({
       label: label.trim(),
       field_type: fieldType,
       required,
-      allow_other: supportsAllowOther && allowOther,
+      allow_other: usesOther,
+      // Only a boolean/select "Other" can carry a custom label; multiselect's
+      // free-text is an add-box, not a labelled option.
+      other_label:
+        usesOther && fieldType !== "multiselect" && otherLabel.trim() ? otherLabel.trim() : null,
       options: isChoiceType
         ? optionDrafts.map((o) => ({ value: slugify(o.label), label: o.label, category: o.category }))
         : [],
@@ -304,6 +311,23 @@ function FieldEditor({
             {t("onboardingFieldAllowOtherLabel")}
           </label>
         )}
+        {/* Custom label for the "Other" choice — e.g. "Quando?" instead of the
+            default "Outro". Multiselect's free-text is an add-box, not a
+            labelled option, so it's excluded. */}
+        {supportsAllowOther && allowOther && fieldType !== "multiselect" && (
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12.5px] font-medium text-(--ink) whitespace-nowrap">
+              {t("onboardingFieldOtherLabelInputLabel")}
+            </label>
+            <input
+              type="text"
+              value={otherLabel}
+              placeholder={t("onboardingFieldOtherLabelPlaceholder")}
+              onChange={(e) => setOtherLabel(e.target.value)}
+              className={`${inputClass} w-[200px]`}
+            />
+          </div>
+        )}
 
         {/* For choice types, options are configured below — Save/Cancel
             belong after that, not here, so they stay the last thing on
@@ -456,7 +480,7 @@ export function OnboardingFormBuilder({
     const { data } = await supabase
       .from("onboarding_form_fields")
       .select(
-        "id, key, label, field_type, options, allow_other, required, position, mask, width, rows"
+        "id, key, label, field_type, options, allow_other, other_label, required, position, mask, width, rows"
       )
       .eq("form_id", formId)
       .order("position", { ascending: true });
@@ -481,6 +505,7 @@ export function OnboardingFormBuilder({
       field_type: draft.field_type,
       options: draft.options,
       allow_other: draft.allow_other,
+      other_label: draft.other_label,
       required: draft.required,
       mask: draft.mask,
       position: fields?.length ?? 0,
@@ -507,6 +532,7 @@ export function OnboardingFormBuilder({
         field_type: draft.field_type,
         options: draft.options,
         allow_other: draft.allow_other,
+        other_label: draft.other_label,
         required: draft.required,
         mask: draft.mask,
       })

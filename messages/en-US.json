@@ -336,7 +336,9 @@
     "onboardingFormFooterHint": "Text shown at the bottom of the form, after the submit button. Leave blank to hide it.",
     "onboardingFormFooterPlaceholder": "e.g. terms, support contact, closing notes…",
     "onboardingFormHeaderFooterSaved": "Saved.",
-    "onboardingFormHeaderFooterSaving": "Saving…"
+    "onboardingFormHeaderFooterSaving": "Saving…",
+    "onboardingFieldOtherLabelInputLabel": "\"Other\" label",
+    "onboardingFieldOtherLabelPlaceholder": "Other"
   },
   "profilePage": {
     "title": "Profile",

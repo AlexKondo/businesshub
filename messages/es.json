@@ -336,7 +336,9 @@
     "onboardingFormFooterHint": "Texto que se muestra al final del formulario, después del botón de enviar. Déjalo en blanco para ocultarlo.",
     "onboardingFormFooterPlaceholder": "Ej.: términos, contacto de soporte, notas finales…",
     "onboardingFormHeaderFooterSaved": "Guardado.",
-    "onboardingFormHeaderFooterSaving": "Guardando…"
+    "onboardingFormHeaderFooterSaving": "Guardando…",
+    "onboardingFieldOtherLabelInputLabel": "Etiqueta de \"Otro\"",
+    "onboardingFieldOtherLabelPlaceholder": "Otro"
   },
   "profilePage": {
     "title": "Perfil",

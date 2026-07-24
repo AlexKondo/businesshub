@@ -336,7 +336,9 @@
     "onboardingFormFooterHint": "Texto exibido no fim do formulário, após o botão de enviar. Deixe em branco para não mostrar.",
     "onboardingFormFooterPlaceholder": "Ex.: termos, contato de suporte, observações finais…",
     "onboardingFormHeaderFooterSaved": "Salvo.",
-    "onboardingFormHeaderFooterSaving": "Salvando…"
+    "onboardingFormHeaderFooterSaving": "Salvando…",
+    "onboardingFieldOtherLabelInputLabel": "Rótulo do \"Outro\"",
+    "onboardingFieldOtherLabelPlaceholder": "Outro"
   },
   "profilePage": {
     "title": "Perfil",

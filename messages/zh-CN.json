@@ -336,7 +336,9 @@
     "onboardingFormFooterHint": "显示在表单底部、提交按钮之后的文本。留空则不显示。",
     "onboardingFormFooterPlaceholder": "例如：条款、支持联系方式、结尾备注…",
     "onboardingFormHeaderFooterSaved": "已保存。",
-    "onboardingFormHeaderFooterSaving": "保存中…"
+    "onboardingFormHeaderFooterSaving": "保存中…",
+    "onboardingFieldOtherLabelInputLabel": "\"其他\"标签",
+    "onboardingFieldOtherLabelPlaceholder": "其他"
   },
   "profilePage": {
     "title": "个人资料",

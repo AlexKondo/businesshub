@@ -26,6 +26,9 @@ export type OnboardingField = {
   field_type: OnboardingFieldType;
   options: OnboardingFieldOption[];
   allow_other: boolean;
+  // Custom label for the "Other" free-text choice (select/boolean). Null =
+  // fall back to the generic "Outro"/"Other" translation.
+  other_label: string | null;
   required: boolean;
   position: number;
   mask: string | null;

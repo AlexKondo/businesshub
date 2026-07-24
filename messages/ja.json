@@ -336,7 +336,9 @@
     "onboardingFormFooterHint": "フォーム下部、送信ボタンの後に表示されるテキスト。空欄にすると表示されません。",
     "onboardingFormFooterPlaceholder": "例：規約、サポート連絡先、締めの注意事項など…",
     "onboardingFormHeaderFooterSaved": "保存しました。",
-    "onboardingFormHeaderFooterSaving": "保存中…"
+    "onboardingFormHeaderFooterSaving": "保存中…",
+    "onboardingFieldOtherLabelInputLabel": "「その他」のラベル",
+    "onboardingFieldOtherLabelPlaceholder": "その他"
   },
   "profilePage": {
     "title": "プロフィール",
