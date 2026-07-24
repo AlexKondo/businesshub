@@ -303,7 +303,15 @@
     "pendingCompaniesApprovingDone": "¡Listo! {name} ya está disponible.",
     "pendingCompaniesApprovingError": "Algo salió mal al aprobar. Intenta de nuevo.",
     "allCompaniesActiveLabel": "Activo",
-    "ok": "OK"
+    "ok": "OK",
+    "onboardingFormHeaderLabel": "Encabezado (opcional)",
+    "onboardingFormHeaderHint": "Texto que se muestra al inicio del formulario, antes de los campos. Déjalo en blanco para ocultarlo.",
+    "onboardingFormHeaderPlaceholder": "Ej.: instrucciones, un aviso importante, contexto del cuestionario…",
+    "onboardingFormFooterLabel": "Pie de página (opcional)",
+    "onboardingFormFooterHint": "Texto que se muestra al final del formulario, después del botón de enviar. Déjalo en blanco para ocultarlo.",
+    "onboardingFormFooterPlaceholder": "Ej.: términos, contacto de soporte, notas finales…",
+    "onboardingFormHeaderFooterSaved": "Guardado.",
+    "onboardingFormHeaderFooterSaving": "Guardando…"
   },
   "profilePage": {
     "title": "Perfil",

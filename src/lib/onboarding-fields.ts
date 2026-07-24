@@ -4,6 +4,8 @@ export type OnboardingForm = {
   name: string;
   position: number;
   active: boolean;
+  header_text: string | null;
+  footer_text: string | null;
 };
 
 export type OnboardingFieldOption = { value: string; label: string; category?: string };

@@ -39,11 +39,16 @@ export default async function SupplierOnboardingFormPage({
   const [{ data: form }, { data: fields }, { data: submission }] = await Promise.all([
     supabase
       .from("onboarding_forms")
-      .select("id, name")
+      .select("id, name, header_text, footer_text")
       .eq("id", formId)
       .eq("tenant_id", membership.tenant_id)
       .eq("active", true)
-      .maybeSingle<{ id: string; name: string }>(),
+      .maybeSingle<{
+        id: string;
+        name: string;
+        header_text: string | null;
+        footer_text: string | null;
+      }>(),
     supabase
       .from("onboarding_form_fields")
       .select(
@@ -71,6 +76,8 @@ export default async function SupplierOnboardingFormPage({
       membershipId={membership.id}
       formId={form!.id}
       formName={form!.name}
+      headerText={form!.header_text}
+      footerText={form!.footer_text}
       companyName={membership.companies?.name ?? ""}
       fields={(fields as OnboardingField[] | null) ?? []}
       initialAnswers={submission?.answers ?? {}}

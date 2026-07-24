@@ -225,6 +225,8 @@ export function DynamicOnboardingForm({
   membershipId,
   formId,
   formName,
+  headerText,
+  footerText,
   companyName,
   fields,
   initialAnswers,
@@ -233,6 +235,8 @@ export function DynamicOnboardingForm({
   membershipId: string;
   formId: string;
   formName: string;
+  headerText: string | null;
+  footerText: string | null;
   companyName: string;
   fields: OnboardingField[];
   initialAnswers: OnboardingAnswers;
@@ -335,6 +339,12 @@ export function DynamicOnboardingForm({
     <div className="mx-auto max-w-[1140px] rounded-2xl border border-(--border-default) bg-(--bg-surface) p-6 shadow-sm sm:p-8">
       <h1 className="text-[22px] font-bold tracking-tight text-(--ink)">{formName}</h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">{t("subtitle", { name: companyName })}</p>
+
+      {headerText?.trim() && (
+        <div className="mt-5 whitespace-pre-wrap rounded-md border border-(--border-default) bg-(--bg-canvas) px-4 py-3 text-[14px] leading-relaxed text-(--ink)">
+          {headerText}
+        </div>
+      )}
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -486,6 +496,12 @@ export function DynamicOnboardingForm({
           {isSubmitting ? t("submitting") : t("submit")}
         </button>
       </form>
+
+      {footerText?.trim() && (
+        <div className="mt-6 whitespace-pre-wrap border-t border-(--border-default) pt-4 text-[13.5px] leading-relaxed text-(--ink-soft)">
+          {footerText}
+        </div>
+      )}
     </div>
   );
 }

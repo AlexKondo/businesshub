@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Link } from "@/i18n/navigation";
 import { OnboardingFormBuilder } from "@/components/app/onboarding-form-builder";
+import { OnboardingFormHeaderFooterEditor } from "@/components/app/onboarding-form-header-footer-editor";
 
 export default async function SuppliersOnboardingFormPage({
   params,
@@ -43,10 +44,15 @@ export default async function SuppliersOnboardingFormPage({
 
   const { data: form } = await supabase
     .from("onboarding_forms")
-    .select("id, name")
+    .select("id, name, header_text, footer_text")
     .eq("id", formId)
     .eq("tenant_id", membership.tenant_id)
-    .maybeSingle<{ id: string; name: string }>();
+    .maybeSingle<{
+      id: string;
+      name: string;
+      header_text: string | null;
+      footer_text: string | null;
+    }>();
 
   if (!form) {
     return (
@@ -82,6 +88,11 @@ export default async function SuppliersOnboardingFormPage({
           {t("onboardingFieldsViewFormButton")}
         </Link>
       </div>
+      <OnboardingFormHeaderFooterEditor
+        formId={form.id}
+        initialHeader={form.header_text ?? ""}
+        initialFooter={form.footer_text ?? ""}
+      />
       <OnboardingFormBuilder tenantId={membership.tenant_id} formId={form.id} />
     </div>
   );

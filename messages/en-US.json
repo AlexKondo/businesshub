@@ -303,7 +303,15 @@
     "pendingCompaniesApprovingDone": "Done! {name} is now available.",
     "pendingCompaniesApprovingError": "Something went wrong approving it. Try again.",
     "allCompaniesActiveLabel": "Active",
-    "ok": "OK"
+    "ok": "OK",
+    "onboardingFormHeaderLabel": "Header (optional)",
+    "onboardingFormHeaderHint": "Text shown at the top of the form, before the fields. Leave blank to hide it.",
+    "onboardingFormHeaderPlaceholder": "e.g. instructions, an important notice, context for the questionnaire…",
+    "onboardingFormFooterLabel": "Footer (optional)",
+    "onboardingFormFooterHint": "Text shown at the bottom of the form, after the submit button. Leave blank to hide it.",
+    "onboardingFormFooterPlaceholder": "e.g. terms, support contact, closing notes…",
+    "onboardingFormHeaderFooterSaved": "Saved.",
+    "onboardingFormHeaderFooterSaving": "Saving…"
   },
   "profilePage": {
     "title": "Profile",

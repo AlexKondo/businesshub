@@ -303,7 +303,15 @@
     "pendingCompaniesApprovingDone": "完成！{name} 现已可用。",
     "pendingCompaniesApprovingError": "批准时出现问题，请重试。",
     "allCompaniesActiveLabel": "启用",
-    "ok": "好的"
+    "ok": "好的",
+    "onboardingFormHeaderLabel": "页眉（可选）",
+    "onboardingFormHeaderHint": "显示在表单顶部、字段之前的文本。留空则不显示。",
+    "onboardingFormHeaderPlaceholder": "例如：填写说明、重要提示、问卷背景…",
+    "onboardingFormFooterLabel": "页脚（可选）",
+    "onboardingFormFooterHint": "显示在表单底部、提交按钮之后的文本。留空则不显示。",
+    "onboardingFormFooterPlaceholder": "例如：条款、支持联系方式、结尾备注…",
+    "onboardingFormHeaderFooterSaved": "已保存。",
+    "onboardingFormHeaderFooterSaving": "保存中…"
   },
   "profilePage": {
     "title": "个人资料",

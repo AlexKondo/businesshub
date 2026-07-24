@@ -23,7 +23,7 @@ export function OnboardingFormsList({ tenantId }: { tenantId: string }) {
     const supabase = createClient();
     const { data: formRows } = await supabase
       .from("onboarding_forms")
-      .select("id, tenant_id, name, position, active")
+      .select("id, tenant_id, name, position, active, header_text, footer_text")
       .eq("tenant_id", tenantId)
       .order("position", { ascending: true });
     const rows = formRows ?? [];

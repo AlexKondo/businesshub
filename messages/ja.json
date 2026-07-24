@@ -303,7 +303,15 @@
     "pendingCompaniesApprovingDone": "完了しました！{name} が利用可能になりました。",
     "pendingCompaniesApprovingError": "承認中に問題が発生しました。もう一度お試しください。",
     "allCompaniesActiveLabel": "有効",
-    "ok": "OK"
+    "ok": "OK",
+    "onboardingFormHeaderLabel": "ヘッダー（任意）",
+    "onboardingFormHeaderHint": "フォーム上部、項目の前に表示されるテキスト。空欄にすると表示されません。",
+    "onboardingFormHeaderPlaceholder": "例：説明、重要なお知らせ、アンケートの背景など…",
+    "onboardingFormFooterLabel": "フッター（任意）",
+    "onboardingFormFooterHint": "フォーム下部、送信ボタンの後に表示されるテキスト。空欄にすると表示されません。",
+    "onboardingFormFooterPlaceholder": "例：規約、サポート連絡先、締めの注意事項など…",
+    "onboardingFormHeaderFooterSaved": "保存しました。",
+    "onboardingFormHeaderFooterSaving": "保存中…"
   },
   "profilePage": {
     "title": "プロフィール",
