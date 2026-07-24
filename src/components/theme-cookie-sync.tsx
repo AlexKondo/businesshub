@@ -37,6 +37,13 @@ export function ThemeCookieSync() {
 
   useEffect(() => {
     if (!theme) return;
+    // Bootstrap ONLY: seed the shared cookie the first time it's absent, so an
+    // existing per-origin theme propagates to other subdomains. Never overwrite
+    // an existing cookie here — a stale mount value would clobber a newer choice
+    // made on another origin (the cookie is the cross-subdomain source of
+    // truth). Explicit changes — the theme toggle and the login flow — write it
+    // authoritatively via writeThemeCookie.
+    if (/(?:^|; )bh_theme=/.test(document.cookie)) return;
     writeThemeCookie(theme);
   }, [theme]);
 

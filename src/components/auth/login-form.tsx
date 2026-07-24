@@ -69,7 +69,7 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
     // block the login that already succeeded.
     await supabase.auth.signOut({ scope: "others" }).catch(() => null);
 
-    const [{ data: memberships }, { data: userData }] = await Promise.all([
+    const [{ data: memberships, error: membershipsError }, { data: userData }] = await Promise.all([
       supabase.from("memberships").select("companies(slug)").eq("status", "active"),
       supabase.auth.getUser(),
     ]);
@@ -77,13 +77,13 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
       .map((m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug)
       .filter((s): s is string => !!s);
 
-    const { data: platformAdmin } = userData.user
+    const { data: platformAdmin, error: platformAdminError } = userData.user
       ? await supabase
           .from("platform_admins")
           .select("user_id")
           .eq("user_id", userData.user.id)
           .maybeSingle()
-      : { data: null };
+      : { data: null, error: null };
 
     // Preferences follow the account (saved in user_metadata by the theme/
     // language toggles): apply the saved theme immediately and route to the
@@ -107,6 +107,15 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
       // broken from where they started. A platform admin has no membership
       // anywhere, so exempt them — they can operate any tenant.
       if (!platformAdmin && !slugs.includes(tenantSlug)) {
+        // Only force a sign-out when we're SURE they don't belong here. If
+        // either membership/platform-admin read failed transitively (network,
+        // RLS lag), memberships come back empty and this would nuke the session
+        // of a legitimate member — show a retryable error and keep them signed
+        // in instead.
+        if (membershipsError || platformAdminError) {
+          setServerError(t("errorGeneric"));
+          return;
+        }
         await supabase.auth.signOut().catch(() => null);
         setServerError(t("errorNoAccountHere"));
         return;

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
+import { writeThemeCookie } from "@/components/theme-cookie-sync";
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -17,6 +18,9 @@ export function ThemeToggle() {
   function toggle() {
     const next = resolvedTheme === "dark" ? "light" : "dark";
     setTheme(next);
+    // Authoritatively update the cross-subdomain cookie on this explicit change
+    // (the source of truth other subdomains seed from).
+    writeThemeCookie(next);
     // Persist on the account too (like sidebar_width), so the choice follows
     // the user across devices/browsers — not just this browser's storage.
     // No-ops for anonymous visitors (updateUser errors, caught).

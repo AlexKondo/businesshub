@@ -8,11 +8,14 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeCookieSync } from "@/components/theme-cookie-sync";
 import "../globals.css";
 
-// Runs synchronously before next-themes reads localStorage: on a subdomain that
-// has no theme stored yet, seed it from the cross-subdomain `bh_theme` cookie so
-// the first paint matches the user's saved preference instead of resetting to
-// the system default. See ThemeCookieSync for the write side.
-const THEME_SEED = `(function(){try{if(!localStorage.getItem('theme')){var m=document.cookie.match(/(?:^|; )bh_theme=([^;]+)/);if(m){localStorage.setItem('theme',decodeURIComponent(m[1]));}}}catch(e){}})();`;
+// Runs synchronously before next-themes reads localStorage. The parent-domain
+// `bh_theme` cookie is the SOURCE OF TRUTH for the theme across subdomains, so
+// whenever it's present we overwrite this origin's stored theme with it — not
+// just when localStorage is empty. (Seeding only-when-empty meant a subdomain
+// you'd previously toggled would forever ignore a newer choice made elsewhere.)
+// The cookie is written authoritatively only on explicit changes (theme toggle,
+// login); ThemeCookieSync merely bootstraps it the first time it's absent.
+const THEME_SEED = `(function(){try{var m=document.cookie.match(/(?:^|; )bh_theme=([^;]+)/);if(m){localStorage.setItem('theme',decodeURIComponent(m[1]));}}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",
