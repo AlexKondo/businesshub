@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Globe } from "lucide-react";
 import { routing } from "@/i18n/routing";
+import { createClient } from "@/lib/supabase/client";
 
 const LOCALE_LABELS: Record<string, string> = {
   "en-US": "English",
@@ -36,6 +37,12 @@ export function LanguageToggle() {
     segments[1] = nextLocale;
     const newPath = segments.join("/") || "/";
     router.push(`${newPath}${window.location.search}${window.location.hash}`);
+    // Persist on the account too, so the language follows the user across
+    // devices — not just this browser's NEXT_LOCALE cookie. No-ops for
+    // anonymous visitors (updateUser errors, caught).
+    createClient()
+      .auth.updateUser({ data: { locale: nextLocale } })
+      .catch(() => null);
   }
 
   useEffect(() => {

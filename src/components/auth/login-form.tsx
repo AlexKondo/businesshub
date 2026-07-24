@@ -5,8 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocale, useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { routing } from "@/i18n/routing";
+import { writeThemeCookie } from "@/components/theme-cookie-sync";
 import { PasswordInput } from "@/components/auth/password-input";
 
 export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
@@ -14,6 +17,7 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
   const tv = useTranslations("auth.validation");
   const locale = useLocale();
   const router = useRouter();
+  const { setTheme } = useTheme();
   const [serverError, setServerError] = useState<string | null>(null);
   const [redirecting, setRedirecting] = useState<string | null>(null);
 
@@ -81,6 +85,21 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
           .maybeSingle()
       : { data: null };
 
+    // Preferences follow the account (saved in user_metadata by the theme/
+    // language toggles): apply the saved theme immediately and route to the
+    // saved language, so a fresh browser/device reflects the user's choices.
+    const meta = userData.user?.user_metadata ?? {};
+    const savedTheme = meta.theme as string | undefined;
+    if (savedTheme === "light" || savedTheme === "dark" || savedTheme === "system") {
+      setTheme(savedTheme);
+      writeThemeCookie(savedTheme);
+    }
+    const savedLocale = meta.locale as string | undefined;
+    const targetLocale =
+      savedLocale && (routing.locales as readonly string[]).includes(savedLocale)
+        ? savedLocale
+        : locale;
+
     if (tenantSlug) {
       // Logging in FROM a specific tenant's subdomain must only succeed for
       // that tenant — never silently swap the visitor over to some other
@@ -92,7 +111,7 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
         setServerError(t("errorNoAccountHere"));
         return;
       }
-      router.push("/dashboard");
+      router.push("/dashboard", { locale: targetLocale });
       router.refresh();
       return;
     }
@@ -101,7 +120,7 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
     // management). Never auto-jump them into a tenant subdomain just because
     // they happen to hold a membership somewhere — stay here.
     if (platformAdmin) {
-      router.push("/dashboard");
+      router.push("/dashboard", { locale: targetLocale });
       router.refresh();
       return;
     }
@@ -114,12 +133,12 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
       setRedirecting(slugs[0]);
       const root = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/^https?:\/\//, "");
       setTimeout(() => {
-        window.location.href = `https://${slugs[0]}.${root}/${locale}/dashboard`;
+        window.location.href = `https://${slugs[0]}.${root}/${targetLocale}/dashboard`;
       }, 1200);
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/dashboard", { locale: targetLocale });
     router.refresh();
   }
 

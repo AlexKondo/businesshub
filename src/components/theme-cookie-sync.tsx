@@ -18,20 +18,26 @@ function cookieDomain(): string | null {
   return `.${host}`;
 }
 
+// Writes the parent-scoped theme cookie. Exported so the login flow can apply a
+// user's saved theme immediately, even before a full navigation.
+export function writeThemeCookie(theme: string) {
+  const domain = cookieDomain();
+  const parts = [
+    `bh_theme=${encodeURIComponent(theme)}`,
+    "path=/",
+    "max-age=31536000",
+    "samesite=lax",
+  ];
+  if (domain) parts.push(`domain=${domain}`);
+  document.cookie = parts.join("; ");
+}
+
 export function ThemeCookieSync() {
   const { theme } = useTheme();
 
   useEffect(() => {
     if (!theme) return;
-    const domain = cookieDomain();
-    const parts = [
-      `bh_theme=${encodeURIComponent(theme)}`,
-      "path=/",
-      "max-age=31536000",
-      "samesite=lax",
-    ];
-    if (domain) parts.push(`domain=${domain}`);
-    document.cookie = parts.join("; ");
+    writeThemeCookie(theme);
   }, [theme]);
 
   return null;
