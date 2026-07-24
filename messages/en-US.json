@@ -130,7 +130,9 @@
     "formSubmitting": "Submitting…",
     "formErrorGeneric": "Something went wrong. Please try again.",
     "formSuccessTitle": "Confirm your email",
-    "formSuccessBody": "Check your email and confirm it. Then log in and complete your company's onboarding."
+    "formSuccessBody": "Check your email and confirm it. Then log in and complete your company's onboarding.",
+    "deactivatedTitle": "Workspace deactivated",
+    "deactivatedBody": "This workspace has been deactivated by the platform and is not available right now."
   },
   "supplierOnboarding": {
     "title": "Supplier Onboarding",

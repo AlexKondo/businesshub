@@ -32,8 +32,11 @@ export default async function TenantLandingPage({
   // approval" status instead of a raw routing error — but the PUBLIC
   // marketing/supplier-signup page must stay hidden until a platform admin
   // actually approves it. From an anonymous visitor's perspective this looks
-  // identical to "doesn't exist yet".
+  // identical to "doesn't exist yet". "inactive" is different — that's a
+  // platform admin deliberately pausing an already-live tenant, so the
+  // visitor sees that it's deactivated rather than never having existed.
   if (!company || company.status !== "active") {
+    const isDeactivated = company?.status === "inactive";
     return (
       <div className="flex min-h-screen flex-col bg-(--bg-canvas)">
         <header className="flex items-center justify-end gap-2 px-6 py-5 sm:px-10">
@@ -43,10 +46,10 @@ export default async function TenantLandingPage({
         <main className="flex flex-1 items-center justify-center px-6 pb-20">
           <div className="flex w-full max-w-[420px] flex-col items-center text-center">
             <h1 className="text-[20px] font-bold tracking-tight text-(--ink)">
-              {t("notFoundTitle")}
+              {isDeactivated ? t("deactivatedTitle") : t("notFoundTitle")}
             </h1>
             <p className="mt-2 text-[13.5px] leading-relaxed text-(--ink-soft)">
-              {t("notFoundBody")}
+              {isDeactivated ? t("deactivatedBody") : t("notFoundBody")}
             </p>
             <a
               href={`https://${rootDomain}`}

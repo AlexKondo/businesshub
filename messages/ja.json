@@ -130,7 +130,9 @@
     "formSubmitting": "送信中…",
     "formErrorGeneric": "問題が発生しました。もう一度お試しください。",
     "formSuccessTitle": "メールをご確認ください",
-    "formSuccessBody": "メールを確認して認証してください。その後プラットフォームにログインし、貴社のオンボーディングを完了してください。"
+    "formSuccessBody": "メールを確認して認証してください。その後プラットフォームにログインし、貴社のオンボーディングを完了してください。",
+    "deactivatedTitle": "ワークスペースは無効化されています",
+    "deactivatedBody": "このワークスペースはプラットフォームによって無効化されており、現在ご利用いただけません。"
   },
   "supplierOnboarding": {
     "title": "サプライヤー登録",

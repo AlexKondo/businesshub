@@ -130,7 +130,9 @@
     "formSubmitting": "正在提交…",
     "formErrorGeneric": "出现问题，请重试。",
     "formSuccessTitle": "请确认您的邮箱",
-    "formSuccessBody": "请查收邮件并完成确认。之后登录平台，完成贵公司的入驻流程。"
+    "formSuccessBody": "请查收邮件并完成确认。之后登录平台，完成贵公司的入驻流程。",
+    "deactivatedTitle": "工作区已停用",
+    "deactivatedBody": "该工作区已被平台停用，目前无法访问。"
   },
   "supplierOnboarding": {
     "title": "供应商入驻",

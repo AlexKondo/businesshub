@@ -130,7 +130,9 @@
     "formSubmitting": "Enviando…",
     "formErrorGeneric": "Algo deu errado. Tente novamente.",
     "formSuccessTitle": "Confirme seu e-mail",
-    "formSuccessBody": "Verifique seu e-mail e confirme. Após isso entre na plataforma e faça o onboarding da sua empresa."
+    "formSuccessBody": "Verifique seu e-mail e confirme. Após isso entre na plataforma e faça o onboarding da sua empresa.",
+    "deactivatedTitle": "Workspace desativado",
+    "deactivatedBody": "Esse workspace foi desativado pela plataforma e não está disponível no momento."
   },
   "supplierOnboarding": {
     "title": "Cadastro de Fornecedor",
