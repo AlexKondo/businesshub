@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { resolveTenantSlug } from "@/lib/tenant";
 import { PasswordInput } from "@/components/auth/password-input";
 
-export function LoginForm() {
+export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
   const t = useTranslations("auth.login");
   const tv = useTranslations("auth.validation");
   const locale = useLocale();
@@ -27,8 +26,23 @@ export function LoginForm() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
+
+  useEffect(() => {
+    // Prefill the email left behind by the supplier signup form, if any —
+    // see supplier-signup-form.tsx for why this bounce to /login happens.
+    try {
+      const pendingEmail = sessionStorage.getItem("bh_signup_email");
+      if (pendingEmail) {
+        setValue("email", pendingEmail);
+        sessionStorage.removeItem("bh_signup_email");
+      }
+    } catch {
+      // storage unavailable — nothing to prefill
+    }
+  }, [setValue]);
 
   async function onSubmit(values: FormValues) {
     setServerError(null);
@@ -59,13 +73,12 @@ export function LoginForm() {
       .map((m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug)
       .filter((s): s is string => !!s);
 
-    const currentSlug = resolveTenantSlug(window.location.host);
-    if (currentSlug) {
+    if (tenantSlug) {
       // Logging in FROM a specific tenant's subdomain must only succeed for
       // that tenant — never silently swap the visitor over to some other
       // company they happen to belong to, which is confusing and looks
       // broken from where they started.
-      if (!slugs.includes(currentSlug)) {
+      if (!slugs.includes(tenantSlug)) {
         await supabase.auth.signOut().catch(() => null);
         setServerError(t("errorNoAccountHere"));
         return;
@@ -164,9 +177,19 @@ export function LoginForm() {
 
       <p className="mt-6 text-center text-[13px] text-(--ink-soft)">
         {t("noAccount")}{" "}
-        <Link href="/signup" className="font-medium text-(--brand-500)">
-          {t("signupLink")}
-        </Link>
+        {tenantSlug ? (
+          // On a tenant subdomain, "/signup" is a root-domain-only staff
+          // route — proxy.ts bounces an anonymous visitor straight back to
+          // /login, which looked like the link did nothing. The real
+          // supplier signup form lives on this subdomain's own landing page.
+          <Link href="/" className="font-medium text-(--brand-500)">
+            {t("signupLink")}
+          </Link>
+        ) : (
+          <Link href="/signup" className="font-medium text-(--brand-500)">
+            {t("signupLink")}
+          </Link>
+        )}
       </p>
     </div>
   );

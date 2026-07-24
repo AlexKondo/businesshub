@@ -58,6 +58,16 @@ export function SupplierSignupForm({
       setServerError(t("formErrorGeneric"));
       return;
     }
+    // The confirmation email often gets opened in a way that bounces the
+    // visitor back to this same subdomain's /login (e.g. the PKCE code
+    // verifier isn't available if the link is opened in a different
+    // browser/tab) — stash the email so LoginForm can prefill it and the
+    // person only has to type their password.
+    try {
+      sessionStorage.setItem("bh_signup_email", values.email);
+    } catch {
+      // storage unavailable (private mode, etc.) — not worth blocking on
+    }
     setSent(true);
   }
 
