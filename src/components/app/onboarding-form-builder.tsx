@@ -11,11 +11,18 @@ import { uploadOnboardingFile } from "@/lib/onboarding-files-client";
 import { FILE_ACCEPT_ATTR } from "@/lib/onboarding-files";
 import type { OnboardingField, OnboardingFieldType } from "@/lib/onboarding-fields";
 
-type FieldWidths = { label: number; type: number; optionCategory: number; optionLabel: number };
+type FieldWidths = {
+  label: number;
+  type: number;
+  otherLabel: number;
+  optionCategory: number;
+  optionLabel: number;
+};
 
 const DEFAULT_FIELD_WIDTHS: FieldWidths = {
   label: 420,
   type: 260,
+  otherLabel: 240,
   optionCategory: 200,
   optionLabel: 420,
 };
@@ -354,20 +361,29 @@ function FieldEditor({
           </label>
         )}
         {/* Custom label for the "Other" choice — e.g. "Quando?" instead of the
-            default "Outro". Applies to select, boolean and multiselect. */}
+            default "Outro". Applies to select, boolean and multiselect.
+            Drag-resizable like the label/type columns. */}
         {supportsAllowOther && allowOther && (
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[12.5px] font-medium text-(--ink) whitespace-nowrap">
-              {t("onboardingFieldOtherLabelInputLabel")}
-            </label>
-            <input
-              type="text"
-              value={otherLabel}
-              placeholder={t("onboardingFieldOtherLabelPlaceholder")}
-              onChange={(e) => setOtherLabel(e.target.value)}
-              className={`${inputClass} w-[200px]`}
-            />
-          </div>
+          <ResizableBox
+            width={widths.otherLabel}
+            minWidth={MIN_FIELD_WIDTH}
+            maxWidth={MAX_FIELD_WIDTH}
+            onResize={(w) => onResizeWidth("otherLabel", w)}
+            onResizeEnd={(w) => onCommitWidth("otherLabel", w)}
+          >
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[12.5px] font-medium text-(--ink) whitespace-nowrap">
+                {t("onboardingFieldOtherLabelInputLabel")}
+              </label>
+              <input
+                type="text"
+                value={otherLabel}
+                placeholder={t("onboardingFieldOtherLabelPlaceholder")}
+                onChange={(e) => setOtherLabel(e.target.value)}
+                className={`${inputClass} w-full`}
+              />
+            </div>
+          </ResizableBox>
         )}
 
         {/* For choice types, options are configured below — Save/Cancel
