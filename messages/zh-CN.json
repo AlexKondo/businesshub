@@ -82,7 +82,12 @@
     "cpuTitle": "CPU",
     "memoryTitle": "内存",
     "diskShortTitle": "磁盘",
-    "cpuCoresLabel": "{cores} 个 vCPU"
+    "cpuCoresLabel": "{cores} 个 vCPU",
+    "incomingTitle": "入站流量",
+    "outgoingTitle": "出站流量",
+    "bandwidthTitle": "带宽",
+    "trafficWindowHint": "每区间（约30分钟）",
+    "bandwidthHint": "本月已用"
   },
   "onboarding": {
     "title": "创建您的组织",

@@ -82,7 +82,12 @@
     "cpuTitle": "CPU",
     "memoryTitle": "メモリ",
     "diskShortTitle": "ディスク",
-    "cpuCoresLabel": "{cores} vCPU"
+    "cpuCoresLabel": "{cores} vCPU",
+    "incomingTitle": "受信トラフィック",
+    "outgoingTitle": "送信トラフィック",
+    "bandwidthTitle": "帯域幅",
+    "trafficWindowHint": "間隔ごと（約30分）",
+    "bandwidthHint": "今月の使用量"
   },
   "onboarding": {
     "title": "組織を作成",

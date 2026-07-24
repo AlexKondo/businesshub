@@ -2,44 +2,56 @@
 
 import { useCallback, useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Cpu, MemoryStick, HardDrive, RefreshCw } from "lucide-react";
+import { Cpu, MemoryStick, HardDrive, ArrowDownToLine, ArrowUpFromLine, Gauge, RefreshCw } from "lucide-react";
 
 type Usage = { total: number; used: number; available: number; percent: number };
+type Traffic = { latestBytes: number; history: number[] };
 type Stats = {
-  cpu: { percent: number; cores: number };
-  memory: Usage;
+  source: "hostinger" | "proc";
+  cpu: { percent: number; cores: number; history: number[] };
+  memory: Usage & { history: number[] };
   disk: Usage;
+  incoming: Traffic | null;
+  outgoing: Traffic | null;
+  bandwidth: Usage | null;
   uptimeSeconds: number;
 };
 
 function gb(bytes: number): string {
   return (bytes / 1_000_000_000).toFixed(1);
 }
+function tb(bytes: number): string {
+  return (bytes / 1_000_000_000_000).toFixed(3);
+}
+function formatBytes(bytes: number): string {
+  if (bytes >= 1_000_000_000) return `${(bytes / 1_000_000_000).toFixed(1)} GB`;
+  if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(1)} MB`;
+  if (bytes >= 1_000) return `${(bytes / 1_000).toFixed(0)} KB`;
+  return `${bytes} B`;
+}
 
-// Live rolling buffer of samples so CPU/memory can be drawn as sparklines the
-// same way Hostinger's panel does. Polls every 5s while the tab is visible.
-const POLL_MS = 5000;
-const MAX_POINTS = 40;
+const POLL_MS = 60_000;
 
-// Sparkline: filled area + top line, values as percentages (0–100). Uses the
-// brand accent so it fits our design system rather than copying Hostinger's
-// exact purple.
-function Sparkline({ points, width = 150, height = 44 }: { points: number[]; width?: number; height?: number }) {
+// Filled-area sparkline with a vertical gradient. Auto-scales to the series'
+// OWN min–max (not 0–100) so small fluctuations fill the height — the lively
+// "heartbeat" waveform Hostinger's panel shows even when CPU is only a few
+// percent. A tiny top/bottom padding keeps the peaks/troughs off the edges.
+function Sparkline({ points, width = 160, height = 46 }: { points: number[]; width?: number; height?: number }) {
   const gradientId = useId();
-  if (points.length === 0) {
-    return <div style={{ width, height }} />;
-  }
-  const max = 100;
-  const step = points.length > 1 ? width / (points.length - 1) : 0;
-  const y = (v: number) => height - (Math.max(0, Math.min(max, v)) / max) * (height - 4) - 2;
+  if (points.length < 2) return <div style={{ width, height }} />;
+  const lo = Math.min(...points);
+  const hi = Math.max(...points);
+  const range = hi - lo || 1;
+  const pad = 4;
+  const y = (v: number) => height - pad - ((v - lo) / range) * (height - pad * 2);
+  const step = width / (points.length - 1);
   const line = points.map((v, i) => `${i === 0 ? "M" : "L"} ${(i * step).toFixed(1)} ${y(v).toFixed(1)}`).join(" ");
   const area = `${line} L ${width} ${height} L 0 ${height} Z`;
-
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--brand-500)" stopOpacity="0.28" />
+          <stop offset="0%" stopColor="var(--brand-500)" stopOpacity="0.35" />
           <stop offset="100%" stopColor="var(--brand-500)" stopOpacity="0" />
         </linearGradient>
       </defs>
@@ -49,8 +61,6 @@ function Sparkline({ points, width = 150, height = 44 }: { points: number[]; wid
   );
 }
 
-// Ring / donut gauge for a capacity percentage (disk), matching Hostinger's
-// disk/bandwidth widgets.
 function Ring({ percent, size = 56 }: { percent: number; size?: number }) {
   const stroke = 6;
   const r = (size - stroke) / 2;
@@ -99,7 +109,7 @@ function Card({
       <div className="mt-2 flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[22px] font-bold tracking-tight text-(--ink)">{value}</p>
-          <p className="mt-0.5 text-[12px] text-(--ink-soft)">{sub}</p>
+          <p className="mt-0.5 truncate text-[12px] text-(--ink-soft)">{sub}</p>
         </div>
         <div className="shrink-0">{chart}</div>
       </div>
@@ -107,11 +117,12 @@ function Card({
   );
 }
 
+// Mirrors the Hostinger hPanel overview inside our own super-admin dashboard.
+// History/traffic come from the Hostinger API (see /api/system/stats); when
+// that isn't available it falls back to a local reading (no traffic cards).
 export function VpsStatsWidget() {
   const t = useTranslations("dashboardPage");
   const [stats, setStats] = useState<Stats | null>(null);
-  const [cpuHistory, setCpuHistory] = useState<number[]>([]);
-  const [memHistory, setMemHistory] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -121,10 +132,7 @@ export function VpsStatsWidget() {
     try {
       const res = await fetch("/api/system/stats", { cache: "no-store" });
       if (!res.ok) throw new Error("failed");
-      const data: Stats = await res.json();
-      setStats(data);
-      setCpuHistory((h) => [...h, data.cpu.percent].slice(-MAX_POINTS));
-      setMemHistory((h) => [...h, data.memory.percent].slice(-MAX_POINTS));
+      setStats(await res.json());
     } catch {
       setError(true);
     } finally {
@@ -136,7 +144,6 @@ export function VpsStatsWidget() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- load() flips a loading flag then fetches; the meaningful state lands after an await
     load();
     let id: ReturnType<typeof setInterval> | null = setInterval(load, POLL_MS);
-    // Pause polling when the tab is hidden — no point sampling an unseen chart.
     function onVisibility() {
       if (document.hidden) {
         if (id) clearInterval(id);
@@ -181,22 +188,49 @@ export function VpsStatsWidget() {
             label={t("cpuTitle")}
             value={`${stats.cpu.percent}%`}
             sub={t("cpuCoresLabel", { cores: stats.cpu.cores })}
-            chart={<Sparkline points={cpuHistory} />}
+            chart={<Sparkline points={stats.cpu.history} />}
           />
           <Card
             icon={MemoryStick}
             label={t("memoryTitle")}
             value={`${stats.memory.percent}%`}
             sub={`${gb(stats.memory.used)} / ${gb(stats.memory.total)} GB`}
-            chart={<Sparkline points={memHistory} />}
+            chart={<Sparkline points={stats.memory.history} />}
           />
           <Card
             icon={HardDrive}
             label={t("diskShortTitle")}
             value={`${gb(stats.disk.used)} / ${gb(stats.disk.total)} GB`}
-            sub={`${t("diskUsedPercent", { percent: stats.disk.percent })} · ${t("diskFree", { gb: gb(stats.disk.available) })}`}
+            sub={t("diskUsedPercent", { percent: stats.disk.percent })}
             chart={<Ring percent={stats.disk.percent} />}
           />
+          {stats.incoming && (
+            <Card
+              icon={ArrowDownToLine}
+              label={t("incomingTitle")}
+              value={formatBytes(stats.incoming.latestBytes)}
+              sub={t("trafficWindowHint")}
+              chart={<Sparkline points={stats.incoming.history} />}
+            />
+          )}
+          {stats.outgoing && (
+            <Card
+              icon={ArrowUpFromLine}
+              label={t("outgoingTitle")}
+              value={formatBytes(stats.outgoing.latestBytes)}
+              sub={t("trafficWindowHint")}
+              chart={<Sparkline points={stats.outgoing.history} />}
+            />
+          )}
+          {stats.bandwidth && (
+            <Card
+              icon={Gauge}
+              label={t("bandwidthTitle")}
+              value={`${tb(stats.bandwidth.used)} / ${tb(stats.bandwidth.total)} TB`}
+              sub={t("bandwidthHint")}
+              chart={<Ring percent={stats.bandwidth.percent} />}
+            />
+          )}
         </div>
       )}
     </div>

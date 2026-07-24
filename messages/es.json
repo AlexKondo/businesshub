@@ -82,7 +82,12 @@
     "cpuTitle": "CPU",
     "memoryTitle": "Memoria",
     "diskShortTitle": "Disco",
-    "cpuCoresLabel": "{cores} vCPUs"
+    "cpuCoresLabel": "{cores} vCPUs",
+    "incomingTitle": "Tráfico de entrada",
+    "outgoingTitle": "Tráfico de salida",
+    "bandwidthTitle": "Ancho de banda",
+    "trafficWindowHint": "por intervalo (~30 min)",
+    "bandwidthHint": "usado este mes"
   },
   "onboarding": {
     "title": "Crea tu organización",
