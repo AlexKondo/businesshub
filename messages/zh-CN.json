@@ -77,7 +77,12 @@
     "diskLoading": "加载中…",
     "diskError": "无法读取磁盘使用情况。",
     "diskUsedPercent": "已使用 {percent}%",
-    "diskFree": "剩余 {gb} GB"
+    "diskFree": "剩余 {gb} GB",
+    "serverSectionTitle": "服务器 (VPS)",
+    "cpuTitle": "CPU",
+    "memoryTitle": "内存",
+    "diskShortTitle": "磁盘",
+    "cpuCoresLabel": "{cores} 个 vCPU"
   },
   "onboarding": {
     "title": "创建您的组织",

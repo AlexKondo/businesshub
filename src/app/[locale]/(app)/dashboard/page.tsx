@@ -4,7 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveSubdomainTenantId } from "@/lib/tenant-context";
-import { VpsDiskWidget } from "@/components/app/vps-disk-widget";
+import { VpsStatsWidget } from "@/components/app/vps-stats-widget";
 
 // Counts of the current tenant's suppliers, computed with the service-role
 // client scoped to a single tenant_id (a platform admin has no membership to
@@ -115,35 +115,32 @@ export default async function DashboardPage() {
       </h1>
       <p className="mt-1 text-[14px] text-(--ink-soft)">{t("subtitle")}</p>
 
-      {(counts || isPlatformAdmin) && (
-        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:max-w-[820px]">
-          {counts && (
-            <>
-              <div className="rounded-[10px] border border-(--border-default) bg-(--bg-surface) p-5">
-                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-(--ink-soft)">
-                  <Truck size={14} strokeWidth={1.75} />
-                  {t("suppliersCountLabel")}
-                </div>
-                <p className="mt-2 text-[26px] font-bold tracking-tight text-(--ink)">
-                  {counts.supplierCount}
-                </p>
-                <p className="mt-0.5 text-[12px] text-(--ink-soft)">{t("suppliersCountHint")}</p>
-              </div>
-              <div className="rounded-[10px] border border-(--border-default) bg-(--bg-surface) p-5">
-                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-(--ink-soft)">
-                  <Users size={14} strokeWidth={1.75} />
-                  {t("usersCountLabel")}
-                </div>
-                <p className="mt-2 text-[26px] font-bold tracking-tight text-(--ink)">
-                  {counts.userCount}
-                </p>
-                <p className="mt-0.5 text-[12px] text-(--ink-soft)">{t("usersCountHint")}</p>
-              </div>
-            </>
-          )}
-          {isPlatformAdmin && <VpsDiskWidget />}
+      {counts && (
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:max-w-[540px]">
+          <div className="rounded-[10px] border border-(--border-default) bg-(--bg-surface) p-5">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-(--ink-soft)">
+              <Truck size={14} strokeWidth={1.75} />
+              {t("suppliersCountLabel")}
+            </div>
+            <p className="mt-2 text-[26px] font-bold tracking-tight text-(--ink)">
+              {counts.supplierCount}
+            </p>
+            <p className="mt-0.5 text-[12px] text-(--ink-soft)">{t("suppliersCountHint")}</p>
+          </div>
+          <div className="rounded-[10px] border border-(--border-default) bg-(--bg-surface) p-5">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-(--ink-soft)">
+              <Users size={14} strokeWidth={1.75} />
+              {t("usersCountLabel")}
+            </div>
+            <p className="mt-2 text-[26px] font-bold tracking-tight text-(--ink)">
+              {counts.userCount}
+            </p>
+            <p className="mt-0.5 text-[12px] text-(--ink-soft)">{t("usersCountHint")}</p>
+          </div>
         </div>
       )}
+
+      {isPlatformAdmin && <VpsStatsWidget />}
     </div>
   );
 }

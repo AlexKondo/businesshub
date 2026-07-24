@@ -77,7 +77,12 @@
     "diskLoading": "Cargando…",
     "diskError": "No se pudo leer el disco.",
     "diskUsedPercent": "{percent}% usado",
-    "diskFree": "{gb} GB libres"
+    "diskFree": "{gb} GB libres",
+    "serverSectionTitle": "Servidor (VPS)",
+    "cpuTitle": "CPU",
+    "memoryTitle": "Memoria",
+    "diskShortTitle": "Disco",
+    "cpuCoresLabel": "{cores} vCPUs"
   },
   "onboarding": {
     "title": "Crea tu organización",
