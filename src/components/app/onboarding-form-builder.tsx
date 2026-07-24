@@ -97,7 +97,6 @@ function FieldEditor({
   // for it too, just without the options editor.
   const supportsAllowOther = isChoiceType || fieldType === "boolean";
   const showMaskSection = fieldType === "text" || fieldType === "date";
-  const displayKey = initial?.key ?? slugify(label);
 
   const typeLabels: Record<OnboardingFieldType, string> = {
     text: t("onboardingFieldTypeText"),
@@ -178,7 +177,7 @@ function FieldEditor({
           onResize={(w) => onResizeWidth("label", w)}
           onResizeEnd={(w) => onCommitWidth("label", w)}
         >
-          <div className="relative flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <label className="text-[12.5px] font-medium text-(--ink)">
               {t("onboardingFieldLabelInputLabel")}
             </label>
@@ -188,11 +187,6 @@ function FieldEditor({
               onChange={(e) => setLabel(e.target.value)}
               className={`${inputClass} w-full`}
             />
-            {displayKey && (
-              <span className="absolute left-0 top-full mt-1 truncate text-[11px] text-(--ink-soft)">
-                {displayKey}
-              </span>
-            )}
           </div>
         </ResizableBox>
         <ResizableBox
@@ -630,10 +624,9 @@ export function OnboardingFormBuilder({
                     </span>
                   ))}
               </div>
-              <p className="text-[12px] text-(--ink-soft)">
-                {field.key}
-                {field.mask && <span className="font-mono"> · {field.mask}</span>}
-              </p>
+              {field.mask && (
+                <p className="font-mono text-[12px] text-(--ink-soft)">{field.mask}</p>
+              )}
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <button
