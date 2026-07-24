@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { Upload, FileText, Download, X } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { MultiSelectWithOther } from "@/components/supplier/multiselect-with-other";
@@ -12,6 +13,13 @@ import { applyMask, isCnpjShapedMask } from "@/lib/mask";
 import { isValidCnpj } from "@/lib/cnpj";
 import { formatCep, isValidCep, lookupCep } from "@/lib/cep";
 import type { OnboardingField, OnboardingAnswers } from "@/lib/onboarding-fields";
+import {
+  FILE_ACCEPT_ATTR,
+  SUPPLIER_FILES_BUCKET,
+  FORM_ATTACHMENTS_BUCKET,
+  type UploadedFile,
+} from "@/lib/onboarding-files";
+import { uploadOnboardingFile, getOnboardingDownloadUrl } from "@/lib/onboarding-files-client";
 import { normalizeLabel } from "@/lib/text";
 
 const inputClass =
@@ -51,6 +59,15 @@ function fieldToZod(field: OnboardingField, requiredMessage: string): z.ZodTypeA
       const base = z.array(z.string());
       return field.required ? base.min(1, requiredMessage) : base.optional();
     }
+    case "file": {
+      const base = z
+        .object({ path: z.string().min(1), name: z.string().min(1) })
+        .optional();
+      return field.required ? base.refine((v) => !!v?.path, requiredMessage) : base;
+    }
+    case "download":
+      // Not an input — read-only for the supplier; excluded from the schema.
+      return z.any().optional();
     case "text":
     case "textarea":
     case "date":
@@ -71,7 +88,139 @@ function defaultValueFor(field: OnboardingField, initialAnswers: OnboardingAnswe
     }
     return typeof saved === "boolean" ? saved : undefined;
   }
+  if (field.field_type === "file") {
+    return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : undefined;
+  }
+  if (field.field_type === "download") return undefined;
   return saved ?? "";
+}
+
+// Supplier-facing upload control for a 'file' field. Uploads straight to the
+// private bucket via a scoped signed URL and stores the { path, name } as the
+// field's value.
+function FileUploadField({
+  value,
+  onChange,
+  tenantId,
+  formId,
+  fieldKey,
+  t,
+}: {
+  value: UploadedFile | undefined;
+  onChange: (v: UploadedFile | undefined) => void;
+  tenantId: string;
+  formId: string;
+  fieldKey: string;
+  t: ReturnType<typeof useTranslations>;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function pick(file: File) {
+    setBusy(true);
+    setError(null);
+    const result = await uploadOnboardingFile({ tenantId, formId, fieldKey, kind: "supplier", file });
+    setBusy(false);
+    if (!result.ok) {
+      setError(
+        result.error === "too_large"
+          ? t("fileTooLarge")
+          : result.error === "type_not_allowed"
+            ? t("fileTypeNotAllowed")
+            : t("fileUploadError")
+      );
+      return;
+    }
+    onChange(result.file);
+  }
+
+  async function download() {
+    if (!value) return;
+    const url = await getOnboardingDownloadUrl(SUPPLIER_FILES_BUCKET, value.path);
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <input
+        ref={inputRef}
+        type="file"
+        accept={FILE_ACCEPT_ATTR}
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) pick(file);
+          e.target.value = "";
+        }}
+      />
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => inputRef.current?.click()}
+          className="inline-flex h-10 items-center gap-1.5 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm font-medium text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-50"
+        >
+          <Upload size={15} strokeWidth={1.75} />
+          {busy ? t("fileUploading") : value ? t("fileReplace") : t("fileSelect")}
+        </button>
+        {value && (
+          <span className="inline-flex items-center gap-1.5 rounded-md bg-(--bg-surface) px-2.5 py-2 text-[13px] text-(--ink)">
+            <FileText size={15} strokeWidth={1.75} className="text-(--ink-soft)" />
+            <button type="button" onClick={download} className="hover:text-(--brand-500)">
+              {value.name}
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange(undefined)}
+              className="text-(--ink-soft) hover:text-(--danger-500)"
+              aria-label={t("fileRemove")}
+            >
+              <X size={14} strokeWidth={2} />
+            </button>
+          </span>
+        )}
+      </div>
+      {error && <span className={errorClass}>{error}</span>}
+    </div>
+  );
+}
+
+// Read-only download control for a 'download' field (admin-attached file).
+function FileDownloadField({
+  path,
+  filename,
+  t,
+}: {
+  path: string | null;
+  filename: string | null;
+  t: ReturnType<typeof useTranslations>;
+}) {
+  const [busy, setBusy] = useState(false);
+
+  async function download() {
+    if (!path) return;
+    setBusy(true);
+    const url = await getOnboardingDownloadUrl(FORM_ATTACHMENTS_BUCKET, path);
+    setBusy(false);
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  if (!path) {
+    return <span className="text-[13px] text-(--ink-soft)">{t("fileNone")}</span>;
+  }
+
+  return (
+    <button
+      type="button"
+      disabled={busy}
+      onClick={download}
+      className="inline-flex h-10 w-fit items-center gap-1.5 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm font-medium text-(--ink) transition-colors hover:bg-(--accent-soft) disabled:opacity-50"
+    >
+      <Download size={15} strokeWidth={1.75} />
+      {busy ? t("filePreparing") : t("downloadFile", { name: filename ?? "" })}
+    </button>
+  );
 }
 
 function SelectWithOther({
@@ -259,18 +408,24 @@ export function DynamicOnboardingForm({
     [fields]
   );
 
+  // 'download' fields are read-only for the supplier (nothing to submit), so
+  // they're kept out of the schema and the submitted answers entirely.
+  const inputFields = useMemo(
+    () => orderedFields.filter((f) => f.field_type !== "download"),
+    [orderedFields]
+  );
+
   const schema = useMemo(
     () =>
       z.object(
-        Object.fromEntries(orderedFields.map((f) => [f.key, fieldToZod(f, t("requiredError"))]))
+        Object.fromEntries(inputFields.map((f) => [f.key, fieldToZod(f, t("requiredError"))]))
       ),
-    [orderedFields, t]
+    [inputFields, t]
   );
 
   const defaultValues = useMemo(
-    () =>
-      Object.fromEntries(orderedFields.map((f) => [f.key, defaultValueFor(f, initialAnswers)])),
-    [orderedFields, initialAnswers]
+    () => Object.fromEntries(inputFields.map((f) => [f.key, defaultValueFor(f, initialAnswers)])),
+    [inputFields, initialAnswers]
   );
 
   const {
@@ -464,8 +619,34 @@ export function DynamicOnboardingForm({
                       onChange={controllerField.onChange}
                       addLabel={t("addCustomOption")}
                       placeholder={t("customOptionPlaceholder")}
+                      otherLabel={field.other_label?.trim() || t("otherOptionLabel")}
                     />
                   )}
+                />
+              )}
+
+              {field.field_type === "file" && (
+                <Controller
+                  control={control}
+                  name={field.key}
+                  render={({ field: controllerField }) => (
+                    <FileUploadField
+                      value={controllerField.value as UploadedFile | undefined}
+                      onChange={controllerField.onChange}
+                      tenantId={tenantId}
+                      formId={formId}
+                      fieldKey={field.key}
+                      t={t}
+                    />
+                  )}
+                />
+              )}
+
+              {field.field_type === "download" && (
+                <FileDownloadField
+                  path={field.download_path}
+                  filename={field.download_filename}
+                  t={t}
                 />
               )}
 

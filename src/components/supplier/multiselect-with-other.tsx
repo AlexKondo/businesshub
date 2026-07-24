@@ -16,6 +16,7 @@ export function MultiSelectWithOther({
   onChange,
   addLabel,
   placeholder,
+  otherLabel,
 }: {
   options: OnboardingFieldOption[];
   allowOther: boolean;
@@ -23,6 +24,7 @@ export function MultiSelectWithOther({
   onChange: (next: string[]) => void;
   addLabel: string;
   placeholder: string;
+  otherLabel: string;
 }) {
   const [draft, setDraft] = useState("");
   const customValues = value.filter((v) => !options.some((o) => o.value === v));
@@ -89,6 +91,7 @@ export function MultiSelectWithOther({
 
       {allowOther && (
         <div className="flex flex-col gap-2">
+          <span className="text-[13px] font-medium text-(--ink)">{otherLabel}</span>
           {customValues.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {customValues.map((v) => (

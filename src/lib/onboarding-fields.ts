@@ -17,7 +17,9 @@ export type OnboardingFieldType =
   | "boolean"
   | "date"
   | "select"
-  | "multiselect";
+  | "multiselect"
+  | "file"
+  | "download";
 
 export type OnboardingField = {
   id: string;
@@ -34,6 +36,15 @@ export type OnboardingField = {
   mask: string | null;
   width: number;
   rows: number;
+  // For 'download' fields: the admin-attached object in the form-attachments
+  // bucket + its original filename (null until the admin uploads one).
+  download_path: string | null;
+  download_filename: string | null;
 };
 
-export type OnboardingAnswers = Record<string, string | string[] | number | boolean | undefined>;
+// A 'file' field's answer is an { path, name } object; the rest are scalars or
+// string arrays.
+export type OnboardingAnswers = Record<
+  string,
+  string | string[] | number | boolean | { path: string; name: string } | undefined
+>;

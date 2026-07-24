@@ -179,7 +179,17 @@
     "formsMenuTitle": "Available forms",
     "formsMenuSubtitle": "{name} has more than one intake form — choose which one to fill out.",
     "formStatusCompleted": "Submitted",
-    "formStatusPending": "Pending"
+    "formStatusPending": "Pending",
+    "fileSelect": "Choose file",
+    "fileReplace": "Replace file",
+    "fileUploading": "Uploading…",
+    "fileRemove": "Remove",
+    "fileTooLarge": "File too large (max 10 MB).",
+    "fileTypeNotAllowed": "File type not allowed.",
+    "fileUploadError": "File upload failed.",
+    "fileNone": "No file available.",
+    "filePreparing": "Preparing…",
+    "downloadFile": "Download {name}"
   },
   "companyLogo": {
     "title": "Company logo",
@@ -338,7 +348,18 @@
     "onboardingFormHeaderFooterSaved": "Saved.",
     "onboardingFormHeaderFooterSaving": "Saving…",
     "onboardingFieldOtherLabelInputLabel": "\"Other\" label",
-    "onboardingFieldOtherLabelPlaceholder": "Other"
+    "onboardingFieldOtherLabelPlaceholder": "Other",
+    "onboardingFieldTypeFile": "File (upload)",
+    "onboardingFieldTypeDownload": "File (download)",
+    "onboardingFieldDownloadFileLabel": "Downloadable file",
+    "onboardingFieldDownloadUpload": "Upload file",
+    "onboardingFieldDownloadReplace": "Replace file",
+    "onboardingFieldDownloadHint": "The supplier will only be able to download this file.",
+    "onboardingFieldDownloadNoFile": "No file",
+    "onboardingFileUploading": "Uploading…",
+    "onboardingFileTooLarge": "File too large (max 10 MB).",
+    "onboardingFileTypeNotAllowed": "File type not allowed.",
+    "onboardingFileUploadError": "Upload failed."
   },
   "profilePage": {
     "title": "Profile",

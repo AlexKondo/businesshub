@@ -179,7 +179,17 @@
     "formsMenuTitle": "利用可能なフォーム",
     "formsMenuSubtitle": "{name}には複数の登録フォームがあります — 入力するフォームを選んでください。",
     "formStatusCompleted": "送信済み",
-    "formStatusPending": "未送信"
+    "formStatusPending": "未送信",
+    "fileSelect": "ファイルを選択",
+    "fileReplace": "ファイルを変更",
+    "fileUploading": "アップロード中…",
+    "fileRemove": "削除",
+    "fileTooLarge": "ファイルが大きすぎます（最大10 MB）。",
+    "fileTypeNotAllowed": "許可されていないファイル形式です。",
+    "fileUploadError": "ファイルのアップロードに失敗しました。",
+    "fileNone": "利用可能なファイルがありません。",
+    "filePreparing": "準備中…",
+    "downloadFile": "{name} をダウンロード"
   },
   "companyLogo": {
     "title": "会社のロゴ",
@@ -338,7 +348,18 @@
     "onboardingFormHeaderFooterSaved": "保存しました。",
     "onboardingFormHeaderFooterSaving": "保存中…",
     "onboardingFieldOtherLabelInputLabel": "「その他」のラベル",
-    "onboardingFieldOtherLabelPlaceholder": "その他"
+    "onboardingFieldOtherLabelPlaceholder": "その他",
+    "onboardingFieldTypeFile": "ファイル（アップロード）",
+    "onboardingFieldTypeDownload": "ファイル（ダウンロード）",
+    "onboardingFieldDownloadFileLabel": "ダウンロード用ファイル",
+    "onboardingFieldDownloadUpload": "ファイルをアップロード",
+    "onboardingFieldDownloadReplace": "ファイルを変更",
+    "onboardingFieldDownloadHint": "サプライヤーはこのファイルをダウンロードのみ可能です。",
+    "onboardingFieldDownloadNoFile": "ファイルなし",
+    "onboardingFileUploading": "アップロード中…",
+    "onboardingFileTooLarge": "ファイルが大きすぎます（最大10 MB）。",
+    "onboardingFileTypeNotAllowed": "許可されていないファイル形式です。",
+    "onboardingFileUploadError": "アップロードに失敗しました。"
   },
   "profilePage": {
     "title": "プロフィール",

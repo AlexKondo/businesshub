@@ -3,8 +3,33 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
-import { Trash2, MessageCircle, ChevronDown, ChevronRight } from "lucide-react";
+import { Trash2, MessageCircle, ChevronDown, ChevronRight, Download } from "lucide-react";
 import type { OnboardingField, OnboardingAnswers, OnboardingForm } from "@/lib/onboarding-fields";
+import { SUPPLIER_FILES_BUCKET, FORM_ATTACHMENTS_BUCKET } from "@/lib/onboarding-files";
+import { getOnboardingDownloadUrl } from "@/lib/onboarding-files-client";
+
+// Download chip for a file answer / attachment — resolves a short-lived signed
+// URL on click.
+function FileAnswerLink({ bucket, path, name }: { bucket: string; path: string; name: string }) {
+  const [busy, setBusy] = useState(false);
+  async function download() {
+    setBusy(true);
+    const url = await getOnboardingDownloadUrl(bucket, path);
+    setBusy(false);
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  }
+  return (
+    <button
+      type="button"
+      disabled={busy}
+      onClick={download}
+      className="inline-flex items-center gap-1 font-medium text-(--brand-500) hover:opacity-80 disabled:opacity-50"
+    >
+      <Download size={13} strokeWidth={1.75} />
+      {name}
+    </button>
+  );
+}
 
 type Submission = {
   id: string;
@@ -52,7 +77,9 @@ export function SupplierSubmissionsPanel({ tenantId }: { tenantId: string }) {
     const [{ data: fieldRows }, submissionsRes] = await Promise.all([
       supabase
         .from("onboarding_form_fields")
-        .select("id, key, label, field_type, options, allow_other, required, position")
+        .select(
+          "id, key, label, field_type, options, allow_other, required, position, download_path, download_filename"
+        )
         .eq("form_id", selectedFormId as string)
         .order("position", { ascending: true }),
       fetch(`/api/tenants/supplier-submissions?tenantId=${tenantId}&formId=${selectedFormId}`),
@@ -288,14 +315,34 @@ export function SupplierSubmissionsPanel({ tenantId }: { tenantId: string }) {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-2 border-t border-(--border-default) pt-3 sm:grid-cols-2">
                   {[...fields]
                     .sort((a, b) => a.position - b.position)
-                    .map((field) => (
-                      <div key={field.id} className="text-[12.5px]">
-                        <span className="text-(--ink-soft)">{field.label}: </span>
-                        <span className="font-medium text-(--ink)">
-                          {formatAnswer(fieldByKey.get(field.key), submission.answers[field.key])}
-                        </span>
-                      </div>
-                    ))}
+                    .map((field) => {
+                      const answer = submission.answers[field.key];
+                      return (
+                        <div key={field.id} className="text-[12.5px]">
+                          <span className="text-(--ink-soft)">{field.label}: </span>
+                          {field.field_type === "file" &&
+                          answer &&
+                          typeof answer === "object" &&
+                          !Array.isArray(answer) ? (
+                            <FileAnswerLink
+                              bucket={SUPPLIER_FILES_BUCKET}
+                              path={(answer as { path: string }).path}
+                              name={(answer as { name: string }).name}
+                            />
+                          ) : field.field_type === "download" && field.download_path ? (
+                            <FileAnswerLink
+                              bucket={FORM_ATTACHMENTS_BUCKET}
+                              path={field.download_path}
+                              name={field.download_filename ?? field.download_path}
+                            />
+                          ) : (
+                            <span className="font-medium text-(--ink)">
+                              {formatAnswer(fieldByKey.get(field.key), answer)}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                 </div>
               )}
             </div>

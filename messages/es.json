@@ -179,7 +179,17 @@
     "formsMenuTitle": "Formularios disponibles",
     "formsMenuSubtitle": "{name} tiene más de un formulario de registro — elige cuál completar.",
     "formStatusCompleted": "Enviado",
-    "formStatusPending": "Pendiente"
+    "formStatusPending": "Pendiente",
+    "fileSelect": "Seleccionar archivo",
+    "fileReplace": "Cambiar archivo",
+    "fileUploading": "Subiendo…",
+    "fileRemove": "Quitar",
+    "fileTooLarge": "Archivo demasiado grande (máx. 10 MB).",
+    "fileTypeNotAllowed": "Tipo de archivo no permitido.",
+    "fileUploadError": "Error al subir el archivo.",
+    "fileNone": "Ningún archivo disponible.",
+    "filePreparing": "Preparando…",
+    "downloadFile": "Descargar {name}"
   },
   "companyLogo": {
     "title": "Logo de la empresa",
@@ -338,7 +348,18 @@
     "onboardingFormHeaderFooterSaved": "Guardado.",
     "onboardingFormHeaderFooterSaving": "Guardando…",
     "onboardingFieldOtherLabelInputLabel": "Etiqueta de \"Otro\"",
-    "onboardingFieldOtherLabelPlaceholder": "Otro"
+    "onboardingFieldOtherLabelPlaceholder": "Otro",
+    "onboardingFieldTypeFile": "Archivo (subida)",
+    "onboardingFieldTypeDownload": "Archivo (descarga)",
+    "onboardingFieldDownloadFileLabel": "Archivo descargable",
+    "onboardingFieldDownloadUpload": "Subir archivo",
+    "onboardingFieldDownloadReplace": "Cambiar archivo",
+    "onboardingFieldDownloadHint": "El proveedor solo podrá descargar este archivo.",
+    "onboardingFieldDownloadNoFile": "Ningún archivo",
+    "onboardingFileUploading": "Subiendo…",
+    "onboardingFileTooLarge": "Archivo demasiado grande (máx. 10 MB).",
+    "onboardingFileTypeNotAllowed": "Tipo de archivo no permitido.",
+    "onboardingFileUploadError": "Error al subir."
   },
   "profilePage": {
     "title": "Perfil",

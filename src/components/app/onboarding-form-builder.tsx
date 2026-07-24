@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { X, Check, ChevronUp, ChevronDown, Pencil, Trash2 } from "lucide-react";
+import { X, Check, ChevronUp, ChevronDown, Pencil, Trash2, Upload, FileText } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { slugify } from "@/lib/slug";
 import { InfoTooltip } from "@/components/app/info-tooltip";
 import { ResizableBox } from "@/components/app/resizable-box";
+import { uploadOnboardingFile } from "@/lib/onboarding-files-client";
+import { FILE_ACCEPT_ATTR } from "@/lib/onboarding-files";
 import type { OnboardingField, OnboardingFieldType } from "@/lib/onboarding-fields";
 
 type FieldWidths = { label: number; type: number; optionCategory: number; optionLabel: number };
@@ -28,6 +30,8 @@ const FIELD_TYPES: OnboardingFieldType[] = [
   "date",
   "select",
   "multiselect",
+  "file",
+  "download",
 ];
 
 type OptionDraft = { label: string; category?: string };
@@ -40,6 +44,8 @@ type FieldDraft = {
   other_label: string | null;
   options: { value: string; label: string; category?: string }[];
   mask: string | null;
+  download_path: string | null;
+  download_filename: string | null;
 };
 
 const inputClass =
@@ -59,6 +65,8 @@ function groupByCategory(options: (OptionDraft & { idx: number })[]) {
 
 function FieldEditor({
   initial,
+  tenantId,
+  formId,
   onCancel,
   onSave,
   saving,
@@ -67,6 +75,8 @@ function FieldEditor({
   onCommitWidth,
 }: {
   initial: OnboardingField | null;
+  tenantId: string;
+  formId: string;
   onCancel: () => void;
   onSave: (draft: FieldDraft) => void;
   saving: boolean;
@@ -86,6 +96,13 @@ function FieldEditor({
   const [optionDraft, setOptionDraft] = useState("");
   const [optionCategoryDraft, setOptionCategoryDraft] = useState("");
   const [mask, setMask] = useState(initial?.mask ?? "");
+  const [downloadPath, setDownloadPath] = useState<string | null>(initial?.download_path ?? null);
+  const [downloadFilename, setDownloadFilename] = useState<string | null>(
+    initial?.download_filename ?? null
+  );
+  const [attachBusy, setAttachBusy] = useState(false);
+  const [attachError, setAttachError] = useState<string | null>(null);
+  const attachInputRef = useRef<HTMLInputElement>(null);
 
   const knownOptionCategories = Array.from(
     new Set(optionDrafts.map((o) => o.category).filter((c): c is string => !!c))
@@ -97,6 +114,34 @@ function FieldEditor({
   // for it too, just without the options editor.
   const supportsAllowOther = isChoiceType || fieldType === "boolean";
   const showMaskSection = fieldType === "text" || fieldType === "date";
+  const isDownload = fieldType === "download";
+  // 'download' is read-only for the supplier, so "required" is meaningless there.
+  const showRequired = !isDownload;
+
+  async function handleAttachUpload(file: File) {
+    setAttachBusy(true);
+    setAttachError(null);
+    const result = await uploadOnboardingFile({
+      tenantId,
+      formId,
+      fieldKey: initial?.key ?? (slugify(label) || "download"),
+      kind: "attachment",
+      file,
+    });
+    setAttachBusy(false);
+    if (!result.ok) {
+      setAttachError(
+        result.error === "too_large"
+          ? t("onboardingFileTooLarge")
+          : result.error === "type_not_allowed"
+            ? t("onboardingFileTypeNotAllowed")
+            : t("onboardingFileUploadError")
+      );
+      return;
+    }
+    setDownloadPath(result.file.path);
+    setDownloadFilename(result.file.name);
+  }
 
   const typeLabels: Record<OnboardingFieldType, string> = {
     text: t("onboardingFieldTypeText"),
@@ -106,6 +151,8 @@ function FieldEditor({
     date: t("onboardingFieldTypeDate"),
     select: t("onboardingFieldTypeSelect"),
     multiselect: t("onboardingFieldTypeMultiselect"),
+    file: t("onboardingFieldTypeFile"),
+    download: t("onboardingFieldTypeDownload"),
   };
 
   function addOption() {
@@ -128,16 +175,15 @@ function FieldEditor({
     onSave({
       label: label.trim(),
       field_type: fieldType,
-      required,
+      required: showRequired && required,
       allow_other: usesOther,
-      // Only a boolean/select "Other" can carry a custom label; multiselect's
-      // free-text is an add-box, not a labelled option.
-      other_label:
-        usesOther && fieldType !== "multiselect" && otherLabel.trim() ? otherLabel.trim() : null,
+      other_label: usesOther && otherLabel.trim() ? otherLabel.trim() : null,
       options: isChoiceType
         ? optionDrafts.map((o) => ({ value: slugify(o.label), label: o.label, category: o.category }))
         : [],
       mask: showMaskSection && mask.trim() ? mask.trim() : null,
+      download_path: isDownload ? downloadPath : null,
+      download_filename: isDownload ? downloadFilename : null,
     });
   }
 
@@ -285,15 +331,17 @@ function FieldEditor({
           </div>
         )}
 
-        <label className="flex h-9 items-center gap-2 text-[13px] text-(--ink)">
-          <input
-            type="checkbox"
-            checked={required}
-            onChange={(e) => setRequired(e.target.checked)}
-            className="h-4 w-4 accent-(--brand-500)"
-          />
-          {t("onboardingFieldRequiredLabel")}
-        </label>
+        {showRequired && (
+          <label className="flex h-9 items-center gap-2 text-[13px] text-(--ink)">
+            <input
+              type="checkbox"
+              checked={required}
+              onChange={(e) => setRequired(e.target.checked)}
+              className="h-4 w-4 accent-(--brand-500)"
+            />
+            {t("onboardingFieldRequiredLabel")}
+          </label>
+        )}
         {supportsAllowOther && (
           <label className="flex h-9 items-center gap-2 text-[13px] text-(--ink)">
             <input
@@ -306,9 +354,8 @@ function FieldEditor({
           </label>
         )}
         {/* Custom label for the "Other" choice — e.g. "Quando?" instead of the
-            default "Outro". Multiselect's free-text is an add-box, not a
-            labelled option, so it's excluded. */}
-        {supportsAllowOther && allowOther && fieldType !== "multiselect" && (
+            default "Outro". Applies to select, boolean and multiselect. */}
+        {supportsAllowOther && allowOther && (
           <div className="flex flex-col gap-1.5">
             <label className="text-[12.5px] font-medium text-(--ink) whitespace-nowrap">
               {t("onboardingFieldOtherLabelInputLabel")}
@@ -328,6 +375,58 @@ function FieldEditor({
             screen regardless of field type. */}
         {!isChoiceType && <div className="ml-auto flex h-9 items-center gap-2">{saveCancelButtons}</div>}
       </div>
+
+      {isDownload && (
+        <div className="flex flex-col gap-2">
+          <span className="text-[12.5px] font-medium text-(--ink)">
+            {t("onboardingFieldDownloadFileLabel")}
+          </span>
+          <input
+            ref={attachInputRef}
+            type="file"
+            accept={FILE_ACCEPT_ATTR}
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleAttachUpload(file);
+              e.target.value = "";
+            }}
+          />
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={attachBusy}
+              onClick={() => attachInputRef.current?.click()}
+              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--border-default) px-3 text-[13px] font-medium text-(--ink) transition-colors hover:bg-(--bg-surface) disabled:opacity-50"
+            >
+              <Upload size={14} strokeWidth={1.75} />
+              {attachBusy
+                ? t("onboardingFileUploading")
+                : downloadFilename
+                  ? t("onboardingFieldDownloadReplace")
+                  : t("onboardingFieldDownloadUpload")}
+            </button>
+            {downloadFilename && (
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-(--bg-surface) px-2.5 py-1.5 text-[12.5px] text-(--ink)">
+                <FileText size={14} strokeWidth={1.75} className="text-(--ink-soft)" />
+                {downloadFilename}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDownloadPath(null);
+                    setDownloadFilename(null);
+                  }}
+                  className="text-(--ink-soft) hover:text-(--danger-500)"
+                >
+                  <X size={13} strokeWidth={2} />
+                </button>
+              </span>
+            )}
+          </div>
+          {attachError && <span className="text-[12px] text-(--danger-500)">{attachError}</span>}
+          <span className="text-[11px] text-(--ink-soft)">{t("onboardingFieldDownloadHint")}</span>
+        </div>
+      )}
 
       {isChoiceType && (
         <div className="flex flex-col gap-2">
@@ -474,7 +573,7 @@ export function OnboardingFormBuilder({
     const { data } = await supabase
       .from("onboarding_form_fields")
       .select(
-        "id, key, label, field_type, options, allow_other, other_label, required, position, mask, width, rows"
+        "id, key, label, field_type, options, allow_other, other_label, required, position, mask, width, rows, download_path, download_filename"
       )
       .eq("form_id", formId)
       .order("position", { ascending: true });
@@ -502,6 +601,8 @@ export function OnboardingFormBuilder({
       other_label: draft.other_label,
       required: draft.required,
       mask: draft.mask,
+      download_path: draft.download_path,
+      download_filename: draft.download_filename,
       position: fields?.length ?? 0,
     });
     setBusy(null);
@@ -529,6 +630,8 @@ export function OnboardingFormBuilder({
         other_label: draft.other_label,
         required: draft.required,
         mask: draft.mask,
+        download_path: draft.download_path,
+        download_filename: draft.download_filename,
       })
       .eq("id", id);
     setBusy(null);
@@ -574,6 +677,8 @@ export function OnboardingFormBuilder({
     date: t("onboardingFieldTypeDate"),
     select: t("onboardingFieldTypeSelect"),
     multiselect: t("onboardingFieldTypeMultiselect"),
+    file: t("onboardingFieldTypeFile"),
+    download: t("onboardingFieldTypeDownload"),
   };
 
   if (fields === null) {
@@ -591,6 +696,8 @@ export function OnboardingFormBuilder({
           <FieldEditor
             key={field.id}
             initial={field}
+            tenantId={tenantId}
+            formId={formId}
             saving={busy === field.id}
             onCancel={() => setEditingId(null)}
             onSave={(draft) => handleUpdate(field.id, draft)}
@@ -693,6 +800,8 @@ export function OnboardingFormBuilder({
       {adding ? (
         <FieldEditor
           initial={null}
+          tenantId={tenantId}
+          formId={formId}
           saving={busy === "new"}
           onCancel={() => setAdding(false)}
           onSave={handleCreate}

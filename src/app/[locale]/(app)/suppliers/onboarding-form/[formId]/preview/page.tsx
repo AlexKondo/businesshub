@@ -58,7 +58,7 @@ export default async function SuppliersOnboardingFormPreviewPage({
     supabase
       .from("onboarding_form_fields")
       .select(
-        "id, key, label, field_type, options, allow_other, other_label, required, position, mask, width, rows"
+        "id, key, label, field_type, options, allow_other, other_label, required, position, mask, width, rows, download_path, download_filename"
       )
       .eq("form_id", formId)
       .order("position", { ascending: true }),

@@ -179,7 +179,17 @@
     "formsMenuTitle": "可用表单",
     "formsMenuSubtitle": "{name}提供了不止一个入驻表单 — 请选择要填写的表单。",
     "formStatusCompleted": "已提交",
-    "formStatusPending": "待提交"
+    "formStatusPending": "待提交",
+    "fileSelect": "选择文件",
+    "fileReplace": "更换文件",
+    "fileUploading": "上传中…",
+    "fileRemove": "移除",
+    "fileTooLarge": "文件过大（最大 10 MB）。",
+    "fileTypeNotAllowed": "不允许的文件类型。",
+    "fileUploadError": "文件上传失败。",
+    "fileNone": "没有可用文件。",
+    "filePreparing": "准备中…",
+    "downloadFile": "下载 {name}"
   },
   "companyLogo": {
     "title": "企业标志",
@@ -338,7 +348,18 @@
     "onboardingFormHeaderFooterSaved": "已保存。",
     "onboardingFormHeaderFooterSaving": "保存中…",
     "onboardingFieldOtherLabelInputLabel": "\"其他\"标签",
-    "onboardingFieldOtherLabelPlaceholder": "其他"
+    "onboardingFieldOtherLabelPlaceholder": "其他",
+    "onboardingFieldTypeFile": "文件（上传）",
+    "onboardingFieldTypeDownload": "文件（下载）",
+    "onboardingFieldDownloadFileLabel": "可下载文件",
+    "onboardingFieldDownloadUpload": "上传文件",
+    "onboardingFieldDownloadReplace": "更换文件",
+    "onboardingFieldDownloadHint": "供应商只能下载此文件。",
+    "onboardingFieldDownloadNoFile": "无文件",
+    "onboardingFileUploading": "上传中…",
+    "onboardingFileTooLarge": "文件过大（最大 10 MB）。",
+    "onboardingFileTypeNotAllowed": "不允许的文件类型。",
+    "onboardingFileUploadError": "上传失败。"
   },
   "profilePage": {
     "title": "个人资料",

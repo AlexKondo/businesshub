@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Upload, Download } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { GridResizableCell } from "@/components/app/grid-resizable-cell";
@@ -131,6 +132,22 @@ function FieldPreview({
         value={tAdmin("onboardingFormPreviewOptionsCount", { count: field.options.length })}
         className={previewInputClass}
       />
+    );
+  }
+  if (field.field_type === "file") {
+    return (
+      <span className="inline-flex h-10 w-fit items-center gap-1.5 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink-soft)">
+        <Upload size={15} strokeWidth={1.75} />
+        {t("fileSelect")}
+      </span>
+    );
+  }
+  if (field.field_type === "download") {
+    return (
+      <span className="inline-flex h-10 w-fit items-center gap-1.5 rounded-md border border-(--border-default) bg-(--bg-canvas) px-3 text-sm text-(--ink-soft)">
+        <Download size={15} strokeWidth={1.75} />
+        {field.download_filename ?? tAdmin("onboardingFieldDownloadNoFile")}
+      </span>
     );
   }
   return (

@@ -69,10 +69,11 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
     // block the login that already succeeded.
     await supabase.auth.signOut({ scope: "others" }).catch(() => null);
 
-    const [{ data: memberships, error: membershipsError }, { data: userData }] = await Promise.all([
-      supabase.from("memberships").select("companies(slug)").eq("status", "active"),
-      supabase.auth.getUser(),
-    ]);
+    const [{ data: memberships, error: membershipsError }, { data: userData, error: userError }] =
+      await Promise.all([
+        supabase.from("memberships").select("companies(slug)").eq("status", "active"),
+        supabase.auth.getUser(),
+      ]);
     const slugs = (memberships ?? [])
       .map((m) => (m as unknown as { companies: { slug: string } | null }).companies?.slug)
       .filter((s): s is string => !!s);
@@ -112,7 +113,7 @@ export function LoginForm({ tenantSlug }: { tenantSlug: string | null }) {
         // RLS lag), memberships come back empty and this would nuke the session
         // of a legitimate member — show a retryable error and keep them signed
         // in instead.
-        if (membershipsError || platformAdminError) {
+        if (membershipsError || platformAdminError || userError) {
           setServerError(t("errorGeneric"));
           return;
         }
